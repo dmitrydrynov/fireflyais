@@ -98,7 +98,7 @@ class Rule extends Model
             'strict'          => 'boolean',
         ];
     /** @var array Fields that can be filled */
-    protected $fillable = ['rule_group_id', 'order', 'active', 'title', 'description', 'user_id', 'strict'];
+    protected $fillable = ['rule_group_id', 'order', 'active', 'title', 'description', 'user_id', 'strict', 'user_group_id'];
 
     /**
      * Route binder. Converts the key in the URL to the specified object (or throw 404).

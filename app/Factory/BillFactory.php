@@ -74,6 +74,7 @@ class BillFactory
                     'skip'                    => $skip,
                     'automatch'               => true,
                     'active'                  => $active,
+                    'user_group_id'           => $this->user->user_group_id,
                 ]
             );
         } catch (QueryException $e) {

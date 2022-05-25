@@ -96,6 +96,25 @@ class FireflyValidator extends Validator
     /**
      * @param mixed $attribute
      * @param mixed $value
+     * @param mixed $parameters
+     *
+     * @return bool
+     */
+    public function validateBelongsToUserGroup($attribute, $value, $parameters): bool
+    {
+        $field = $parameters[1] ?? 'id';
+
+        if (0 === (int) $value) {
+            return true;
+        }
+        $count = DB::table($parameters[0])->where('user_group_id', auth()->user()->user_group_id)->where($field, $value)->count();
+
+        return 1 === $count;
+    }
+
+    /**
+     * @param mixed $attribute
+     * @param mixed $value
      *
      * @return bool
      */

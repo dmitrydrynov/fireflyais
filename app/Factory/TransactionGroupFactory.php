@@ -81,6 +81,7 @@ class TransactionGroupFactory
         $group = new TransactionGroup;
         $group->user()->associate($this->user);
         $group->title = $title;
+        $group->user_group_id = $this->user->user_group_id;
         $group->save();
 
         $group->transactionJournals()->saveMany($collection);

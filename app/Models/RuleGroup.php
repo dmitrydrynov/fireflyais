@@ -89,7 +89,7 @@ class RuleGroup extends Model
         ];
 
     /** @var array Fields that can be filled */
-    protected $fillable = ['user_id', 'stop_processing', 'order', 'title', 'description', 'active'];
+    protected $fillable = ['user_id', 'stop_processing', 'order', 'title', 'description', 'active', 'user_group_id'];
 
     /**
      * Route binder. Converts the key in the URL to the specified object (or throw 404).

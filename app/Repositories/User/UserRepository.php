@@ -141,6 +141,10 @@ class UserRepository implements UserRepositoryInterface
     {
         Log::debug(sprintf('Calling delete() on user %d', $user->id));
 
+        if($user->hasUserGroupRole('owner')) {
+            $user->userGroup()->delete();
+        }
+
         $user->groupMemberships()->delete();
         $user->delete();
         $this->deleteEmptyGroups();
@@ -265,6 +269,17 @@ class UserRepository implements UserRepositoryInterface
         return false;
     }
 
+    public function hasUserGroupRole(User $user, string $role): bool
+    {
+        foreach ($user->groupMemberships as $groupMembership) {
+            if ($groupMembership->userRole->title === $role) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Set MFA code.
      *
@@ -290,6 +305,7 @@ class UserRepository implements UserRepositoryInterface
                 'blocked_code' => $data['blocked_code'] ?? null,
                 'email'        => $data['email'],
                 'password'     => Str::random(24),
+                'user_group_id'=> auth()->user()->user_group_id || null,
             ]
         );
         $role = $data['role'] ?? '';

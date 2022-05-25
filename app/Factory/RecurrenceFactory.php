@@ -115,6 +115,7 @@ class RecurrenceFactory
                 'repetitions'         => $repetitions,
                 'apply_rules'         => $applyRules,
                 'active'              => $active,
+                'user_group_id'       => $this->user->user_group_id,
             ]
         );
         $recurrence->save();

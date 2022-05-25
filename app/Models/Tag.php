@@ -98,7 +98,7 @@ class Tag extends Model
             'longitude'  => 'float',
         ];
     /** @var array Fields that can be filled */
-    protected $fillable = ['user_id', 'tag', 'date', 'description', 'tagMode'];
+    protected $fillable = ['user_id', 'tag', 'date', 'description', 'tagMode', 'user_group_id'];
 
     protected $hidden = ['zoomLevel', 'latitude', 'longitude'];
 

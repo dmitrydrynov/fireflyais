@@ -247,6 +247,7 @@ class AttachmentHelper implements AttachmentHelperInterface
             $attachment->mime     = $file->getMimeType();
             $attachment->size     = $file->getSize();
             $attachment->uploaded = false;
+            $attachment->user_group_id = $user->user_group_id;
             $attachment->save();
             Log::debug('Created attachment:', $attachment->toArray());
 

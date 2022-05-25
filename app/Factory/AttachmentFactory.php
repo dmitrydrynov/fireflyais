@@ -73,6 +73,7 @@ class AttachmentFactory
                 'mime'            => '',
                 'size'            => 0,
                 'uploaded'        => 0,
+                'user_group_id'   => $this->user->user_group_id,
             ]
         );
         $notes      = (string) ($data['notes'] ?? '');

@@ -24,7 +24,7 @@ declare(strict_types=1);
 
 namespace FireflyIII\Api\V1\Requests\Models\Transaction;
 
-use FireflyIII\Rules\BelongsUser;
+use FireflyIII\Rules\BelongsUserGroup;
 use FireflyIII\Rules\IsBoolean;
 use FireflyIII\Rules\IsDateOrTime;
 use FireflyIII\Support\NullArrayObject;
@@ -195,28 +195,28 @@ class StoreRequest extends FormRequest
             'transactions.*.description'           => 'nullable|between:1,1000',
 
             // source of transaction
-            'transactions.*.source_id'             => ['numeric', 'nullable', new BelongsUser],
+            'transactions.*.source_id'             => ['numeric', 'nullable', new BelongsUserGroup],
             'transactions.*.source_name'           => 'between:1,255|nullable',
             'transactions.*.source_iban'           => 'between:1,255|nullable|iban',
             'transactions.*.source_number'         => 'between:1,255|nullable',
             'transactions.*.source_bic'            => 'between:1,255|nullable|bic',
 
             // destination of transaction
-            'transactions.*.destination_id'        => ['numeric', 'nullable', new BelongsUser],
+            'transactions.*.destination_id'        => ['numeric', 'nullable', new BelongsUserGroup],
             'transactions.*.destination_name'      => 'between:1,255|nullable',
             'transactions.*.destination_iban'      => 'between:1,255|nullable|iban',
             'transactions.*.destination_number'    => 'between:1,255|nullable',
             'transactions.*.destination_bic'       => 'between:1,255|nullable|bic',
 
             // budget, category, bill and piggy
-            'transactions.*.budget_id'             => ['mustExist:budgets,id', new BelongsUser],
-            'transactions.*.budget_name'           => ['between:1,255', 'nullable', new BelongsUser],
-            'transactions.*.category_id'           => ['mustExist:categories,id', new BelongsUser, 'nullable'],
+            'transactions.*.budget_id'             => ['mustExist:budgets,id', new BelongsUserGroup],
+            'transactions.*.budget_name'           => ['between:1,255', 'nullable', new BelongsUserGroup],
+            'transactions.*.category_id'           => ['mustExist:categories,id', new BelongsUserGroup, 'nullable'],
             'transactions.*.category_name'         => 'between:1,255|nullable',
-            'transactions.*.bill_id'               => ['numeric', 'nullable', 'mustExist:bills,id', new BelongsUser],
-            'transactions.*.bill_name'             => ['between:1,255', 'nullable', new BelongsUser],
-            'transactions.*.piggy_bank_id'         => ['numeric', 'nullable', 'mustExist:piggy_banks,id', new BelongsUser],
-            'transactions.*.piggy_bank_name'       => ['between:1,255', 'nullable', new BelongsUser],
+            'transactions.*.bill_id'               => ['numeric', 'nullable', 'mustExist:bills,id', new BelongsUserGroup],
+            'transactions.*.bill_name'             => ['between:1,255', 'nullable', new BelongsUserGroup],
+            'transactions.*.piggy_bank_id'         => ['numeric', 'nullable', 'mustExist:piggy_banks,id', new BelongsUserGroup],
+            'transactions.*.piggy_bank_name'       => ['between:1,255', 'nullable', new BelongsUserGroup],
 
             // other interesting fields
             'transactions.*.reconciled'            => [new IsBoolean],

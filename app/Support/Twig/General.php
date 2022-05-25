@@ -245,6 +245,7 @@ class General extends AbstractExtension
             $this->formatDate(),
             $this->getMetaField(),
             $this->hasRole(),
+            $this->hasUserGroupRole(),
             $this->getRootSearchOperator(),
             $this->carbonize(),
         ];
@@ -408,6 +409,26 @@ class General extends AbstractExtension
             static function (string $role): bool {
                 $repository = app(UserRepositoryInterface::class);
                 if ($repository->hasRole(auth()->user(), $role)) {
+                    return true;
+                }
+
+                return false;
+            }
+        );
+    }
+
+    /**
+     * Will return true if the user is of role X.
+     *
+     * @return TwigFunction
+     */
+    protected function hasUserGroupRole(): TwigFunction
+    {
+        return new TwigFunction(
+            'hasUserGroupRole',
+            static function (string $role): bool {
+                $repository = app(UserRepositoryInterface::class);
+                if ($repository->hasUserGroupRole(auth()->user(), $role)) {
                     return true;
                 }
 

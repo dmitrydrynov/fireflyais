@@ -47,6 +47,7 @@ use FireflyIII\Models\TransactionType as TransactionTypeModel;
 use FireflyIII\Models\Webhook;
 use FireflyIII\Models\WebhookAttempt;
 use FireflyIII\Models\WebhookMessage;
+use FireflyIII\Models\Member;
 use FireflyIII\Support\Binder\AccountList;
 use FireflyIII\Support\Binder\BudgetList;
 use FireflyIII\Support\Binder\CategoryList;
@@ -101,7 +102,7 @@ return [
         'webhooks'     => false,
         'handle_debts' => true,
     ],
-    'version'                      => '5.7.6',
+    'version'                      => '5.7.5',
     'api_version'                  => '1.5.6',
     'db_version'                   => 18,
 
@@ -414,6 +415,7 @@ return [
         'ruleGroup'        => RuleGroup::class,
         'transactionGroup' => TransactionGroup::class,
         'user'             => User::class,
+        'member'           => Member::class,
         'webhook'          => Webhook::class,
         'webhookMessage'   => WebhookMessage::class,
         'webhookAttempt'   => WebhookAttempt::class,
@@ -606,10 +608,7 @@ return [
             AccountType::RECONCILIATION  => TransactionTypeModel::RECONCILIATION,
         ],
         AccountType::CASH             => [
-            AccountType::ASSET    => TransactionTypeModel::DEPOSIT,
-            AccountType::LOAN     => TransactionTypeModel::DEPOSIT,
-            AccountType::DEBT     => TransactionTypeModel::DEPOSIT,
-            AccountType::MORTGAGE => TransactionTypeModel::DEPOSIT,
+            AccountType::ASSET => TransactionTypeModel::DEPOSIT,
         ],
         AccountType::DEBT             => [
             AccountType::ASSET           => TransactionTypeModel::DEPOSIT,
@@ -691,10 +690,9 @@ return [
             AccountType::ASSET          => [AccountType::RECONCILIATION],
         ],
         TransactionTypeModel::LIABILITY_CREDIT => [
-            AccountType::LOAN             => [AccountType::LIABILITY_CREDIT],
-            AccountType::DEBT             => [AccountType::LIABILITY_CREDIT],
-            AccountType::MORTGAGE         => [AccountType::LIABILITY_CREDIT],
-            AccountType::LIABILITY_CREDIT => [AccountType::LOAN, AccountType::DEBT, AccountType::MORTGAGE],
+            AccountType::LOAN     => [AccountType::LIABILITY_CREDIT],
+            AccountType::DEBT     => [AccountType::LIABILITY_CREDIT],
+            AccountType::MORTGAGE => [AccountType::LIABILITY_CREDIT],
         ],
     ],
     // if you add fields to this array, dont forget to update the export routine (ExportDataGenerator).

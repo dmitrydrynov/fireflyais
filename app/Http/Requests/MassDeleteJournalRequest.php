@@ -43,7 +43,7 @@ class MassDeleteJournalRequest extends FormRequest
     {
         // fixed
         return [
-            'confirm_mass_delete.*' => 'required|belongsToUser:transaction_journals,id',
+            'confirm_mass_delete.*' => 'required|belongsToUserGroup:transaction_journals,id',
         ];
     }
 }

@@ -347,6 +347,7 @@ class BudgetRepository implements BudgetRepositoryInterface
                     'name'    => $data['name'],
                     'order'   => $order + 1,
                     'active'  => array_key_exists('active', $data) ? $data['active'] : true,
+                    'user_group_id'   => $this->user->user_group_id,
                 ]
             );
         } catch (QueryException $e) {

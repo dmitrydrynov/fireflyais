@@ -3,5 +3,8 @@
     "/v1/js/app_vue.js": "/v1/js/app_vue.js",
     "/v1/js/create_transaction.js": "/v1/js/create_transaction.js",
     "/v1/js/edit_transaction.js": "/v1/js/edit_transaction.js",
-    "/v1/js/profile.js": "/v1/js/profile.js"
+    "/v1/js/profile.js": "/v1/js/profile.js",
+    "/v1/js/create_member.js": "/v1/js/create_member.js",
+    "/v1/js/edit_member.js": "/v1/js/edit_member.js",
+    "/v1/css/app.css": "/v1/css/app.css"
 }

@@ -126,6 +126,7 @@ class WebhookRepository implements WebhookRepositoryInterface
             'delivery' => $data['delivery'],
             'secret'   => $secret,
             'url'      => $data['url'],
+            'user_group_id'=> $this->user->user_group_id,
         ];
 
         return Webhook::create($fullData);

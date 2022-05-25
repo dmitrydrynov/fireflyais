@@ -1007,6 +1007,18 @@ return [
     'optional_field_attachments'                => 'Attachments',
     'optional_field_meta_data'                  => 'Optional meta data',
     'external_url'                              => 'External URL',
+    'user_group_name'                           => 'Company name',
+    'user_group_name_help'                      => 'Name of your company',
+
+    // members:
+    'members'                                   => 'Members',
+    'list_all_members'                          => 'All members',
+    'create_member'                             => 'Add member',
+    'created_member'                            => 'Member added',
+    'update_member'                             => 'Update member',
+    'updated_member'                            => 'Member data has been changed.',
+    'delete_member'                             => 'Delete member :email',
+    'member_deleted'                            => 'The member has been deleted',
 
     // profile:
     'delete_stuff_header'                       => 'Delete data',
@@ -1913,6 +1925,8 @@ return [
     'setting_single_user_mode_explain' => 'By default, Firefly III only accepts one (1) registration: you. This is a security measure, preventing others from using your instance unless you allow them to. Future registrations are blocked. When you uncheck this box, others can use your instance as well, assuming they can reach it (when it is connected to the internet).',
     'store_configuration'              => 'Store configuration',
     'single_user_administration'       => 'User administration for :email',
+    'add_owner'                        => 'Add owner',
+    'add_member'                       => 'Add member',
     'edit_user'                        => 'Edit user :email',
     'hidden_fields_preferences'        => 'You can enable more transaction options in your <a href="preferences">preferences</a>.',
     'user_data_information'            => 'User data',
@@ -1942,6 +1956,7 @@ return [
     'admin_maintanance_title'          => 'Maintenance',
     'admin_maintanance_expl'           => 'Some nifty buttons for Firefly III maintenance',
     'admin_maintenance_clear_cache'    => 'Clear cache',
+    'addUserFormTitle'                 => 'Add owner',
 
     'split_transaction_title'               => 'Description of the split transaction',
     'split_transaction_title_help'          => 'If you create a split transaction, there must be a global description for all splits of the transaction.',

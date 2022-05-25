@@ -77,6 +77,7 @@ class RuleRepository implements RuleRepositoryInterface
     {
         $newRule        = $rule->replicate();
         $newRule->title = (string) trans('firefly.rule_copy_of', ['title' => $rule->title]);
+        $newRule->user_group_id = $this->user->user_group_id;
         $newRule->save();
 
         // replicate all triggers
@@ -306,6 +307,7 @@ class RuleRepository implements RuleRepositoryInterface
         $rule->stop_processing = array_key_exists('stop_processing', $data) ? $data['stop_processing'] : false;
         $rule->title           = $data['title'];
         $rule->description     = array_key_exists('stop_processing', $data) ? $data['stop_processing'] : null;
+        $rule->user_group_id = $this->user->user_group_id;
         $rule->save();
         $rule->refresh();
 

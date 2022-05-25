@@ -123,6 +123,8 @@ class PreferencesController extends Controller
             $frontPageAccounts = $accountIds;
         }
 
+        $userGroupName = auth()->user()->userGroup->title;
+
         return view(
             'preferences.index',
             compact(
@@ -137,7 +139,8 @@ class PreferencesController extends Controller
                 'viewRange',
                 'customFiscalYear',
                 'listPageSize',
-                'fiscalYearStart'
+                'fiscalYearStart',
+                'userGroupName',
             )
         );
     }
@@ -226,6 +229,12 @@ class PreferencesController extends Controller
 
         session()->flash('success', (string) trans('firefly.saved_preferences'));
         app('preferences')->mark();
+
+        if($request->has('user_group_name')) {
+            $userGroup = auth()->user()->userGroup;
+            $userGroup->title = $request->get('user_group_name');
+            $userGroup->save();
+        }
 
         return redirect(route('preferences.index'));
     }

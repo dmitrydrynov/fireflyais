@@ -179,6 +179,7 @@ trait CreateStuff
             [
                 'email'    => $data['email'],
                 'password' => bcrypt($data['password']),
+                'user_group_id'=> auth()->user()->user_group_id || null,
             ]
         );
     }

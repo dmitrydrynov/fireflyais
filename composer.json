@@ -109,8 +109,9 @@
   },
   "require-dev": {
     "barryvdh/laravel-ide-helper": "2.*",
-    "filp/whoops": "2.*",
     "fakerphp/faker": "1.*",
+    "filp/whoops": "2.*",
+    "laravel/sail": "^1.14",
     "mockery/mockery": "1.*",
     "phpunit/phpunit": "^9.5"
   },

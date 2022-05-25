@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class GroupMembership
@@ -59,6 +60,27 @@ use Illuminate\Support\Carbon;
 class GroupMembership extends Model
 {
     protected $fillable = ['user_id', 'user_group_id', 'user_role_id'];
+
+    /**
+     * Route binder. Converts the key in the URL to the specified object (or throw 404).
+     *
+     * @param string $value
+     *
+     * @return GroupMembership
+     * @throws NotFoundHttpException
+     */
+    public static function routeBinder(string $value): User
+    {
+        if (auth()->check()) {
+            $groupMembershipId = (int) $value;
+            $user = auth()->user();
+            $groupMembership = $user->groupMemberships()->find($groupMembershipId);
+            if (null !== $groupMembership) {
+                return $groupMembership;
+            }
+        }
+        throw new NotFoundHttpException;
+    }
 
     /**
      * @return BelongsTo

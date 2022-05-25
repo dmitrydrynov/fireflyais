@@ -29,6 +29,7 @@ use FireflyIII\Models\Bill;
 use FireflyIII\Models\Budget;
 use FireflyIII\Models\BudgetLimit;
 use FireflyIII\Models\Category;
+use FireflyIII\Models\Member;
 use FireflyIII\Models\LinkType;
 use FireflyIII\Models\ObjectGroup;
 use FireflyIII\Models\PiggyBank;
@@ -170,6 +171,36 @@ try {
         }
     );
 
+    // MEMBERS
+    Breadcrumbs::for(
+        'members.index',
+        static function (Generator $breadcrumbs) {
+            $breadcrumbs->parent('home');
+            $breadcrumbs->push(trans('firefly.list_all_members'), route('members.index'));
+        }
+    );
+    Breadcrumbs::for(
+        'members.create',
+        static function (Generator $breadcrumbs) {
+            $breadcrumbs->parent('home');
+            $breadcrumbs->push(trans('firefly.list_all_members'), route('members.create'));
+        }
+    );
+    Breadcrumbs::for(
+        'members.edit',
+        static function (Generator $breadcrumbs, Member $member) {
+            $breadcrumbs->parent('home');
+            $breadcrumbs->push(trans('firefly.list_all_members'), route('members.edit', [$member->id]));
+        }
+    );
+    Breadcrumbs::for(
+        'members.delete',
+        static function (Generator $breadcrumbs, Member $member) {
+            $breadcrumbs->parent('home');
+            $breadcrumbs->push(trans('firefly.delete_member', ['email' => $member->email]), route('members.delete', [$member->id]));
+        }
+    );
+
     // ADMIN
     Breadcrumbs::for(
         'admin.index',
@@ -192,6 +223,13 @@ try {
         static function (Generator $breadcrumbs, User $user) {
             $breadcrumbs->parent('admin.users');
             $breadcrumbs->push(trans('firefly.single_user_administration', ['email' => $user->email]), route('admin.users.show', [$user->id]));
+        }
+    );
+    Breadcrumbs::for(
+        'admin.users.add',
+        static function (Generator $breadcrumbs) {
+            $breadcrumbs->parent('admin.users');
+            $breadcrumbs->push(trans('firefly.add_user'), route('admin.users.add'));
         }
     );
     Breadcrumbs::for(

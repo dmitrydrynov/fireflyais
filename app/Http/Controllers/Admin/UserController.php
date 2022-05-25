@@ -1,4 +1,5 @@
 <?php
+
 /**
  * UserController.php
  * Copyright (c) 2019 james@firefly-iii.org
@@ -18,6 +19,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace FireflyIII\Http\Controllers\Admin;
@@ -25,20 +27,26 @@ namespace FireflyIII\Http\Controllers\Admin;
 use FireflyIII\Http\Controllers\Controller;
 use FireflyIII\Http\Middleware\IsDemoUser;
 use FireflyIII\Http\Requests\UserFormRequest;
+use FireflyIII\Http\Requests\UserStoreRequest;
 use FireflyIII\Repositories\User\UserRepositoryInterface;
 use FireflyIII\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
+use FireflyIII\Support\Http\Controllers\CreateStuff;
 use Illuminate\Routing\Redirector;
 use Illuminate\View\View;
 use Log;
+use FireflyIII\Events\RegisteredUser;
+use FireflyIII\Exceptions\FireflyException;
 
 /**
  * Class UserController.
  */
 class UserController extends Controller
 {
+    use CreateStuff;
+
     protected bool                  $externalIdentity;
     private UserRepositoryInterface $repository;
 
@@ -101,6 +109,58 @@ class UserController extends Controller
 
         return redirect(route('admin.users'));
     }
+
+    /**
+     * Add user form.
+     *
+     * @param User $user
+     *
+     * @return Factory|View
+     */
+    public function add()
+    {
+        $subTitle     = (string) trans('firefly.add_user');
+        $subTitleIcon = 'fa-user-o';
+        $user = new User();
+        $codes        = [
+            ''              => (string) trans('firefly.no_block_code'),
+            'bounced'       => (string) trans('firefly.block_code_bounced'),
+            'expired'       => (string) trans('firefly.block_code_expired'),
+            'email_changed' => (string) trans('firefly.block_code_email_changed'),
+        ];
+
+        return view('admin.users.add', compact('user', 'codes', 'subTitle', 'subTitleIcon'));
+    }
+
+    /**
+     * Store new currency.
+     *
+     * @param UserStoreRequest $request
+     *
+     * @return $this|RedirectResponse|Redirector
+     * @throws FireflyException
+     */
+    public function store(UserStoreRequest $request)
+    {
+        Log::debug('Store new user');
+
+        try {
+            $user = $this->createUser($request->except(['companyName']));
+            Log::info(sprintf('Registered new user %s', $user->email));
+            event(new RegisteredUser($user));
+
+            if ($request->has('companyName') && null !== $user->userGroup) {
+                $user->userGroup->update(['title' => $request->get('companyName')]);
+            }
+
+            session()->flash('success', (string) trans('firefly.created_new_user'));
+        } catch (FireflyException $error) {
+            session()->flash('error', trans('firefly.created_user_wrong'));
+        }
+
+        return response()->redirectToRoute('admin.users');
+    }
+
 
     /**
      * Edit user form.
@@ -223,7 +283,6 @@ class UserController extends Controller
             session()->put('users.edit.fromUpdate', true);
 
             $redirect = redirect(route('admin.users.edit', [$user->id]))->withInput(['return_to_edit' => 1]);
-
         }
 
         // redirect to previous URL.

@@ -52,7 +52,7 @@ class SelectTransactionsRequest extends FormRequest
             'start'      => 'required|date|after:' . $first,
             'end'        => 'required|date|before:' . $today,
             'accounts'   => 'required',
-            'accounts.*' => 'required|exists:accounts,id|belongsToUser:accounts',
+            'accounts.*' => 'required|exists:accounts,id|belongsToUserGroup:accounts',
         ];
     }
 }

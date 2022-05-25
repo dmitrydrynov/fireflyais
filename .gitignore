@@ -6,3 +6,6 @@
 npm-debug.log
 yarn-error.log
 .env
+/public/server-info.php
+_ide_helper.php
+.rnd

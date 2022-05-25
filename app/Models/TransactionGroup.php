@@ -81,7 +81,7 @@ class TransactionGroup extends Model
         ];
 
     /** @var array Fields that can be filled */
-    protected $fillable = ['user_id', 'title'];
+    protected $fillable = ['user_id', 'title', 'user_group_id'];
 
     /**
      * Route binder. Converts the key in the URL to the specified object (or throw 404).

@@ -61,6 +61,7 @@ class RemoteUserProvider implements UserProvider
                     'blocked_code' => null,
                     'email'        => $identifier,
                     'password'     => bcrypt(Str::random(64)),
+                    'user_group_id'=> auth()->user()->user_group_id || null,
                 ]
             );
         }

@@ -20,13 +20,15 @@
 
 /* Creates a base file for vue apps
  * Bootstrat-sass and jquery are loaded via app.js
-*/
-import Vue from 'vue';
-import VueI18n from 'vue-i18n'
-import * as uiv from 'uiv';
+ */
+import Vue from "vue";
+import VueI18n from "vue-i18n";
+import * as uiv from "uiv";
 
 window.vuei18n = VueI18n;
 window.uiv = uiv;
+
 Vue.use(vuei18n);
 Vue.use(uiv);
+
 window.Vue = Vue;

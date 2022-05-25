@@ -160,6 +160,14 @@ interface UserRepositoryInterface
     public function hasRole(User $user, string $role): bool;
 
     /**
+     * @param User   $user
+     * @param string $role
+     *
+     * @return bool
+     */
+    public function hasUserGroupRole(User $user, string $role): bool;
+
+    /**
      * Remove any role the user has.
      *
      * @param User   $user

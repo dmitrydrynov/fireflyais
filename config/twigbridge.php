@@ -63,7 +63,7 @@ return [
         'environment'  => [
             'debug'            => env('APP_DEBUG', false),
             'charset'          => 'utf-8',
-            'cache'            => null,
+            'cache'            => false,
             'auto_reload'      => true,
             'strict_variables' => false,
             'autoescape'       => 'html',

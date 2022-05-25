@@ -200,6 +200,7 @@ class AccountFactory
                            'virtual_balance' => $virtualBalance,
                            'active'          => $active,
                            'iban'            => $data['iban'],
+                           'user_group_id'   => $this->user->user_group_id,
         ];
         // fix virtual balance when it's empty
         if ('' === (string) $databaseData['virtual_balance']) {

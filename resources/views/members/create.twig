@@ -1,0 +1,17 @@
+{% set VUE_SCRIPT_NAME = 'create_member' %}
+
+{% extends './layout/default' %}
+
+{% block breadcrumbs %}
+    {{ Breadcrumbs.render(Route.getCurrentRoute.getName, objectType) }}
+{% endblock %}
+
+{% block content %}
+    <div id="create_member"></div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" nonce="{{ JS_NONCE }}">
+        var previousUrl = '{{ previousUrl }}';
+    </script>
+{% endblock %}

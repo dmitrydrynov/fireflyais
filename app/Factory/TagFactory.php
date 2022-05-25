@@ -92,6 +92,7 @@ class TagFactory
             'latitude'    => null,
             'longitude'   => null,
             'zoomLevel'   => null,
+            'user_group_id' => $this->user->user_group_id,
         ];
         $tag       = Tag::create($array);
         if (null !== $tag && null !== $latitude && null !== $longitude) {

@@ -1,5 +1,5 @@
-/*
- * app.css
+/*!
+ * app.scss
  * Copyright (c) 2019 james@firefly-iii.org
  *
  * This file is part of Firefly III (https://github.com/firefly-iii).
@@ -17,6 +17,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 /* TODO REMOVE ME */
-
+.main-header .navbar-menu-title {
+  padding: 15px;
+  color: #fff;
+  display: inline-block;
+  line-height: 20px;
+  font-size: 16px;
+  font-weight: bold;
+}

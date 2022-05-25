@@ -27,3 +27,14 @@
 
 // Font awesome
 //@import "~font-awesome/css/font-awesome";
+
+.main-header {
+  .navbar-menu-title {
+    padding: 15px;
+    color: #fff;
+    display: inline-block;
+    line-height: 20px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+}

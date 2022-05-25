@@ -167,11 +167,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts
-        = [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-            'blocked'    => 'boolean',
-        ];
+    = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'blocked'    => 'boolean',
+    ];
     /**
      * The attributes that are mass assignable.
      *
@@ -217,7 +217,7 @@ class User extends Authenticatable
      */
     public function accounts(): HasMany
     {
-        return $this->hasMany(Account::class);
+        return $this->hasMany(Account::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -228,7 +228,7 @@ class User extends Authenticatable
      */
     public function attachments(): HasMany
     {
-        return $this->hasMany(Attachment::class);
+        return $this->hasMany(Attachment::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -239,7 +239,7 @@ class User extends Authenticatable
      */
     public function availableBudgets(): HasMany
     {
-        return $this->hasMany(AvailableBudget::class);
+        return $this->hasMany(AvailableBudget::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -250,7 +250,7 @@ class User extends Authenticatable
      */
     public function bills(): HasMany
     {
-        return $this->hasMany(Bill::class);
+        return $this->hasMany(Bill::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -261,7 +261,7 @@ class User extends Authenticatable
      */
     public function budgets(): HasMany
     {
-        return $this->hasMany(Budget::class);
+        return $this->hasMany(Budget::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -272,7 +272,7 @@ class User extends Authenticatable
      */
     public function categories(): HasMany
     {
-        return $this->hasMany(Category::class);
+        return $this->hasMany(Category::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -349,9 +349,20 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function groupMemberships(): HasMany
+    public function groupMemberships(Int $user_group_id = null): HasMany
     {
-        return $this->hasMany(GroupMembership::class)->with(['userGroup', 'userRole']);
+        $relation = $this->hasMany(GroupMembership::class, 'user_id')->with(['userGroup', 'userRole']);
+
+        if($user_group_id !== null) {
+            $relation = $relation->where('user_group_id', $user_group_id);
+        }
+
+        return $relation;
+    }
+
+    public function getMembers()
+    {
+        return User::where('user_group_id', $this->user_group_id)->where('id', '<>', $this->id);
     }
 
     /**
@@ -362,6 +373,19 @@ class User extends Authenticatable
     public function hasRole(string $role): bool
     {
         return $this->roles()->where('name', $role)->count() === 1;
+    }
+
+    public function hasUserGroupRole(string $role): bool
+    {
+        $groupMemberships = $this->groupMemberships;
+
+        if(count($groupMemberships) > 0) foreach($groupMemberships as $groupMembership) {
+            if($groupMembership->userRole->title === $role) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     /**
@@ -405,7 +429,7 @@ class User extends Authenticatable
      */
     public function preferences(): HasMany
     {
-        return $this->hasMany(Preference::class);
+        return $this->hasMany(Preference::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -416,7 +440,7 @@ class User extends Authenticatable
      */
     public function recurrences(): HasMany
     {
-        return $this->hasMany(Recurrence::class);
+        return $this->hasMany(Recurrence::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -427,7 +451,7 @@ class User extends Authenticatable
      */
     public function ruleGroups(): HasMany
     {
-        return $this->hasMany(RuleGroup::class);
+        return $this->hasMany(RuleGroup::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -438,7 +462,7 @@ class User extends Authenticatable
      */
     public function rules(): HasMany
     {
-        return $this->hasMany(Rule::class);
+        return $this->hasMany(Rule::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -489,7 +513,7 @@ class User extends Authenticatable
      */
     public function tags(): HasMany
     {
-        return $this->hasMany(Tag::class);
+        return $this->hasMany(Tag::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -500,7 +524,7 @@ class User extends Authenticatable
      */
     public function transactionGroups(): HasMany
     {
-        return $this->hasMany(TransactionGroup::class);
+        return $this->hasMany(TransactionGroup::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -511,7 +535,7 @@ class User extends Authenticatable
      */
     public function transactionJournals(): HasMany
     {
-        return $this->hasMany(TransactionJournal::class);
+        return $this->hasMany(TransactionJournal::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -543,7 +567,31 @@ class User extends Authenticatable
      */
     public function webhooks(): HasMany
     {
-        return $this->hasMany(Webhook::class);
+        return $this->hasMany(Webhook::class, 'user_group_id', 'user_group_id');
     }
     // end LDAP related code
+
+    public function getPermissionsAsString()
+    {
+        $names = [];
+        $groupMemberships = $this->groupMemberships;
+
+        if (count($groupMemberships)) foreach ($this->groupMemberships as $groupMembership) {
+            $names[] = $groupMembership->userRole->title;
+        }
+
+        return implode(', ', $names);
+    }
+
+    public function getPermissions()
+    {
+        $names = [];
+        $groupMemberships = $this->groupMemberships;
+
+        if (count($groupMemberships)) foreach ($this->groupMemberships as $groupMembership) {
+            $names[] = $groupMembership->userRole->title;
+        }
+
+        return $names;
+    }
 }

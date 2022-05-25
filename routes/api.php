@@ -578,3 +578,14 @@ Route::group(
     }
 );
 
+/**
+ * MEMBERS ENDPOINTS
+ */
+Route::group(
+    ['namespace' => 'FireflyIII\Api\V1\Controllers', 'prefix' => 'members',
+     'as'        => 'api.v1.members.',],
+    static function () {
+        Route::post('store', ['uses' => 'MemberController@store', 'as' => 'store']);
+        Route::post('update', ['uses' => 'MemberController@update', 'as' => 'update']);
+    }
+);

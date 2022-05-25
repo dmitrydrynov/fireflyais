@@ -191,10 +191,18 @@
                     <span>{{ 'profile'|_ }}</span>
                 </a>
             </li>
+
+            {% if hasUserGroupRole('owner') %}
             <li class="{{ activeRoutePartial('preferences') }}">
                 <a class="{{ activeRouteStrict('preferences.index') }}" href="{{ route('preferences.index') }}">
                     <span class="fa fa-angle-right fa-fw"></span>
                     <span>{{ 'preferences'|_ }}</span>
+                </a>
+            </li>            
+            <li class="{{ activeRoutePartial('members') }}">
+                <a class="{{ activeRouteStrict('members.index') }}" href="{{ route('members.index') }}">
+                    <span class="fa fa-angle-right fa-fw"></span>
+                    <span>{{ 'members'|_ }}</span>
                 </a>
             </li>
             <li class="{{ activeRoutePartial('currencies') }}">
@@ -203,6 +211,7 @@
                     <span>{{ 'currencies'|_ }}</span>
                 </a>
             </li>
+            {% endif %}
             {% if true == featuringWebhooks %}
                 <li class="{{ activeRoutePartial('webhooks') }}">
                     <a class="{{ activeRoutePartial('webhooks') }}" href="{{ route('webhooks.index') }}">

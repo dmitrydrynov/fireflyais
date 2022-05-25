@@ -124,7 +124,7 @@ class Bill extends Model
     /** @var array Fields that can be filled */
     protected $fillable
         = ['name', 'match', 'amount_min', 'user_id', 'amount_max', 'date', 'repeat_freq', 'skip',
-           'automatch', 'active', 'transaction_currency_id', 'end_date', 'extension_date'];
+           'automatch', 'active', 'transaction_currency_id', 'end_date', 'extension_date', 'user_group_id'];
     /** @var array Hidden from view */
     protected $hidden = ['amount_min_encrypted', 'amount_max_encrypted', 'name_encrypted', 'match_encrypted'];
 
