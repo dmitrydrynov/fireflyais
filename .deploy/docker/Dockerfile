@@ -1,20 +1,22 @@
 FROM ubuntu:22.04
 
-LABEL maintainer="Taylor Otwell"
-
-ARG WWWGROUP
+ARG UID=1000
+ARG GUID=1000
 ARG NODE_VERSION=16
 ARG POSTGRES_VERSION=14
 
-WORKDIR /var/www/html
+WORKDIR /app
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TZ=UTC
+ENV LC_ALL en_US.utf8
+ENV LANG en_US.utf8
+ENV LANGUAGE en_US.utf8
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update \
-    && apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python2 locales locales-all \
+    && apt-get install --no-install-recommends -y gnupg gosu cron nano curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python2 locales locales-all \
     && mkdir -p ~/.gnupg \
     && chmod 600 ~/.gnupg \
     && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf \
@@ -47,21 +49,18 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN if [ ${APP_DEBUG}] ; then \
-    yarn add browser-sync browser-sync-webpack-plugin@^2.3.0 --dev \
-    apt-get install -y php-xdebug; \
-fi;
+RUN if [ $APP_DEBUG ]; then \
+    yarn add browser-sync browser-sync-webpack-plugin@^2.3.0 --dev; \
+    fi
 
 RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.1
 
-RUN groupadd --force -g $WWWGROUP sail
-RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
+RUN groupadd --force -g $GUID application
+RUN useradd -ms /bin/bash --no-user-group -g $UID -u 1337 application
 
-COPY start-container /usr/local/bin/start-container
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY php.ini /etc/php/8.1/cli/conf.d/99-sail.ini
+COPY .deploy/docker/start-container /usr/local/bin/start-container
+COPY .deploy/docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY .deploy/docker/php.ini /etc/php/8.1/cli/conf.d/defaul-app.ini
 RUN chmod +x /usr/local/bin/start-container
-
-EXPOSE 8000
 
 ENTRYPOINT ["start-container"]
