@@ -93,6 +93,7 @@ class Preference extends Model
                 $preference->name    = $value;
                 $preference->data    = $default[$value];
                 $preference->user_id = $user->id;
+                $preference->user_group_id = $user->user_group_id;
                 $preference->save();
 
                 return $preference;

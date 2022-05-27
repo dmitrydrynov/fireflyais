@@ -225,6 +225,7 @@ class Preferences
         if (null === $pref) {
             $pref          = new Preference;
             $pref->user_id = $user->id;
+            $pref->user_group_id = $user->user_group_id;
             $pref->name    = $name;
         }
         $pref->data = $value;
