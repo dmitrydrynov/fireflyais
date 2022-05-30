@@ -1,15 +1,10 @@
 <ul class="sidebar-menu" data-widget="tree">
-  {% if
-    not hasUserGroupRoles(
-      [constant('FireflyIII\\Models\\UserRole::VIEW_REPORTS')]
-    ) %}
-    <li class="{{ activeRouteStrict('index') }}">
-      <a href="{{ route('index') }}">
-        <span class="fa fa-dashboard fa-fw"></span>
-        <span>{{ 'dashboard'|_ }}</span>
-      </a>
-    </li>
-  {% endif %}
+  <li class="{{ activeRouteStrict('index') }}">
+    <a href="{{ route('index') }}">
+      <span class="fa fa-dashboard fa-fw"></span>
+      <span>{{ 'dashboard'|_ }}</span>
+    </a>
+  </li>
 
   {% if
     not hasUserGroupRoles(
@@ -206,12 +201,21 @@
     </li>
   {% endif %}
 
-  <li class="{{ activeRoutePartial('reports') }}" id="report-menu">
-    <a href="{{ route('reports.index') }}">
-      <span class="fa fa-bar-chart fa-fw"></span>
-      <span>{{ 'reports'|_ }}</span>
-    </a>
-  </li>
+  {% if
+    hasUserGroupRoles(
+      [
+        constant('FireflyIII\\Models\\UserRole::VIEW_REPORTS'),
+        constant('FireflyIII\\Models\\UserRole::OWNER'),
+        constant('FireflyIII\\Models\\UserRole::FULL')
+      ]
+    ) %}
+    <li class="{{ activeRoutePartial('reports') }}" id="report-menu">
+      <a href="{{ route('reports.index') }}">
+        <span class="fa fa-bar-chart fa-fw"></span>
+        <span>{{ 'reports'|_ }}</span>
+      </a>
+    </li>
+  {% endif %}
 
   {% if config('firefly.feature_flags.export') %}
     {% if
