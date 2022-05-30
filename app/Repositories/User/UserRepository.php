@@ -1,4 +1,5 @@
 <?php
+
 /**
  * UserRepository.php
  * Copyright (c) 2019 james@firefly-iii.org
@@ -18,6 +19,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace FireflyIII\Repositories\User;
@@ -141,7 +143,7 @@ class UserRepository implements UserRepositoryInterface
     {
         Log::debug(sprintf('Calling delete() on user %d', $user->id));
 
-        if($user->hasUserGroupRole('owner')) {
+        if ($user->hasUserGroupRole('owner')) {
             $user->userGroup()->delete();
         }
 
@@ -239,11 +241,11 @@ class UserRepository implements UserRepositoryInterface
         $return['categories']          = $user->categories()->count();
         $return['budgets']             = $user->budgets()->count();
         $return['budgets_with_limits'] = BudgetLimit::distinct()
-                                                    ->leftJoin('budgets', 'budgets.id', '=', 'budget_limits.budget_id')
-                                                    ->where('amount', '>', 0)
-                                                    ->whereNull('budgets.deleted_at')
-                                                    ->where('budgets.user_id', $user->id)
-                                                    ->count('budget_limits.budget_id');
+            ->leftJoin('budgets', 'budgets.id', '=', 'budget_limits.budget_id')
+            ->where('amount', '>', 0)
+            ->whereNull('budgets.deleted_at')
+            ->where('budgets.user_id', $user->id)
+            ->count('budget_limits.budget_id');
         $return['rule_groups']         = $user->ruleGroups()->count();
         $return['rules']               = $user->rules()->count();
         $return['tags']                = $user->tags()->count();
@@ -271,13 +273,12 @@ class UserRepository implements UserRepositoryInterface
 
     public function hasUserGroupRole(User $user, string $role): bool
     {
-        foreach ($user->groupMemberships as $groupMembership) {
-            if ($groupMembership->userRole->title === $role) {
-                return true;
-            }
-        }
+        return $user->hasUserGroupRole($role);
+    }
 
-        return false;
+    public function hasUserGroupRoles(User $user, array $roles): bool
+    {
+        return $user->hasUserGroupRoles($roles);
     }
 
     /**
@@ -305,7 +306,7 @@ class UserRepository implements UserRepositoryInterface
                 'blocked_code' => $data['blocked_code'] ?? null,
                 'email'        => $data['email'],
                 'password'     => Str::random(24),
-                'user_group_id'=> auth()->user()->user_group_id || null,
+                'user_group_id' => auth()->user()->user_group_id || null,
             ]
         );
         $role = $data['role'] ?? '';
@@ -349,7 +350,6 @@ class UserRepository implements UserRepositoryInterface
         $user->blocked      = false;
         $user->blocked_code = '';
         $user->save();
-
     }
 
     /**

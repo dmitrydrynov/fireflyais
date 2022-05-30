@@ -353,7 +353,7 @@ class User extends Authenticatable
     {
         $relation = $this->hasMany(GroupMembership::class, 'user_id')->with(['userGroup', 'userRole']);
 
-        if($user_group_id !== null) {
+        if ($user_group_id !== null) {
             $relation = $relation->where('user_group_id', $user_group_id);
         }
 
@@ -379,12 +379,27 @@ class User extends Authenticatable
     {
         $groupMemberships = $this->groupMemberships;
 
-        if(count($groupMemberships) > 0) foreach($groupMemberships as $groupMembership) {
-            if($groupMembership->userRole->title === $role) {
+        if (count($groupMemberships) > 0) foreach ($groupMemberships as $groupMembership) {
+            if ($groupMembership->userRole->title === $role) {
                 return true;
             }
         }
-        
+
+        return false;
+    }
+
+    public function hasUserGroupRoles(array $roles): bool
+    {
+        $groupMemberships = $this->groupMemberships()->where('user_group_id', auth()->user()->user_group_id)->get();
+
+        if (!empty($groupMemberships) && !empty($roles)) {
+            foreach ($groupMemberships as $groupMembership) {
+                if (in_array($groupMembership->userRole->title, $roles)) {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 

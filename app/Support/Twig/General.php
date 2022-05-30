@@ -1,4 +1,5 @@
 <?php
+
 /**
  * General.php
  * Copyright (c) 2019 james@firefly-iii.org
@@ -18,6 +19,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace FireflyIII\Support\Twig;
@@ -114,7 +116,7 @@ class General extends AbstractExtension
                         return 'fa-file-o';
                     case 'application/pdf':
                         return 'fa-file-pdf-o';
-                    /* image */
+                        /* image */
                     case 'image/png':
                     case 'image/jpeg':
                     case 'image/svg+xml':
@@ -122,7 +124,7 @@ class General extends AbstractExtension
                     case 'image/heic-sequence':
                     case 'application/vnd.oasis.opendocument.image':
                         return 'fa-file-image-o';
-                    /* MS word */
+                        /* MS word */
                     case 'application/msword':
                     case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
                     case 'application/vnd.openxmlformats-officedocument.wordprocessingml.template':
@@ -137,7 +139,7 @@ class General extends AbstractExtension
                     case 'application/vnd.oasis.opendocument.text-web':
                     case 'application/vnd.oasis.opendocument.text-master':
                         return 'fa-file-word-o';
-                    /* MS excel */
+                        /* MS excel */
                     case 'application/vnd.ms-excel':
                     case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
                     case 'application/vnd.openxmlformats-officedocument.spreadsheetml.template':
@@ -147,7 +149,7 @@ class General extends AbstractExtension
                     case 'application/vnd.oasis.opendocument.spreadsheet':
                     case 'application/vnd.oasis.opendocument.spreadsheet-template':
                         return 'fa-file-excel-o';
-                    /* MS powerpoint */
+                        /* MS powerpoint */
                     case 'application/vnd.ms-powerpoint':
                     case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
                     case 'application/vnd.openxmlformats-officedocument.presentationml.template':
@@ -158,7 +160,7 @@ class General extends AbstractExtension
                     case 'application/vnd.oasis.opendocument.presentation':
                     case 'application/vnd.oasis.opendocument.presentation-template':
                         return 'fa-file-powerpoint-o';
-                    /* calc */
+                        /* calc */
                     case 'application/vnd.sun.xml.draw':
                     case 'application/vnd.sun.xml.draw.template':
                     case 'application/vnd.stardivision.draw':
@@ -171,7 +173,6 @@ class General extends AbstractExtension
                     case 'application/vnd.oasis.opendocument.formula':
                     case 'application/vnd.oasis.opendocument.database':
                         return 'fa-calculator';
-
                 }
             },
             ['is_safe' => ['html']]
@@ -184,7 +185,7 @@ class General extends AbstractExtension
     protected function markdown(): TwigFilter
     {
         return new TwigFilter(
-               'markdown',
+            'markdown',
             static function (string $text): string {
 
                 $converter = new GithubFlavoredMarkdownConverter(
@@ -196,7 +197,8 @@ class General extends AbstractExtension
                 );
 
                 return (string) $converter->convert($text);
-            }, ['is_safe' => ['html']]
+            },
+            ['is_safe' => ['html']]
         );
     }
 
@@ -246,6 +248,7 @@ class General extends AbstractExtension
             $this->getMetaField(),
             $this->hasRole(),
             $this->hasUserGroupRole(),
+            $this->hasUserGroupRoles(),
             $this->getRootSearchOperator(),
             $this->carbonize(),
         ];
@@ -428,11 +431,25 @@ class General extends AbstractExtension
             'hasUserGroupRole',
             static function (string $role): bool {
                 $repository = app(UserRepositoryInterface::class);
-                if ($repository->hasUserGroupRole(auth()->user(), $role)) {
-                    return true;
-                }
+                return $repository->hasUserGroupRole(auth()->user(), $role);
+            }
+        );
+    }
 
-                return false;
+    /**
+     * Will return true if the user has one of the roles.
+     * 
+     * hasUserGroupRoles
+     *
+     * @return TwigFunction
+     */
+    protected function hasUserGroupRoles(): TwigFunction
+    {
+        return new TwigFunction(
+            'hasUserGroupRoles',
+            static function (array $roles): bool {
+                $repository = app(UserRepositoryInterface::class);
+                return $repository->hasUserGroupRoles(auth()->user(), $roles);
             }
         );
     }

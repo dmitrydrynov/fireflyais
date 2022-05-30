@@ -3,8 +3,9 @@
 Welcome! 
 You had been join to Firefly AIS. Yay!
 
-Your login: {{ $address }}
-Your password: {{ $password }}
+Your login: **{{ $address }}**
+
+Your password: **{{ $password }}**
 
 * {{ trans('email.registered_pw', ['address' => $address]) }}
 * {{ trans('email.registered_help') }}
