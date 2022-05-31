@@ -2100,6 +2100,11 @@ return [
     'no_bills_intro_default'                => 'You have no bills yet. You can create bills to keep track of regular expenses, like your rent or insurance.',
     'no_bills_imperative_default'           => 'Do you have such regular bills? Create a bill and keep track of your payments:',
     'no_bills_create_default'               => 'Create a bill',
+    'no_members_title_default'                => 'Let\'s invite a member!',
+    'no_members_intro_default'                => 'You have no members yet. You can invite a member and set his permissions.',
+    'no_members_imperative_default'           => 'Members will help you manage your finances.',
+    'no_members_create_default'               => 'Invite a member',
+
 
     // recurring transactions
     'recurrences'                           => 'Recurring transactions',
