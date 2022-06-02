@@ -247,6 +247,7 @@ class General extends AbstractExtension
             $this->formatDate(),
             $this->getMetaField(),
             $this->hasRole(),
+            $this->hasAnyRole(),
             $this->can(),
             $this->canAny(),
             $this->canAnyAction(),
@@ -413,6 +414,17 @@ class General extends AbstractExtension
             static function (string $role): bool {
                 setPermissionsTeamId(auth()->user()->user_group_id);
                 return auth()->user()->hasRole($role);
+            }
+        );
+    }
+
+    protected function hasAnyRole(): TwigFunction
+    {
+        return new TwigFunction(
+            'hasAnyRole',
+            static function (...$roles): bool {
+                setPermissionsTeamId(auth()->user()->user_group_id);
+                return auth()->user()->hasRole($roles);
             }
         );
     }

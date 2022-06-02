@@ -71,9 +71,8 @@ class CreateFirstUser extends Command
         }
         $data           = [
             'blocked'      => false,
-            'blocked_code' => null,
             'email'        => $this->argument('email'),
-            'role'         => 'superadmin',
+            'role'         => 'superadmin,owner',
         ];
         $password       = Str::random(24);
         $user           = $this->repository->store($data);

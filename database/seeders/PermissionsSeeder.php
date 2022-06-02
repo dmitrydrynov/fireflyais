@@ -26,8 +26,7 @@ namespace Database\Seeders;
 
 use FireflyIII\Models\Permission;
 use Illuminate\Database\Seeder;
-use PDOEXception;
-use Illuminate\Support\Facades\DB;
+use Log;
 
 /**
  * Class PermissionsSeeder.
@@ -129,15 +128,11 @@ class PermissionsSeeder extends Seeder
             ['name' => 'piggy-banks.read'],
             ['name' => 'piggy-banks.update'],
             ['name' => 'piggy-banks.delete'],
-            ['name' => 'budgets.setOrder'],
+            ['name' => 'piggy-banks.setOrder'],
             /* piggy-banks */
             ['name' => 'preferences'],
             ['name' => 'preferences.read'],
             ['name' => 'preferences.update'],
-            /* profile */
-            ['name' => 'profile'],
-            ['name' => 'profile.read'],
-            ['name' => 'profile.update'],
             /* recurring */
             ['name' => 'recurring'],
             ['name' => 'recurring.create'],
@@ -187,6 +182,7 @@ class PermissionsSeeder extends Seeder
             ['name' => 'transactions.convert'],
             ['name' => 'transactions.link'],
             /* webhooks */
+            ['name' => 'webhooks'],
             ['name' => 'webhooks.read'],
             /* admin */
             ['name' => 'admin'],
@@ -207,14 +203,12 @@ class PermissionsSeeder extends Seeder
             ['name' => 'users.createNewUser'],
         ];
 
-        Permission::query()->delete();
-        Permission::truncate();
-
         foreach ($permissions as $permission) {
             try {
-                Permission::findOrCreate($permission['name']);
-            } catch (PDOException $e) {
+                Permission::create($permission);
+            } catch (\Throwable $e) {
                 // @ignoreException
+                Log::error($e->getMessage());
             }
         }
     }

@@ -49,9 +49,9 @@ use FireflyIII\Models\UserGroup;
 use FireflyIII\Models\Webhook;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
@@ -66,7 +66,6 @@ use Spatie\Permission\Traits\HasPermissions;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Spatie\Permission\Traits\HasRoles;
 use FireflyIII\Models\Permission;
-use FireflyIII\Models\Role;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 
 /**
@@ -163,7 +162,7 @@ use Spatie\Permission\Exceptions\PermissionDoesNotExist;
  */
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens;
+    use Notifiable, HasApiTokens, SoftDeletes;
     use HasRoles, HasPermissions;
 
     /**

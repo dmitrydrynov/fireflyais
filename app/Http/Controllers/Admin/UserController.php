@@ -217,6 +217,8 @@ class UserController extends Controller
             }
         );
 
+        setPermissionsTeamId(auth()->user()->user_group_id);
+
         return view('admin.users.index', compact('subTitle', 'subTitleIcon', 'users'));
     }
 

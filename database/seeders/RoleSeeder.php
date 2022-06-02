@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PermissionSeeder.php
  * Copyright (c) 2019 james@firefly-iii.org.
@@ -18,13 +19,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace Database\Seeders;
 
 use FireflyIII\Models\Role;
 use Illuminate\Database\Seeder;
-use PDOEXception;
+use Log;
 
 /**
  * Class RoleSeeder.
@@ -43,6 +45,30 @@ class RoleSeeder extends Seeder
                 'name'         => 'owner',
                 'display_name' => 'Site Owner',
                 'description'  => 'User has full access to his user group',
+                'permissions' => [
+                    'accounts',
+                    'attachments',
+                    'bills',
+                    'subscriptions',
+                    'budgets',
+                    'available-budgets',
+                    'budget-limits',
+                    'categories',
+                    'chart',
+                    'export-data',
+                    'object-groups',
+                    'piggy-banks',
+                    'preferences',
+                    'recurring',
+                    'reports',
+                    'rules',
+                    'rule-groups',
+                    'tags',
+                    'transactions',
+                    'webhooks',
+                    'admin',
+                    'users',
+                ],
             ],
             [
                 'name'         => 'demo',
@@ -50,11 +76,17 @@ class RoleSeeder extends Seeder
                 'description'  => 'User is a demo user',
             ],
         ];
+
         foreach ($roles as $role) {
             try {
-                Role::create($role);
-            } catch (PDOException $e) {
+                $newRole = Role::create(['name' => $role['name'], 'display_name' => $role['display_name'], 'description' => $role['description']]);
+
+                if (isset($role['permissions'])) {
+                    $newRole->syncPermissions($role['permissions']);
+                }
+            } catch (\Throwable $e) {
                 // @ignoreException
+                Log::error($e->getMessage());
             }
         }
     }

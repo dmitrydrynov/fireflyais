@@ -294,8 +294,10 @@ class UserRepository implements UserRepositoryInterface
                 'user_group_id' => auth()->user()->user_group_id || null,
             ]
         );
-        $role = $data['role'] ?? '';
-        if ('' !== $role) {
+
+        $roles = $data['role'] ? explode(',', $data['role']) : [];
+
+        if (count($roles) > 0) foreach ($roles as $role) {
             $this->attachRole($user, $role);
         }
 
@@ -310,6 +312,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function attachRole(User $user, string $role): bool
     {
+        setPermissionsTeamId($user->user_group_id);
         $user->assignRole($role);
 
         return true;
