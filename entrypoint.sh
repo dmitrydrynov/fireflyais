@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+chmod 755 -R /app/storage
+
 composer install
 
 php artisan migrate --seed

@@ -39,7 +39,6 @@ use FireflyIII\Models\ObjectGroup;
 use FireflyIII\Models\PiggyBank;
 use FireflyIII\Models\Preference;
 use FireflyIII\Models\Recurrence;
-use FireflyIII\Models\Role;
 use FireflyIII\Models\Rule;
 use FireflyIII\Models\RuleGroup;
 use FireflyIII\Models\Tag;
@@ -63,7 +62,12 @@ use Laravel\Passport\Client;
 use Laravel\Passport\HasApiTokens;
 use Laravel\Passport\Token;
 use Request;
+use Spatie\Permission\Traits\HasPermissions;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Spatie\Permission\Traits\HasRoles;
+use FireflyIII\Models\Permission;
+use FireflyIII\Models\Role;
+use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 
 /**
  * Class User.
@@ -160,6 +164,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class User extends Authenticatable
 {
     use Notifiable, HasApiTokens;
+    use HasRoles, HasPermissions;
 
     /**
      * The attributes that should be cast to native types.
@@ -207,6 +212,42 @@ class User extends Authenticatable
             }
         }
         throw new NotFoundHttpException;
+    }
+
+    public function hasPermissionTo($permission, $guardName = '*'): bool
+    {
+        if (config('permission.enable_wildcard_permission', false)) {
+            return $this->hasWildcardPermission($permission, $guardName);
+        }
+
+        $permissionClass = $this->getPermissionClass();
+
+        if (is_string($permission)) {
+            $permission = $permissionClass->findByName(
+                $permission,
+                $guardName ?? $this->getDefaultGuardName()
+            );
+        }
+
+        if (is_int($permission)) {
+            $permission = $permissionClass->findById(
+                $permission,
+                $guardName ?? $this->getDefaultGuardName()
+            );
+        }
+
+        if (!$permission instanceof Permission) {
+            throw new PermissionDoesNotExist();
+        }
+
+        return $this->hasDirectPermission($permission) || $this->hasPermissionViaRole($permission);
+    }
+
+    protected $guard_name = '*';
+
+    protected function getDefaultGuardName(): string
+    {
+        return '*';
     }
 
     /**
@@ -366,55 +407,6 @@ class User extends Authenticatable
     }
 
     /**
-     * @param string $role
-     *
-     * @return bool
-     */
-    public function hasRole(string $role): bool
-    {
-        return $this->roles()->where('name', $role)->count() === 1;
-    }
-
-    public function hasUserGroupRole(string $role): bool
-    {
-        $groupMemberships = $this->groupMemberships;
-
-        if (count($groupMemberships) > 0) foreach ($groupMemberships as $groupMembership) {
-            if ($groupMembership->userRole->title === $role) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function hasUserGroupRoles(array $roles): bool
-    {
-        $groupMemberships = $this->groupMemberships()->where('user_group_id', auth()->user()->user_group_id)->get();
-
-        if (!empty($groupMemberships) && !empty($roles)) {
-            foreach ($groupMemberships as $groupMembership) {
-                if (in_array($groupMembership->userRole->title, $roles)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @codeCoverageIgnore
-     * Link to roles.
-     *
-     * @return BelongsToMany
-     */
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(Role::class);
-    }
-
-    /**
      * @codeCoverageIgnore
      * Link to object groups.
      *
@@ -570,7 +562,7 @@ class User extends Authenticatable
      */
     public function userGroup(): BelongsTo
     {
-        return $this->belongsTo(UserGroup::class,);
+        return $this->belongsTo(UserGroup::class);
     }
 
     /**
@@ -586,27 +578,4 @@ class User extends Authenticatable
     }
     // end LDAP related code
 
-    public function getPermissionsAsString()
-    {
-        $names = [];
-        $groupMemberships = $this->groupMemberships;
-
-        if (count($groupMemberships)) foreach ($this->groupMemberships as $groupMembership) {
-            $names[] = $groupMembership->userRole->title;
-        }
-
-        return implode(', ', $names);
-    }
-
-    public function getPermissions()
-    {
-        $names = [];
-        $groupMemberships = $this->groupMemberships;
-
-        if (count($groupMemberships)) foreach ($this->groupMemberships as $groupMembership) {
-            $names[] = $groupMembership->userRole->title;
-        }
-
-        return $names;
-    }
 }

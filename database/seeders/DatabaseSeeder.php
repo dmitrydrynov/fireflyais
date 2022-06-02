@@ -37,7 +37,8 @@ class DatabaseSeeder extends Seeder
         $this->call(AccountTypeSeeder::class);
         $this->call(TransactionCurrencySeeder::class);
         $this->call(TransactionTypeSeeder::class);
-        $this->call(PermissionSeeder::class);
+        $this->call(RoleSeeder::class);
+        $this->call(PermissionsSeeder::class);
         $this->call(LinkTypeSeeder::class);
         $this->call(ConfigSeeder::class);
         $this->call(UserRoleSeeder::class);

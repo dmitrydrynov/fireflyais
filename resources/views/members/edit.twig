@@ -15,6 +15,7 @@
         const previousUrl = '{{ previousUrl }}';
         const email = '{{ member.email }}';
         const permissions = {{ permissions|json_encode|raw }};
+        const userPermissions = {{ userPermissions|json_encode|raw }};
         const memberId = {{ member.id }};
     </script>
 {% endblock %}

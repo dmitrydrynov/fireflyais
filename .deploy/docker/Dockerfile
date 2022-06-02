@@ -63,4 +63,6 @@ COPY .deploy/docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY .deploy/docker/php.ini /etc/php/8.1/cli/conf.d/defaul-app.ini
 RUN chmod +x /usr/local/bin/start-container
 
+RUN chown -R application:application /app
+
 ENTRYPOINT ["start-container"]

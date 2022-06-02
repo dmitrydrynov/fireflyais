@@ -1,8 +1,9 @@
 <aside class="control-sidebar control-sidebar-dark">
     <div class="tab-content">
         <div class="tab-panel active" id="control-sidebar-home-tab">
-            <h3 class="control-sidebar-heading">{{ 'create_new_stuff'|_ }}</h3>
+                <h3 class="control-sidebar-heading">{{ 'create_new_stuff'|_ }}</h3>
             <ul class='control-sidebar-menu'>
+                {% if can('transactions.create.withdrawal') %}
                 <li>
                     <a href="{{ route('transactions.create', 'withdrawal') }}">
                         <span class="menu-icon fa fa-long-arrow-left bg-red"></span>
@@ -12,6 +13,8 @@
                         </div>
                     </a>
                 </li>
+                {% endif %}
+                {% if can('transactions.create.deposit') %}
                 <li>
                     <a href="{{ route('transactions.create', 'deposit') }}">
                         <span class="menu-icon fa fa-long-arrow-right bg-green"></span>
@@ -21,6 +24,8 @@
                         </div>
                     </a>
                 </li>
+                {% endif %}
+                {% if can('transactions.create.transfer') %}
                 <li>
                     <a href="{{ route('transactions.create', 'transfer') }}">
                         <span class="menu-icon fa fa-exchange bg-blue"></span>
@@ -30,6 +35,8 @@
                         </div>
                     </a>
                 </li>
+                {% endif %}
+                {% if can('accounts.create.asset') %}
                 <li>
                     <a href="{{ route('accounts.create', 'asset') }}">
                         <span class="menu-icon fa fa-money bg-maroon"></span>
@@ -39,6 +46,8 @@
                         </div>
                     </a>
                 </li>
+                {% endif %}
+                {% if can('accounts.create.expense') %}
                 <li>
                     <a href="{{ route('accounts.create', 'expense') }}">
                         <span class="menu-icon fa fa-shopping-cart bg-maroon"></span>
@@ -48,6 +57,8 @@
                         </div>
                     </a>
                 </li>
+                {% endif %}
+                {% if can('accounts.create.revenue') %}
                 <li>
                     <a href="{{ route('accounts.create', 'revenue') }}">
                         <span class="menu-icon fa fa-download bg-maroon"></span>
@@ -57,6 +68,8 @@
                         </div>
                     </a>
                 </li>
+                {% endif %}
+                {% if can('accounts.create.liabilities') %}
                 <li>
                     <a href="{{ route('accounts.create', 'liabilities') }}">
                         <span class="menu-icon fa fa-ticket bg-maroon"></span>
@@ -66,7 +79,9 @@
                         </div>
                     </a>
                 </li>
+                {% endif %}
 
+                {% if can('budgets.create') %}
                 <li>
                     <a href="{{ route('budgets.create') }}">
                         <span class="menu-icon fa fa-pie-chart bg-red"></span>
@@ -76,7 +91,9 @@
                         </div>
                     </a>
                 </li>
+                {% endif %}
 
+                {% if can('categories.create') %}
                 <li>
                     <a href="{{ route('categories.create') }}">
                         <span class="menu-icon fa fa-bookmark bg-red"></span>
@@ -86,7 +103,9 @@
                         </div>
                     </a>
                 </li>
+                {% endif %}
 
+                {% if can('piggy-banks.create') %}
                 <li>
                     <a href="{{ route('piggy-banks.create') }}">
                         <span class="menu-icon fa fa-bullseye bg-teal"></span>
@@ -96,6 +115,8 @@
                         </div>
                     </a>
                 </li>
+                {% endif %}
+                {% if can('bills.create') %}
                 <li>
                     <a href="{{ route('bills.create') }}">
                         <span class="menu-icon fa fa-calendar-o bg-purple"></span>
@@ -105,6 +126,8 @@
                         </div>
                     </a>
                 </li>
+                {% endif %}
+                {% if can('rules.create') %}
                 <li>
                     <a href="{{ route('rules.create') }}">
                         <span class="menu-icon fa fa-random bg-red"></span>
@@ -114,6 +137,8 @@
                         </div>
                     </a>
                 </li>
+                {% endif %}
+                {% if can('recurring.create') %}
                 <li>
                     <a href="{{ route('recurring.create') }}">
                         <span class="menu-icon fa fa-paint-brush bg-teal"></span>
@@ -123,9 +148,8 @@
                         </div>
                     </a>
                 </li>
-
+                {% endif %}
             </ul>
-
         </div>
     </div>
 </aside>

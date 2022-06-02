@@ -144,16 +144,16 @@ Route::group(
         Route::get('create/{objectType}', ['uses' => 'Account\CreateController@create', 'as' => 'create'])->where(
             'objectType',
             'revenue|asset|expense|liabilities'
-        )->middleware('permissions:owner,full');
-        Route::post('store', ['uses' => 'Account\CreateController@store', 'as' => 'store'])->middleware('permissions:owner,full');
+        );
+        Route::post('store', ['uses' => 'Account\CreateController@store', 'as' => 'store']);
 
         // edit
-        Route::get('edit/{account}', ['uses' => 'Account\EditController@edit', 'as' => 'edit'])->middleware('permissions:owner,full');;
-        Route::post('update/{account}', ['uses' => 'Account\EditController@update', 'as' => 'update'])->middleware('permissions:owner,full');;
+        Route::get('edit/{account}', ['uses' => 'Account\EditController@edit', 'as' => 'edit']);
+        Route::post('update/{account}', ['uses' => 'Account\EditController@update', 'as' => 'update']);
 
         // delete
-        Route::get('delete/{account}', ['uses' => 'Account\DeleteController@delete', 'as' => 'delete'])->middleware('permissions:owner,full');;
-        Route::post('destroy/{account}', ['uses' => 'Account\DeleteController@destroy', 'as' => 'destroy'])->middleware('permissions:owner,full');;
+        Route::get('delete/{account}', ['uses' => 'Account\DeleteController@delete', 'as' => 'delete']);
+        Route::post('destroy/{account}', ['uses' => 'Account\DeleteController@destroy', 'as' => 'destroy']);
 
         // show
         Route::get('show/{account}/all', ['uses' => 'Account\ShowController@showAll', 'as' => 'show.all']);
@@ -193,7 +193,7 @@ Route::group(
  * Bills Controller.
  */
 Route::group(
-    ['middleware' => ['user-full-auth', 'permissions:owner,full'], 'namespace' => 'FireflyIII\Http\Controllers', 'prefix' => 'bills', 'as' => 'bills.'],
+    ['middleware' => ['user-full-auth'], 'namespace' => 'FireflyIII\Http\Controllers', 'prefix' => 'bills', 'as' => 'bills.'],
     static function () {
         Route::get('', ['uses' => 'Bill\IndexController@index', 'as' => 'index']);
         Route::post('rescan/{bill}', ['uses' => 'Bill\ShowController@rescan', 'as' => 'rescan']);
@@ -232,7 +232,7 @@ Route::group(
  * Budget Controller.
  */
 Route::group(
-    ['middleware' => ['user-full-auth', 'permissions:owner,full'], 'namespace' => 'FireflyIII\Http\Controllers', 'prefix' => 'budgets', 'as' => 'budgets.'],
+    ['middleware' => ['user-full-auth'], 'namespace' => 'FireflyIII\Http\Controllers', 'prefix' => 'budgets', 'as' => 'budgets.'],
     static function () {
 
         // delete
@@ -751,7 +751,7 @@ Route::group(
  * Report Controller.
  */
 Route::group(
-    ['middleware' => ['user-full-auth', 'permissions:owner,full,view_reports'], 'namespace' => 'FireflyIII\Http\Controllers', 'prefix' => 'reports', 'as' => 'reports.'],
+    ['middleware' => ['user-full-auth'], 'namespace' => 'FireflyIII\Http\Controllers', 'prefix' => 'reports', 'as' => 'reports.'],
     static function () {
         Route::get('', ['uses' => 'ReportController@index', 'as' => 'index']);
         Route::get('options/{reportType}', ['uses' => 'ReportController@options', 'as' => 'options']);
@@ -1103,7 +1103,7 @@ Route::group(
 );
 
 /**
- * For the admin routes, the user must be logged in and have the role of 'owner'.
+ * For the admin routes, the user must be logged in and have the role of 'superadmin'.
  */
 Route::group(
     ['middleware' => 'admin', 'namespace' => 'FireflyIII\Http\Controllers\Admin', 'prefix' => 'admin', 'as' => 'admin.'],
@@ -1154,10 +1154,10 @@ Route::group(
     static function () {
         Route::get('', ['uses' => 'Member\IndexController@index', 'as' => 'index']);
         Route::get('create', ['uses' => 'Member\CreateController@create', 'as' => 'create']);
-        Route::get('edit/{member}', ['uses' => 'Member\EditController@edit', 'as' => 'edit']);
-        Route::get('delete/{member}', ['uses' => 'Member\DeleteController@delete', 'as' => 'delete']);
+        Route::get('edit/{user}', ['uses' => 'Member\EditController@edit', 'as' => 'edit']);
+        Route::get('delete/{user}', ['uses' => 'Member\DeleteController@delete', 'as' => 'delete']);
 
-        Route::get('update/{member}', ['uses' => 'Member\EditController@update', 'as' => 'update']);
-        Route::post('destroy/{member}', ['uses' => 'Member\DeleteController@destroy', 'as' => 'destroy']);
+        Route::get('update/{user}', ['uses' => 'Member\EditController@update', 'as' => 'update']);
+        Route::post('destroy/{user}', ['uses' => 'Member\DeleteController@destroy', 'as' => 'destroy']);
     }
 );

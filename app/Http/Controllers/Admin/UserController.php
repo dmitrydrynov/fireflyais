@@ -151,6 +151,9 @@ class UserController extends Controller
 
             if ($request->has('companyName') && null !== $user->userGroup) {
                 $user->userGroup->update(['title' => $request->get('companyName')]);
+
+                setPermissionsTeamId($user->user_group_id);
+                $user->assignRole('owner');
             }
 
             session()->flash('success', (string) trans('firefly.created_new_user'));
@@ -184,7 +187,7 @@ class UserController extends Controller
         $subTitle     = (string) trans('firefly.edit_user', ['email' => $user->email]);
         $subTitleIcon = 'fa-user-o';
         $currentUser  = auth()->user();
-        $isAdmin      = $this->repository->hasRole($user, 'owner');
+        $isAdmin      = $user->hasRole('superadmin');
         $codes        = [
             ''              => (string) trans('firefly.no_block_code'),
             'bounced'       => (string) trans('firefly.block_code_bounced'),
@@ -209,7 +212,7 @@ class UserController extends Controller
         // add meta stuff.
         $users->each(
             function (User $user) {
-                $user->isAdmin = $this->repository->hasRole($user, 'owner');
+                $user->isSuperAdmin = $user->hasRole('superadmin');
                 $user->has2FA  = null !== $user->mfa_secret;
             }
         );
@@ -264,12 +267,12 @@ class UserController extends Controller
         if (array_key_exists('password', $data) && '' !== $data['password']) {
             $this->repository->changePassword($user, $data['password']);
         }
-        if (true === $data['is_owner']) {
-            $this->repository->attachRole($user, 'owner');
+        if (true === $data['is_superadmin']) {
+            $this->repository->attachRole($user, 'superadmin');
             session()->flash('info', trans('firefly.give_admin_careful'));
         }
-        if (false === $data['is_owner'] && $user->id !== auth()->user()->id) {
-            $this->repository->removeRole($user, 'owner');
+        if (false === $data['is_superadmin'] && $user->id !== auth()->user()->id) {
+            $this->repository->removeRole($user, 'superadmin');
         }
 
         $this->repository->changeStatus($user, $data['blocked'], $data['blocked_code']);

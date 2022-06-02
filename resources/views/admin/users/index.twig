@@ -84,8 +84,8 @@
                                         {{ user.updated_at.isoFormat(monthAndDayFormat) }}
                                         {{ user.updated_at.format('H:i') }}
                                     </td>
-                                    <td class="hidden-xs" data-value="{% if user.isAdmin %}1{% else %}0{% endif %}">
-                                        {% if user.isAdmin %}
+                                    <td class="hidden-xs" data-value="{% if user.isSuperAdmin %}1{% else %}0{% endif %}">
+                                        {% if user.isSuperAdmin %}
                                             <small class="text-success">
                                                 <span class="fa fa-fw fa-check"></span>
                                             </small>
@@ -98,8 +98,8 @@
                                     <td class="hidden-xs" data-value="{{ user.userGroup.title }}">
                                         {{ user.userGroup.title }}
                                     </td>
-                                    <td class="hidden-xs" data-value="{% if user.hasUserGroupRole('owner') %}owner{% else %}member{% endif %}">
-                                        {% if user.hasUserGroupRole('owner') %}owner{% else %}member{% endif %}
+                                    <td class="hidden-xs" data-value="{{ user.getRoleNames()|join(',') }}">
+                                        {{ user.getRoleNames()|join(',') }}
                                     </td>
                                     <td class="hidden-xs" data-value="{% if user.has2FA %}1{% else %}0{% endif %}">
                                         {% if user.has2FA %}

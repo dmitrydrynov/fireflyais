@@ -179,7 +179,8 @@ return [
     'blocked'                     => 'Is blocked?',
     'blocked_code'                => 'Reason for block',
     'login_name'                  => 'Login',
-    'is_owner'                    => 'Is admin?',
+    'is_owner'                    => 'Is owner?',
+    'is_superadmin'               => 'Is superadmin?',
     'url'                         => 'URL',
     'bill_end_date'               => 'End date',
 

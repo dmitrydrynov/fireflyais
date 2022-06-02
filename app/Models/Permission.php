@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FireflyIII\Models;
 
-class Role extends \Spatie\Permission\Models\Role
+class Permission extends \Spatie\Permission\Models\Permission
 {
     protected $guard_name = '*';
 

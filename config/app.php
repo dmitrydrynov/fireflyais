@@ -62,6 +62,7 @@ return [
         /*
          * Package Service Providers...
          */
+        Spatie\Permission\PermissionServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -94,7 +95,6 @@ return [
         FireflyIII\Providers\TagServiceProvider::class,
         FireflyIII\Providers\AdminServiceProvider::class,
         FireflyIII\Providers\RecurringServiceProvider::class,
-        FireflyIII\Providers\GroupMembershipServiceProvider::class,
     ],
     'aliases'         => [
         'App'           => Illuminate\Support\Facades\App::class,

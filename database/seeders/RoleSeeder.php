@@ -27,17 +27,22 @@ use Illuminate\Database\Seeder;
 use PDOEXception;
 
 /**
- * Class PermissionSeeder.
+ * Class RoleSeeder.
  */
-class PermissionSeeder extends Seeder
+class RoleSeeder extends Seeder
 {
     public function run()
     {
         $roles = [
             [
+                'name'         => 'superadmin',
+                'display_name' => 'Super Admin',
+                'description'  => 'User runs this instance of FF3',
+            ],
+            [
                 'name'         => 'owner',
                 'display_name' => 'Site Owner',
-                'description'  => 'User runs this instance of FF3',
+                'description'  => 'User has full access to his user group',
             ],
             [
                 'name'         => 'demo',

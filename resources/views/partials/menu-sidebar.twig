@@ -6,26 +6,29 @@
     </a>
   </li>
 
-  {% if
-    not hasUserGroupRoles(
-      [constant('FireflyIII\\Models\\UserRole::VIEW_REPORTS')]
-    ) %}
+  {% if canAny(['budgets.read', 'bills.read', 'piggy-banks.read']) %}
     <li class="header text-uppercase">{{ 'financial_control'|_ }}</li>
+  {% endif %}
 
+  {% if can('budgets.read') %}
     <li class="{{ activeRoutePartial('budgets') }}" id="budget-menu">
       <a href="{{ route('budgets.index') }}">
         <span class="fa fa-pie-chart fa-fw"></span>
         <span>{{ 'budgets'|_ }}</span>
       </a>
     </li>
+  {% endif %}
 
+  {% if can('bills.read') %}
     <li class="{{ activeRoutePartial('bills') }}">
       <a href="{{ route('bills.index') }}">
         <span class="fa fa-calendar-o fa-fw"></span>
         <span>{{ 'bills'|_ }}</span>
       </a>
     </li>
+  {% endif %}
 
+  {% if can('piggy-banks.read') %}
     <li class="{{ activeRoutePartial('piggy-banks') }}">
       <a href="{{ route('piggy-banks.index') }}">
         <span class="fa fa-bullseye fa-fw"></span>
@@ -34,12 +37,11 @@
     </li>
   {% endif %}
 
-  {% if
-    not hasUserGroupRoles(
-      [constant('FireflyIII\\Models\\UserRole::VIEW_REPORTS')]
-    ) %}
+  {% if canAny(['transactions.read', 'rules.read', 'recurring.read']) %}
     <li class="header text-uppercase">{{ 'accounting'|_ }}</li>
+  {% endif %}
 
+  {% if can('transactions.read') %}
     <li class="{{ activeRoutePartial('transactions') }} treeview"
       id="transaction-menu">
       <a href="#">
@@ -86,7 +88,9 @@
         </li>
       </ul>
     </li>
+  {% endif %}
 
+  {% if canAny(['rules.read', 'recurring.read']) %}
     <li class="{{ activeRoutePartial('recurring') }} {{
       activeRoutePartial(
         'rules'
@@ -101,28 +105,29 @@
       </a>
 
       <ul class="treeview-menu">
-        <li class="{{ activeRoutePartial('rules') }}">
-          <a href="{{ route('rules.index') }}">
-            <span class="fa fa-angle-right fa-fw"></span>
-            <span>{{ 'rules'|_ }}</span>
-          </a>
-        </li>
-        <li class="{{ activeRoutePartial('recurring') }}">
-          <a href="{{ route('recurring.index') }}">
-            <span class="fa fa-angle-right fa-fw"></span>
-            <span>{{ 'recurrences'|_ }}</span>
-          </a>
-        </li>
+        {% if can('rules.read') %}
+          <li class="{{ activeRoutePartial('rules') }}">
+            <a href="{{ route('rules.index') }}">
+              <span class="fa fa-angle-right fa-fw"></span>
+              <span>{{ 'rules'|_ }}</span>
+            </a>
+          </li>
+        {% endif %}
+        {% if can('recurring.read') %}
+          <li class="{{ activeRoutePartial('recurring') }}">
+            <a href="{{ route('recurring.index') }}">
+              <span class="fa fa-angle-right fa-fw"></span>
+              <span>{{ 'recurrences'|_ }}</span>
+            </a>
+          </li>
+        {% endif %}
       </ul>
     </li>
   {% endif %}
 
   <li class="header text-uppercase">{{ 'others'|_ }}</li>
 
-  {% if
-    not hasUserGroupRoles(
-      [constant('FireflyIII\\Models\\UserRole::VIEW_REPORTS')]
-    ) %}
+  {% if can('accounts.read') %}
     <li class="{{ activeRoutePartial('accounts') }} treeview" id="account-menu">
       <a href="#">
         <span class="fa fa-credit-card fa-fw"></span>
@@ -164,7 +169,9 @@
         </li>
       </ul>
     </li>
+  {% endif %}
 
+  {% if canAny(['categories.read', 'tags.read', 'object-groups.read']) %}
     <li class="{{ activeRoutePartial('categories') }} {{
       activeRoutePartial(
         'tags'
@@ -179,36 +186,35 @@
       </a>
 
       <ul class="treeview-menu">
-        <li class="{{ activeRoutePartial('categories') }}">
-          <a href="{{ route('categories.index') }}">
-            <span class="fa fa-angle-right fa-fw"></span>
-            <span>{{ 'categories'|_ }}</span>
-          </a>
-        </li>
-        <li class="{{ activeRoutePartial('tags') }}">
-          <a href="{{ route('tags.index') }}">
-            <span class="fa fa-angle-right fa-fw"></span>
-            <span>{{ 'tags'|_ }}</span>
-          </a>
-        </li>
-        <li class="{{ activeRoutePartial('object-groups') }}">
-          <a href="{{ route('object-groups.index') }}">
-            <span class="fa fa-angle-right fa-fw"></span>
-            <span>{{ 'object_groups_menu_bar'|_ }}</span>
-          </a>
-        </li>
+        {% if can('categories.read') %}
+          <li class="{{ activeRoutePartial('categories') }}">
+            <a href="{{ route('categories.index') }}">
+              <span class="fa fa-angle-right fa-fw"></span>
+              <span>{{ 'categories'|_ }}</span>
+            </a>
+          </li>
+        {% endif %}
+        {% if can('tags.read') %}
+          <li class="{{ activeRoutePartial('tags') }}">
+            <a href="{{ route('tags.index') }}">
+              <span class="fa fa-angle-right fa-fw"></span>
+              <span>{{ 'tags'|_ }}</span>
+            </a>
+          </li>
+        {% endif %}
+        {% if can('object-groups.read') %}
+          <li class="{{ activeRoutePartial('object-groups') }}">
+            <a href="{{ route('object-groups.index') }}">
+              <span class="fa fa-angle-right fa-fw"></span>
+              <span>{{ 'object_groups_menu_bar'|_ }}</span>
+            </a>
+          </li>
+        {% endif %}
       </ul>
     </li>
   {% endif %}
 
-  {% if
-    hasUserGroupRoles(
-      [
-        constant('FireflyIII\\Models\\UserRole::VIEW_REPORTS'),
-        constant('FireflyIII\\Models\\UserRole::OWNER'),
-        constant('FireflyIII\\Models\\UserRole::FULL')
-      ]
-    ) %}
+  {% if can('reports.read') %}
     <li class="{{ activeRoutePartial('reports') }}" id="report-menu">
       <a href="{{ route('reports.index') }}">
         <span class="fa fa-bar-chart fa-fw"></span>
@@ -217,18 +223,13 @@
     </li>
   {% endif %}
 
-  {% if config('firefly.feature_flags.export') %}
-    {% if
-      not hasUserGroupRoles(
-        [constant('FireflyIII\\Models\\UserRole::VIEW_REPORTS')]
-      ) %}
-      <li class="{{ activeRoutePartial('export') }}" id="report-menu">
-        <a href="{{ route('export.index') }}">
-          <span class="fa fa-upload fa-fw"></span>
-          <span>{{ 'export_data_menu'|_ }}</span>
-        </a>
-      </li>
-    {% endif %}
+  {% if config('firefly.feature_flags.export') and can('export-data') %}
+    <li class="{{ activeRoutePartial('export') }}" id="report-menu">
+      <a href="{{ route('export.index') }}">
+        <span class="fa fa-upload fa-fw"></span>
+        <span>{{ 'export_data_menu'|_ }}</span>
+      </a>
+    </li>
   {% endif %}
 
   <li class="{{ activeRoutePartial('admin') }} {{
@@ -258,7 +259,7 @@
         </a>
       </li>
 
-      {% if hasUserGroupRole('owner') %}
+      {% if hasRole('owner') %}
         <li class="{{ activeRoutePartial('preferences') }}">
           <a class="{{ activeRouteStrict('preferences.index') }}"
             href="{{ route('preferences.index') }}">
@@ -290,7 +291,7 @@
           </a>
         </li>
       {% endif %}
-      {% if hasRole('owner') %}
+      {% if hasRole('superadmin') %}
         <li class="{{ activeRoutePartial('admin') }}">
           <a class="{{ activeRoutePartial('admin') }}"
             href="{{ route('admin.index') }}">

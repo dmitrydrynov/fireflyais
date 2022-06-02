@@ -39,7 +39,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null                       $updated_at
  * @property string|null                       $deleted_at
  * @property string                            $title
- * @property-read Collection|GroupMembership[] $groupMemberships
  * @property-read int|null                     $group_memberships_count
  * @method static Builder|UserGroup newModelQuery()
  * @method static Builder|UserGroup newQuery()
@@ -60,8 +59,8 @@ class UserGroup extends Model
      *
      * @return HasMany
      */
-    public function groupMemberships(): HasMany
+    public function members(): HasMany
     {
-        return $this->hasMany(GroupMembership::class);
+        return $this->hasMany(User::class);
     }
 }

@@ -27,7 +27,7 @@ namespace FireflyIII\Support\Twig;
 use Carbon\Carbon;
 use FireflyIII\Models\Account;
 use FireflyIII\Repositories\Account\AccountRepositoryInterface;
-use FireflyIII\Repositories\User\UserRepositoryInterface;
+use FireflyIII\Models\Permission;
 use FireflyIII\Support\Search\OperatorQuerySearch;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use Route;
@@ -247,8 +247,9 @@ class General extends AbstractExtension
             $this->formatDate(),
             $this->getMetaField(),
             $this->hasRole(),
-            $this->hasUserGroupRole(),
-            $this->hasUserGroupRoles(),
+            $this->can(),
+            $this->canAny(),
+            $this->canAnyAction(),
             $this->getRootSearchOperator(),
             $this->carbonize(),
         ];
@@ -410,46 +411,50 @@ class General extends AbstractExtension
         return new TwigFunction(
             'hasRole',
             static function (string $role): bool {
-                $repository = app(UserRepositoryInterface::class);
-                if ($repository->hasRole(auth()->user(), $role)) {
-                    return true;
-                }
-
-                return false;
+                setPermissionsTeamId(auth()->user()->user_group_id);
+                return auth()->user()->hasRole($role);
             }
         );
     }
 
     /**
-     * Will return true if the user is of role X.
+     * Will return true if the user has one of the permissions.
      *
      * @return TwigFunction
      */
-    protected function hasUserGroupRole(): TwigFunction
+    protected function can(): TwigFunction
     {
         return new TwigFunction(
-            'hasUserGroupRole',
-            static function (string $role): bool {
-                $repository = app(UserRepositoryInterface::class);
-                return $repository->hasUserGroupRole(auth()->user(), $role);
+            'can',
+            static function (string $permissions): bool {
+                setPermissionsTeamId(auth()->user()->user_group_id);
+                return auth()->user()->can($permissions);
             }
         );
     }
 
-    /**
-     * Will return true if the user has one of the roles.
-     * 
-     * hasUserGroupRoles
-     *
-     * @return TwigFunction
-     */
-    protected function hasUserGroupRoles(): TwigFunction
+    protected function canAny(): TwigFunction
     {
         return new TwigFunction(
-            'hasUserGroupRoles',
-            static function (array $roles): bool {
-                $repository = app(UserRepositoryInterface::class);
-                return $repository->hasUserGroupRoles(auth()->user(), $roles);
+            'canAny',
+            static function (array $permissions): bool {
+                setPermissionsTeamId(auth()->user()->user_group_id);
+                return auth()->user()->canany($permissions);
+            }
+        );
+    }
+
+    protected function canAnyAction(): TwigFunction
+    {
+        return new TwigFunction(
+            'canAnyAction',
+            static function (string $action): bool {
+                $permissionsWithAction = Permission::where('name', 'like', '%.' . $action . '%')->get()->pluck('name');
+
+                dd($permissionsWithAction->toArray());
+
+                setPermissionsTeamId(auth()->user()->user_group_id);
+                return auth()->user()->canany($permissions);
             }
         );
     }

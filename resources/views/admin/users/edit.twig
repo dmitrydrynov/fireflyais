@@ -29,7 +29,7 @@
                     {{ ExpandedForm.checkbox('blocked') }}
                     {{ ExpandedForm.select('blocked_code', codes, user.blocked_code) }}
                     {% if user.id != currentUser.id %}
-                        {{ ExpandedForm.checkbox('is_owner',1,isAdmin) }}
+                        {{ ExpandedForm.checkbox('is_superadmin',1,isAdmin) }}
                     {% endif %}
                 </div>
             </div>

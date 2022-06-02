@@ -16,9 +16,6 @@ class IndexController extends Controller
         app('view')->share('title', (string) trans('firefly.list_all_members'));
         app('view')->share('mainTitleIcon', 'fa-users');
 
-        $types = config('firefly.accountTypesByIdentifier.asset');
-        $languages = [];
-
         $members = auth()->user()->getMembers()->get();
 
         return view('members.index', compact('members'));

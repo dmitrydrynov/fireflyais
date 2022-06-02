@@ -92,18 +92,18 @@ class UserEventHandler
         $count = $repository->count();
 
         // only act when there is 1 user in the system and he has no admin rights.
-        if (1 === $count && !$repository->hasRole($user, 'owner')) {
-            // user is the only user but does not have role "owner".
-            $role = $repository->getRole('owner');
+        if (1 === $count && !$repository->hasRole($user, 'superadmin')) {
+            // user is the only user but does not have role "superadmin".
+            $role = $repository->getRole('superadmin');
             if (null === $role) {
                 // create role, does not exist. Very strange situation so let's raise a big fuss about it.
-                $role = $repository->createRole('owner', 'Site Owner', 'User runs this instance of FF3');
-                Log::error('Could not find role "owner". This is weird.');
+                $role = $repository->createRole('superadmin', 'Super Admin', 'User runs this instance of FF3');
+                Log::error('Could not find role "superadmin". This is weird.');
             }
 
             Log::info(sprintf('Gave user #%d role #%d ("%s")', $user->id, $role->id, $role->name));
             // give user the role
-            $repository->attachRole($user, 'owner');
+            $repository->attachRole($user, 'superadmin');
         }
 
         return true;
