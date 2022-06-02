@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
 
+yarn install --frozen-lockfile
+
+if [ "$APP_ENV" = "production" ]; then \
+    yarn production; else \
+    php artisan ide-helper:generate \
+    php artisan optimize; \
+fi
+
 composer install
 
 php artisan migrate --seed
 php artisan firefly-iii:upgrade-database
 php artisan passport:install --force
 
-line="0 3 * * * /usr/local/bin/php /app/artisan firefly-iii:cron"
-(crontab -u $(whoami) -l; echo "$line" ) | crontab -u $(whoami) -
+crontab -l | { cat; echo "0 3 * * * /usr/local/bin/php /app/artisan firefly-iii:cron"; } | crontab -

@@ -69,7 +69,7 @@ class UserEventHandler
         // first user ever?
         if (1 === $repository->count()) {
             Log::debug('User count is one, attach role.');
-            $repository->attachRole($event->user, 'owner');
+            $repository->attachRole($event->user, 'superadmin');
         }
 
         return true;
@@ -92,18 +92,18 @@ class UserEventHandler
         $count = $repository->count();
 
         // only act when there is 1 user in the system and he has no admin rights.
-        if (1 === $count && !$repository->hasRole($user, 'owner')) {
-            // user is the only user but does not have role "owner".
-            $role = $repository->getRole('owner');
-            if (null === $role) {
+        if (1 === $count && !$user->hasRole('superadmin')) {
+            // user is the only user but does not have role "superadmin".
+            $role = $user->hasRole('superadmin');
+            if (!$role) {
                 // create role, does not exist. Very strange situation so let's raise a big fuss about it.
-                $role = $repository->createRole('owner', 'Site Owner', 'User runs this instance of FF3');
-                Log::error('Could not find role "owner". This is weird.');
+                $role = $repository->createRole('superadmin', 'Super Admin', 'User runs this instance of FF3');
+                Log::error('Could not find role "superadmin". This is weird.');
             }
 
             Log::info(sprintf('Gave user #%d role #%d ("%s")', $user->id, $role->id, $role->name));
             // give user the role
-            $repository->attachRole($user, 'owner');
+            $repository->attachRole($user, 'superadmin');
         }
 
         return true;
@@ -117,6 +117,7 @@ class UserEventHandler
      */
     public function createGroupMembership(RegisteredUser $event): bool
     {
+        $group = (object)[];
         $user        = $event->user;
         $groupExists = true;
         $groupTitle  = $user->email;

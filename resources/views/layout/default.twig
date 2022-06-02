@@ -95,9 +95,11 @@
                         <span class="hidden-xs">{{ Auth.user.email }}</span>
                     </span>
                     </li>
-                    <li id="sidebar-toggle">
-                        <a href="#" data-toggle="control-sidebar"><span class="fa fa-plus-circle"></span></a>
-                    </li>
+                    {% if canAny(['transactions.create', 'accounts.create', 'budgets.create', 'categories.create', 'piggy-banks.create', 'bills.create', 'rules.create', 'recurring.create']) %}
+                        <li id="sidebar-toggle">
+                            <a href="#" data-toggle="control-sidebar"><span class="fa fa-plus-circle"></span></a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
 
@@ -149,7 +151,9 @@
         {% if FF_IS_BETA %}<small class="text-warning hidden-xs"><br>{{ 'is_beta_warning'|_ }}</small>{% endif %}
     </footer>
 
-    {% include('partials.control-bar') %}
+    {% if canAny(['transactions.create', 'accounts.create', 'budgets.create', 'categories.create', 'piggy-banks.create', 'bills.create', 'rules.create', 'recurring.create']) %}
+        {% include('partials.control-bar') %}
+    {% endif %}
 
 </div>
 <div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">

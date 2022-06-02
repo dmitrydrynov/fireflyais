@@ -55,7 +55,7 @@ class IsAdmin
         $user = auth()->user();
         /** @var UserRepositoryInterface $repository */
         $repository = app(UserRepositoryInterface::class);
-        if (!$repository->hasRole($user, 'owner')) {
+        if (!$repository->hasRole($user, 'superadmin')) {
             return response()->redirectTo(route('home'));
         }
 

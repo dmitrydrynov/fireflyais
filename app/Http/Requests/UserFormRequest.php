@@ -47,7 +47,7 @@ class UserFormRequest extends FormRequest
             'blocked'      => 1 === $this->integer('blocked'),
             'blocked_code' => $this->convertString('blocked_code'),
             'password'     => $this->convertString('password'),
-            'is_owner'     => 1 === $this->integer('is_owner'),
+            'is_superadmin'     => 1 === $this->integer('is_superadmin'),
         ];
     }
 
@@ -64,7 +64,7 @@ class UserFormRequest extends FormRequest
             'password'     => 'confirmed|secure_password',
             'blocked_code' => 'between:0,30|nullable',
             'blocked'      => 'between:0,1|numeric',
-            'is_owner'     => 'between:0,1|numeric',
+            'is_superadmin'     => 'between:0,1|numeric',
         ];
     }
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace FireflyIII\Http\Controllers\Member;
 
 use FireflyIII\Http\Controllers\Controller;
-use FireflyIII\Models\GroupMembership;
+use FireflyIII\Models\Permission;
 
 /**
  * Class Member\IndexController.
@@ -16,9 +16,9 @@ class CreateController extends Controller
     {
         $subTitle     = (string) trans('firefly.add_member');
         $subTitleIcon = 'fa-user-o';
-        $member = new GroupMembership();
         $previousUrl = route('members.index');
+        $permissions = Permission::all(['name', 'id']);
 
-        return view('members.create', compact('member', 'subTitle', 'subTitleIcon', 'previousUrl'));
+        return view('members.create', compact('permissions', 'subTitle', 'subTitleIcon', 'previousUrl'));
     }
 }

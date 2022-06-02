@@ -143,7 +143,7 @@ class UserRepository implements UserRepositoryInterface
     {
         Log::debug(sprintf('Calling delete() on user %d', $user->id));
 
-        if ($user->hasUserGroupRole('owner')) {
+        if ($user->hasRole('owner')) {
             $user->userGroup()->delete();
         }
 
@@ -261,24 +261,9 @@ class UserRepository implements UserRepositoryInterface
      */
     public function hasRole(User $user, string $role): bool
     {
-        /** @var Role $userRole */
-        foreach ($user->roles as $userRole) {
-            if ($userRole->name === $role) {
-                return true;
-            }
-        }
+        setPermissionsTeamId($user->user_group_id);
 
-        return false;
-    }
-
-    public function hasUserGroupRole(User $user, string $role): bool
-    {
-        return $user->hasUserGroupRole($role);
-    }
-
-    public function hasUserGroupRoles(User $user, array $roles): bool
-    {
-        return $user->hasUserGroupRoles($roles);
+        return $user->hasRole($role);
     }
 
     /**
@@ -309,8 +294,10 @@ class UserRepository implements UserRepositoryInterface
                 'user_group_id' => auth()->user()->user_group_id || null,
             ]
         );
-        $role = $data['role'] ?? '';
-        if ('' !== $role) {
+
+        $roles = $data['role'] ? explode(',', $data['role']) : [];
+
+        if (count($roles) > 0) foreach ($roles as $role) {
             $this->attachRole($user, $role);
         }
 
@@ -325,21 +312,25 @@ class UserRepository implements UserRepositoryInterface
      */
     public function attachRole(User $user, string $role): bool
     {
-        $roleObject = Role::where('name', $role)->first();
-        if (null === $roleObject) {
-            Log::error(sprintf('Could not find role "%s" in attachRole()', $role));
-
-            return false;
-        }
-
-        try {
-            $user->roles()->attach($roleObject);
-        } catch (QueryException $e) {
-            // don't care
-            Log::error(sprintf('Query exception when giving user a role: %s', $e->getMessage()));
-        }
+        setPermissionsTeamId($user->user_group_id);
+        $user->assignRole($role);
 
         return true;
+        // $roleObject = Role::where('name', $role)->first();
+        // if (null === $roleObject) {
+        //     Log::error(sprintf('Could not find role "%s" in attachRole()', $role));
+
+        //     return false;
+        // }
+
+        // try {
+        //     $user->roles()->attach($roleObject);
+        // } catch (QueryException $e) {
+        //     // don't care
+        //     Log::error(sprintf('Query exception when giving user a role: %s', $e->getMessage()));
+        // }
+
+        // return true;
     }
 
     /**
@@ -371,8 +362,8 @@ class UserRepository implements UserRepositoryInterface
             $user->blocked_code = $data['blocked_code'];
         }
         if (array_key_exists('role', $data) && '' === $data['role']) {
-            $this->removeRole($user, 'owner');
-            $this->removeRole($user, 'demo');
+            $user->removeRole('owner');
+            $user->removeRole('demo');
         }
 
         $user->save();
@@ -416,11 +407,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function removeRole(User $user, string $role): void
     {
-        $roleObj = $this->getRole($role);
-        if (null === $roleObj) {
-            return;
-        }
-        $user->roles()->detach($roleObj->id);
+        $user->removeRole($role);
     }
 
     /**

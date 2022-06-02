@@ -7,36 +7,21 @@ namespace FireflyIII\Api\V1\Controllers;
 use FireflyIII\Api\V1\Controllers\Controller;
 use FireflyIII\Api\V1\Requests\Models\Budget\StoreRequest;
 use FireflyIII\Exceptions\FireflyException;
-use FireflyIII\Models\GroupMembership;
 use FireflyIII\Repositories\User\UserRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Throwable;
 use Mail;
-use FireflyIII\Models\UserRole;
+use FireflyIII\User;
 use FireflyIII\Mail\UserJoined;
+use FireflyIII\Models\Permission;
+use Str;
 
 /**
  * Class StoreController
  */
 class MemberController extends Controller
 {
-    /**
-     * UserController constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware(
-            function ($request, $next) {
-                $this->userRepository = app(UserRepositoryInterface::class);
-
-                return $next($request);
-            }
-        );
-    }
-
     /**
      * Store a member.
      *
@@ -51,22 +36,27 @@ class MemberController extends Controller
         try {
             $_passwordRaw = null;
             $email = $request->get('email');
-            $permissions = $request->get('permissions');
+            $permissionsNames = (array)$request->get('permissions');
+            $permissions = Permission::whereIn('name', $permissionsNames)->get();
 
             // Create user
-            $user = $this->userRepository->store(['email' => $email]);
+            $member = User::create(
+                [
+                    'blocked'      => false,
+                    'email'        => $email,
+                    'password'     => Str::random(24),
+                    'user_group_id' => $request->user()->user_group_id || null,
+                ]
+            );
 
-            $_passwordRaw = $user->password;
+            $_passwordRaw = $member->password;
 
-            $user->password = bcrypt($user->password);
-            $user->user_group_id = auth()->user()->user_group_id;
-            $user->save();
+            $member->password = bcrypt($member->password);
+            $member->user_group_id = $request->user()->user_group_id;
+            $member->save();
 
-            $userRoles = UserRole::whereIn('title', $permissions)->get();
-
-            if (count($userRoles) > 0) foreach ($userRoles as $userRole) {
-                GroupMembership::create(['user_id' => $user->id, 'user_role_id' => $userRole->id, 'user_group_id' => $user->user_group_id]);
-            }
+            setPermissionsTeamId($request->user()->user_group_id);
+            $member->givePermissionTo($permissions);
 
             Mail::to($email)->send(new UserJoined($email, $_passwordRaw));
 
@@ -84,18 +74,13 @@ class MemberController extends Controller
     {
         try {
             $id = $request->get('id');
-            $permissions = $request->get('permissions');
+            $permissionsNames = (array)$request->get('permissions');
+            $permissions = Permission::whereIn('name', $permissionsNames)->get();
 
-            $user = $this->userRepository->find($id);
-            $userRoles = UserRole::whereIn('title', $permissions)->get();
+            $member = User::find($id);
 
-            // remove old user group roles
-            $user->groupMemberships($user->user_group_id)->delete();
-
-            // add new ones
-            if (count($userRoles) > 0) foreach ($userRoles as $userRole) {
-                GroupMembership::create(['user_id' => $user->id, 'user_role_id' => $userRole->id, 'user_group_id' => $user->user_group_id]);
-            }
+            setPermissionsTeamId($request->user()->user_group_id);
+            $member->syncPermissions($permissions);
 
             return response()->json(['success' => true]);
         } catch (Throwable $exception) {

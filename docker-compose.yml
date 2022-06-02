@@ -1,11 +1,11 @@
 # For more information: https://laravel.com/docs/sail
 version: '3'
 services:
-    app-dev:
-        container_name: fireflyais_app
+    dev:
+        container_name: fireflyais_app-dev
         build:
             context: .
-            dockerfile: .deploy/docker/Dockerfile
+            dockerfile: .deploy/docker/local/Dockerfile
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
@@ -14,15 +14,33 @@ services:
         env_file: .env
         environment:
             WWWUSER: '${WWWUSER:-1000}'
-            XDEBUG_MODE: '${XDEBUG_MODE:-off}'
         volumes:
             - '.:/app'
         networks:
-            - sail
+            - fireflyais-network
         depends_on:
             - db
             - redis
             - mailhog
+    prod:
+        container_name: fireflyais_app-prod
+        build:
+            context: .
+            dockerfile: .deploy/docker/production/Dockerfile
+        tty: true
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '${APP_PORT:-80}:80'
+            - '${HMR_PORT:-8080}:8080'
+        env_file: .env
+        environment:
+            WWWUSER: '${WWWUSER:-1000}'
+        networks:
+            - fireflyais-network
+        depends_on:
+            - db
+            - redis
     db:
         container_name: fireflyais_db
         image: 'postgres:14'
@@ -36,7 +54,7 @@ services:
         volumes:
             - 'sail-pgsql:/var/lib/postgresql/data'
         networks:
-            - sail
+            - fireflyais-network
         healthcheck:
             test:
                 [
@@ -58,7 +76,7 @@ services:
         volumes:
             - 'sail-redis:/data'
         networks:
-            - sail
+            - fireflyais-network
         healthcheck:
             test: [ "CMD", "redis-cli", "ping" ]
             retries: 3
@@ -71,10 +89,10 @@ services:
             - "1025:1025"
             - "8025:8025"
         networks:
-            - sail
+            - fireflyais-network
 
 networks:
-    sail:
+    fireflyais-network:
         driver: bridge
 volumes:
     sail-pgsql:

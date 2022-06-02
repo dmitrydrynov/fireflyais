@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace FireflyIII\Http\Controllers\Member;
 
 use FireflyIII\Http\Controllers\Controller;
-use FireflyIII\Models\Member;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -35,11 +34,11 @@ class DeleteController extends Controller
   }
 
   /**
-   * @param Member $member
+   * @param User $member
    *
    * @return Application|Factory|RedirectResponse|Redirector|View
    */
-  public function delete(Member $member)
+  public function delete(User $member)
   {
     $title = (string) trans('firefly.delete_user', ['email' => $member->email]);
 
@@ -49,11 +48,11 @@ class DeleteController extends Controller
   /**
    * Destroy the member (user and his all group memberships).
    *
-   * @param Member $member
+   * @param User $member
    *
    * @return RedirectResponse
    */
-  public function destroy(Member $member): RedirectResponse
+  public function destroy(User $member): RedirectResponse
   {
     $this->repository->destroy($member);
     session()->flash('success', (string) trans('firefly.member_deleted'));
