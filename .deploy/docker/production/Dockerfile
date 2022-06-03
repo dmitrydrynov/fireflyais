@@ -12,10 +12,8 @@ RUN apt update && apt install -y iputils-ping nano cron nodejs yarn
 WORKDIR /app
 COPY --chown=application:application . .
 
-COPY --chown=application:application ./storage storage
-RUN chmod 755 -R storage
-
-COPY --chown=application:application ./.deploy/docker/production/php.ini /etc/php/8.0/cli/conf.d/defaul-app.ini
+RUN yarn install --frozen-lockfile
+RUN composer install -d /app
 
 ADD entrypoint.sh /app
 RUN chmod +x /app/entrypoint.sh

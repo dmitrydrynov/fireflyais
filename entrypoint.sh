@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-chmod 755 -R storage
+# chmod 755 -R storage
 
-yarn install --frozen-lockfile
+# yarn install --frozen-lockfile
 
 if [ "$APP_ENV" = "production" ]; then \
     yarn production; \
@@ -12,8 +12,6 @@ if [ "$APP_ENV" = "local" ]; then \
     php artisan ide-helper:generate \
     php artisan optimize; \
 fi
-
-composer install
 
 php artisan migrate --seed
 php artisan firefly-iii:upgrade-database
