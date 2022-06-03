@@ -6,6 +6,9 @@ yarn install --frozen-lockfile
 
 if [ "$APP_ENV" = "production" ]; then \
     yarn production; else \
+fi
+
+if [ "$APP_ENV" = "local" ]; then \
     php artisan ide-helper:generate \
     php artisan optimize; \
 fi
