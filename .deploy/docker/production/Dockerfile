@@ -11,7 +11,7 @@ RUN apt update && apt install -y iputils-ping nano cron nodejs yarn
 
 WORKDIR /app
 COPY --chown=application:application . .
-COPY .deploy/docker/production/php.ini /etc/php/8.0/cli/conf.d/defaul-app.ini
+COPY --chown=application:application ./.deploy/docker/production/php.ini /etc/php/8.0/cli/conf.d/defaul-app.ini
 
 ADD entrypoint.sh /app
 RUN chmod +x /app/entrypoint.sh
