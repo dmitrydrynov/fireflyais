@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-# chmod 755 -R storage
-
-# yarn install --frozen-lockfile
+yarn install --frozen-lockfile
 
 if [ "$APP_ENV" = "production" ]; then \
     yarn production; \
 fi
+
+composer install
 
 if [ "$APP_ENV" = "local" ]; then \
     php artisan ide-helper:generate \
