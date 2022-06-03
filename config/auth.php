@@ -1,4 +1,5 @@
 <?php
+
 /**
  * auth.php
  * Copyright (c) 2019 james@firefly-iii.org.
@@ -62,6 +63,10 @@ return [
     */
 
     'guards' => [
+        '*' => [
+            'driver'   => 'session',
+            'provider' => 'users',
+        ],
         'web'               => [
             'driver'   => 'session',
             'provider' => 'users',
