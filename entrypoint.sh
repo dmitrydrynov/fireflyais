@@ -5,7 +5,7 @@ chmod 755 -R storage
 yarn install --frozen-lockfile
 
 if [ "$APP_ENV" = "production" ]; then \
-    yarn production; else \
+    yarn production; \
 fi
 
 if [ "$APP_ENV" = "local" ]; then \

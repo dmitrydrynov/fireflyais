@@ -19,4 +19,4 @@ COPY --chown=application:application ./.deploy/docker/production/php.ini /etc/ph
 
 ADD entrypoint.sh /app
 RUN chmod +x /app/entrypoint.sh
-HEALTHCHECK CMD bash /app/entrypoint.sh || exit 1
+HEALTHCHECK CMD bash /app/entrypoint.sh > /dev/null 2>&1 && echo "Healthy"  || exit 1
