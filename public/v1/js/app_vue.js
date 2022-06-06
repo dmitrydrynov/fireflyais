@@ -19535,12 +19535,14 @@ __webpack_require__.r(__webpack_exports__);
  * Bootstrat-sass and jquery are loaded via app.js
  */
 
+ // import Antd from 'ant-design-vue';
 
 
 window.vuei18n = vue_i18n__WEBPACK_IMPORTED_MODULE_1__["default"];
 window.uiv = uiv__WEBPACK_IMPORTED_MODULE_0__;
 vue__WEBPACK_IMPORTED_MODULE_2___default().use(vuei18n);
-vue__WEBPACK_IMPORTED_MODULE_2___default().use(uiv__WEBPACK_IMPORTED_MODULE_0__);
+vue__WEBPACK_IMPORTED_MODULE_2___default().use(uiv__WEBPACK_IMPORTED_MODULE_0__); // Vue.use(Antd);
+
 window.Vue = (vue__WEBPACK_IMPORTED_MODULE_2___default());
 })();
 

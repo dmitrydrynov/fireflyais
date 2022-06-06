@@ -23,6 +23,7 @@
  */
 import Vue from "vue";
 import VueI18n from "vue-i18n";
+// import Antd from 'ant-design-vue';
 import * as uiv from "uiv";
 
 window.vuei18n = VueI18n;
@@ -30,5 +31,6 @@ window.uiv = uiv;
 
 Vue.use(vuei18n);
 Vue.use(uiv);
+// Vue.use(Antd);
 
 window.Vue = Vue;

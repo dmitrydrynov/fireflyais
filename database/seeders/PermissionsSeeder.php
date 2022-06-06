@@ -201,6 +201,8 @@ class PermissionsSeeder extends Seeder
             ['name' => 'users.delete'],
             ['name' => 'users.setAccess'],
             ['name' => 'users.createNewUser'],
+            /* members */
+            ['name' => 'members'],
         ];
 
         foreach ($permissions as $permission) {

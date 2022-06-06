@@ -68,6 +68,7 @@ class RoleSeeder extends Seeder
                     'webhooks',
                     'admin',
                     'users',
+                    'members',
                 ],
             ],
             [

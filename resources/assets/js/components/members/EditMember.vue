@@ -40,31 +40,17 @@
                             <p v-show="!!errors.permissions" class="help-block">
                                 {{ errors.permissions }}
                             </p>
-                            <div
-                                v-for="permission in permissions"
-                                :key="permission.name"
-                            >
-                                <div class="checkbox">
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            :id="permission.name"
-                                            :value="permission.name"
-                                            :disabled="permission.disabled"
-                                            v-model="formData.permissions"
-                                            @change="
-                                                handlePermissionsChange($event)
-                                            "
-                                        />
-                                        {{ permission.name }}
-                                    </label>
-                                </div>
-                            </div>
+                            <a-tree
+                                v-model="formData.permissions"
+                                checkable
+                                :selectable="false"
+                                :tree-data="permissions"
+                            />
                         </div>
 
-                        <button type="submit" class="btn btn-primary">
+                        <a-button type="primary" html-type="submit">
                             Save
-                        </button>
+                        </a-button>
                     </form>
                 </div>
             </div>
@@ -73,7 +59,13 @@
 </template>
 
 <script>
+import { Tree, Button } from "ant-design-vue";
+
 export default {
+    components: {
+        "a-tree": Tree,
+        "a-button": Button,
+    },
     mounted() {
         this.initialize();
     },
@@ -100,36 +92,31 @@ export default {
             this.formData.id = memberId;
             this.formData.permissions = userPermissions;
 
-            this.permissions = permissions?.map((p) => {
-                return { ...p, disabled: false };
-            });
-
-            this.handlePermissionsChange();
+            this.permissions = this.preparePermissions(permissions);
         },
-        handlePermissionsChange() {
-            const { permissions } = this.formData;
+        preparePermissions(_permissions, level = 0) {
+            return _permissions
+                ?.filter((p) => {
+                    const _level = p.name.split(".").length - 1;
+                    return _level === level;
+                })
+                .map((p) => {
+                    const children = this.preparePermissions(
+                        _permissions.filter((ch) => {
+                            return (
+                                ch.name.startsWith(p.name + ".") &&
+                                p.name !== ch.name
+                            );
+                        }),
+                        level + 1
+                    );
 
-            this.clearErrors();
-
-            if (permissions.includes("full")) {
-                this.permissions.map((i, idx) => {
-                    this.permissions[idx].disabled = i.name !== "full";
+                    return {
+                        title: p.name,
+                        key: p.name,
+                        children,
+                    };
                 });
-                this.formData.permissions = ["full"];
-            }
-
-            if (permissions.includes("ro")) {
-                this.permissions.map((i, idx) => {
-                    this.permissions[idx].disabled = i.name !== "ro";
-                });
-                this.formData.permissions = ["ro"];
-            }
-
-            if (this.formData.permissions.length === 0) {
-                this.permissions.map((i, idx) => {
-                    this.permissions[idx].disabled = false;
-                });
-            }
         },
         async handleSave() {
             if (!this.validateFormData()) return;

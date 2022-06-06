@@ -1015,7 +1015,7 @@ return [
     'list_all_members'                          => 'All members',
     'create_member'                             => 'Add member',
     'created_member'                            => 'Member added',
-    'update_member'                             => 'Update member',
+    'edit_member'                               => 'Edit member',
     'updated_member'                            => 'Member data has been changed.',
     'delete_member'                             => 'Delete member :email',
     'member_deleted'                            => 'The member has been deleted',
