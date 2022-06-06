@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-chmod 755 -R storage
-
 yarn install --frozen-lockfile
 
 if [ "$APP_ENV" = "production" ]; then \
