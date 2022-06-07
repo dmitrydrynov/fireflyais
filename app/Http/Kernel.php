@@ -38,7 +38,7 @@ use FireflyIII\Http\Middleware\StartFireflySession;
 use FireflyIII\Http\Middleware\TrimStrings;
 use FireflyIII\Http\Middleware\TrustProxies;
 use FireflyIII\Http\Middleware\VerifyCsrfToken;
-use FireflyIII\Http\Middleware\Permissions;
+use FireflyIII\Http\Middleware\UserGroupsPermission;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -52,6 +52,9 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Laravel\Passport\Http\Middleware\CreateFreshApiToken;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 use PragmaRX\Google2FALaravel\Middleware as MFAMiddleware;
+use Spatie\Permission\Middlewares\RoleMiddleware;
+use Spatie\Permission\Middlewares\PermissionMiddleware;
+use Spatie\Permission\Middlewares\RoleOrPermissionMiddleware;
 
 /**
  * Class Kernel
@@ -127,6 +130,7 @@ class Kernel extends HttpKernel
             VerifyCsrfToken::class,
             Binder::class,
             Authenticate::class,
+            UserGroupsPermission::class,
             //RedirectIfTwoFactorAuthenticated::class,
         ],
 
@@ -141,6 +145,7 @@ class Kernel extends HttpKernel
             VerifyCsrfToken::class,
             Binder::class,
             Authenticate::class,
+            UserGroupsPermission::class,
         ],
 
         // MUST be logged in
@@ -159,6 +164,7 @@ class Kernel extends HttpKernel
             Binder::class,
             InterestingMessage::class,
             CreateFreshApiToken::class,
+            UserGroupsPermission::class,
         ],
         // MUST be logged in
         // MUST have 2fa
@@ -177,6 +183,7 @@ class Kernel extends HttpKernel
             Range::class,
             Binder::class,
             CreateFreshApiToken::class,
+            UserGroupsPermission::class,
         ],
 
         'api'  => [
@@ -201,6 +208,7 @@ class Kernel extends HttpKernel
         Authenticate::class,
         Binder::class,
         Authorize::class,
+        UserGroupsPermission::class,
     ];
     /**
      * The application's route middleware.
@@ -217,8 +225,8 @@ class Kernel extends HttpKernel
         'guest'      => RedirectIfAuthenticated::class,
         'throttle'   => ThrottleRequests::class,
         'permissions' => Permissions::class,
-        'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
-        'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
-        'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
+        'role' => RoleMiddleware::class,
+        'permission' => PermissionMiddleware::class,
+        'role_or_permission' => RoleOrPermissionMiddleware::class,
     ];
 }

@@ -66,8 +66,6 @@ class RoleSeeder extends Seeder
                     'tags',
                     'transactions',
                     'webhooks',
-                    'admin',
-                    'users',
                     'members',
                 ],
             ],

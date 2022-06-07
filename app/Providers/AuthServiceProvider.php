@@ -73,8 +73,10 @@ class AuthServiceProvider extends ServiceProvider
         Passport::tokensExpireIn(now()->addDays(14));
 
         // set all permissions for super admin
-        Gate::after(function ($user) {
-            return $user->hasRole('superadmin') ? true : null;
-        });
+        Gate::after(
+            function ($user) {
+                return $user->hasRole('superadmin');
+            }
+        );
     }
 }

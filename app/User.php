@@ -181,7 +181,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = ['email', 'password', 'blocked', 'blocked_code'];
+    protected $fillable = ['email', 'password', 'blocked', 'blocked_code', 'user_group_id'];
     /**
      * The attributes excluded from the model's JSON form.
      *
@@ -244,6 +244,11 @@ class User extends Authenticatable
 
     protected $guard_name = '*';
 
+    /**
+     * Get Default Guard Name
+     *
+     * @return string
+     */
     protected function getDefaultGuardName(): string
     {
         return '*';
@@ -576,5 +581,4 @@ class User extends Authenticatable
         return $this->hasMany(Webhook::class, 'user_group_id', 'user_group_id');
     }
     // end LDAP related code
-
 }
