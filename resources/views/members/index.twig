@@ -15,12 +15,14 @@
                         <h3 class="box-title">{{ 'list_all_members'|_ }}</h3>
                     </div>
                     <div class="box-body no-padding">
-                        <div style="margin: 8px">
-                            <a href="{{ route('members.create') }}" class="btn btn-success">
-                                <span class="fa fa-plus fa-fw"></span>
-                                {{ ('create_member')|_ }}
-                            </a>
-                        </div>
+                        {% if can('members.create') %}
+                            <div style="margin: 8px">
+                                <a href="{{ route('members.create') }}" class="btn btn-success">
+                                    <span class="fa fa-plus fa-fw"></span>
+                                    {{ ('create_member')|_ }}
+                                </a>
+                            </div>
+                        {% endif %}
                         <table class="table table-responsive table-condensed sortable">
                             <thead>
                             <tr>
@@ -39,8 +41,10 @@
                                 <tr>
                                     <td class="hidden-xs" data-value="{{ member.id }}">
                                         <div class="btn-group btn-group-xs">
-                                            <a class="btn btn-default" href="{{ route('members.edit', member.id) }}"><span class="fa fa-pencil"></span></a>
-                                            {% if member.hasRole('owner') == false %}
+                                            {% if can('members.update') %}
+                                                <a class="btn btn-default" href="{{ route('members.edit', member.id) }}"><span class="fa fa-pencil"></span></a>
+                                            {% endif %}
+                                            {% if can('members.delete') %}
                                                 <a class="btn btn-danger" href="{{ route('members.delete', member.id) }}"><span class="fa fa-trash"></span></a>
                                             {% endif %}
                                         </div>

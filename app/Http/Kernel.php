@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Kernel.php
  * Copyright (c) 2019 james@firefly-iii.org
@@ -18,6 +19,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace FireflyIII\Http;
@@ -64,15 +66,15 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware
-        = [
-            SecureHeaders::class,
-            CheckForMaintenanceMode::class,
-            ValidatePostSize::class,
-            TrimStrings::class,
-            ConvertEmptyStringsToNull::class,
-            TrustProxies::class,
-            InstallationId::class,
-        ];
+    = [
+        SecureHeaders::class,
+        CheckForMaintenanceMode::class,
+        ValidatePostSize::class,
+        TrimStrings::class,
+        ConvertEmptyStringsToNull::class,
+        TrustProxies::class,
+        InstallationId::class,
+    ];
 
     /**
      * The application's route middleware groups.
@@ -80,112 +82,112 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middlewareGroups
-        = [
-            // does not check login
-            // does not check 2fa
-            // does not check activation
-            'web'                   => [
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                StartFireflySession::class,
-                ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
-                AuthenticateSession::class,
-                CreateFreshApiToken::class,
-            ],
+    = [
+        // does not check login
+        // does not check 2fa
+        // does not check activation
+        'web'                   => [
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartFireflySession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            AuthenticateSession::class,
+            CreateFreshApiToken::class,
+        ],
 
-            // only the basic variable binders.
-            'binders-only'          => [
-                Installer::class,
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                Binder::class,
-            ],
+        // only the basic variable binders.
+        'binders-only'          => [
+            Installer::class,
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            Binder::class,
+        ],
 
-            // MUST NOT be logged in. Does not care about 2FA or confirmation.
-            'user-not-logged-in'    => [
-                Installer::class,
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                StartFireflySession::class,
-                ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
-                Binder::class,
-                RedirectIfAuthenticated::class,
-            ],
-            // MUST be logged in.
-            // MUST NOT have 2FA
-            // don't care about confirmation:
-            'user-logged-in-no-2fa' => [
-                Installer::class,
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                StartFireflySession::class,
-                ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
-                Binder::class,
-                Authenticate::class,
-                //RedirectIfTwoFactorAuthenticated::class,
-            ],
+        // MUST NOT be logged in. Does not care about 2FA or confirmation.
+        'user-not-logged-in'    => [
+            Installer::class,
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartFireflySession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            Binder::class,
+            RedirectIfAuthenticated::class,
+        ],
+        // MUST be logged in.
+        // MUST NOT have 2FA
+        // don't care about confirmation:
+        'user-logged-in-no-2fa' => [
+            Installer::class,
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartFireflySession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            Binder::class,
+            Authenticate::class,
+            //RedirectIfTwoFactorAuthenticated::class,
+        ],
 
-            // MUST be logged in
-            // don't care about 2fa
-            // don't care about confirmation.
-            'user-simple-auth'      => [
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                StartFireflySession::class,
-                ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
-                Binder::class,
-                Authenticate::class,
-            ],
+        // MUST be logged in
+        // don't care about 2fa
+        // don't care about confirmation.
+        'user-simple-auth'      => [
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartFireflySession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            Binder::class,
+            Authenticate::class,
+        ],
 
-            // MUST be logged in
-            // MUST have 2fa
-            // MUST be confirmed.
-            // (this group includes the other Firefly III middleware)
-            'user-full-auth'        => [
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                StartFireflySession::class,
-                ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
-                Authenticate::class,
-                MFAMiddleware::class,
-                Range::class,
-                Binder::class,
-                InterestingMessage::class,
-                CreateFreshApiToken::class,
-            ],
-            // MUST be logged in
-            // MUST have 2fa
-            // MUST be confirmed.
-            // MUST have owner role
-            // (this group includes the other Firefly III middleware)
-            'admin'                 => [
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                StartFireflySession::class,
-                ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
-                Authenticate::class,
-                //AuthenticateTwoFactor::class,
-                IsAdmin::class,
-                Range::class,
-                Binder::class,
-                CreateFreshApiToken::class,
-            ],
+        // MUST be logged in
+        // MUST have 2fa
+        // MUST be confirmed.
+        // (this group includes the other Firefly III middleware)
+        'user-full-auth'        => [
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartFireflySession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            Authenticate::class,
+            MFAMiddleware::class,
+            Range::class,
+            Binder::class,
+            InterestingMessage::class,
+            CreateFreshApiToken::class,
+        ],
+        // MUST be logged in
+        // MUST have 2fa
+        // MUST be confirmed.
+        // MUST have owner role
+        // (this group includes the other Firefly III middleware)
+        'admin'                 => [
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartFireflySession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            Authenticate::class,
+            //AuthenticateTwoFactor::class,
+            IsAdmin::class,
+            Range::class,
+            Binder::class,
+            CreateFreshApiToken::class,
+        ],
 
-            'api'  => [
-                EnsureFrontendRequestsAreStateful::class,
-                'auth:api,sanctum',
-                'bindings',
-            ],
-            'apiY' => [
-                'bindings',
-            ],
-        ];
+        'api'  => [
+            EnsureFrontendRequestsAreStateful::class,
+            'auth:api,sanctum',
+            'bindings',
+        ],
+        'apiY' => [
+            'bindings',
+        ],
+    ];
     /**
      * The priority-sorted list of middleware.
      *
@@ -193,14 +195,13 @@ class Kernel extends HttpKernel
      *
      * @var array
      */
-    protected $middlewarePriority
-        = [
-            StartFireflySession::class,
-            ShareErrorsFromSession::class,
-            Authenticate::class,
-            Binder::class,
-            Authorize::class,
-        ];
+    protected $middlewarePriority = [
+        StartFireflySession::class,
+        ShareErrorsFromSession::class,
+        Authenticate::class,
+        Binder::class,
+        Authorize::class,
+    ];
     /**
      * The application's route middleware.
      *
@@ -208,14 +209,16 @@ class Kernel extends HttpKernel
      *
      * @var array
      */
-    protected $routeMiddleware
-        = [
-            'auth'       => Authenticate::class,
-            'auth.basic' => AuthenticateWithBasicAuth::class,
-            'bindings'   => Binder::class,
-            'can'        => Authorize::class,
-            'guest'      => RedirectIfAuthenticated::class,
-            'throttle'   => ThrottleRequests::class,
-            'permissions' => Permissions::class,
-        ];
+    protected $routeMiddleware = [
+        'auth'       => Authenticate::class,
+        'auth.basic' => AuthenticateWithBasicAuth::class,
+        'bindings'   => Binder::class,
+        'can'        => Authorize::class,
+        'guest'      => RedirectIfAuthenticated::class,
+        'throttle'   => ThrottleRequests::class,
+        'permissions' => Permissions::class,
+        'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
+        'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
+        'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
+    ];
 }

@@ -188,7 +188,7 @@ Route::group(
         Route::post('destroy/{attachment}', ['uses' => 'AttachmentController@destroy', 'as' => 'destroy']);
     }
 );
- 
+
 /**
  * Bills Controller.
  */
@@ -1152,7 +1152,7 @@ Route::group(
 Route::group(
     ['middleware' => 'user-full-auth', 'namespace' => 'FireflyIII\Http\Controllers', 'prefix' => 'members', 'as' => 'members.'],
     static function () {
-        Route::get('', ['uses' => 'Member\IndexController@index', 'as' => 'index']);
+        Route::get('', ['uses' => 'Member\IndexController@index', 'as' => 'index'])->middleware(['can:members.read']);
         Route::get('create', ['uses' => 'Member\CreateController@create', 'as' => 'create']);
         Route::get('edit/{user}', ['uses' => 'Member\EditController@edit', 'as' => 'edit']);
         Route::get('delete/{user}', ['uses' => 'Member\DeleteController@delete', 'as' => 'delete']);
