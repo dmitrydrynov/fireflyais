@@ -44,7 +44,7 @@
   {% if can('transactions.read') %}
     <li class="{{ activeRoutePartial('transactions') }} treeview"
       id="transaction-menu">
-      <a href="#">
+      <a href="javascript:void(0)">
         <span class="fa fa-exchange fa-fw"></span>
         <span>{{ 'transactions'|_ }}</span>
         <span class="pull-right-container">
@@ -96,7 +96,7 @@
         'rules'
       )
       }} treeview">
-      <a href="#">
+      <a href="javascript:void(0)">
         <span class="fa fa-microchip fa-fw"></span>
         <span>{{ 'automation'|_ }}</span>
         <span class="pull-right-container">
@@ -129,7 +129,7 @@
 
   {% if can('accounts.read') %}
     <li class="{{ activeRoutePartial('accounts') }} treeview" id="account-menu">
-      <a href="#">
+      <a href="javascript:void(0)">
         <span class="fa fa-credit-card fa-fw"></span>
         <span>{{ 'accounts'|_ }}</span>
         <span class="pull-right-container">
@@ -177,7 +177,7 @@
         'tags'
       )
       }} {{ activeRoutePartial('groups') }} treeview">
-      <a href="#">
+      <a href="javascript:void(0)">
         <span class="fa fa-tags fa-fw"></span>
         <span>{{ 'classification'|_ }}</span>
         <span class="pull-right-container">
@@ -242,7 +242,7 @@
     )
     }} {{ activeRoutePartial('members') }} treeview"
     id="option-menu">
-    <a href="#">
+    <a href="javascript:void(0)">
       <span class="fa fa-sliders fa-fw"></span>
       <span>{{ 'options'|_ }}</span>
       <span class="pull-right-container">
