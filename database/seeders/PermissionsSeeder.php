@@ -28,6 +28,7 @@ use FireflyIII\Models\Permission;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\PermissionRegistrar;
 use Log;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class PermissionsSeeder.
@@ -60,12 +61,6 @@ class PermissionsSeeder extends Seeder
             'accounts.delete.revenue',
             'accounts.delete.liabilities',
             'accounts.recancile',
-            /* attachments */
-            'attachments',
-            'attachments.download',
-            'attachments.read',
-            'attachments.update',
-            'attachments.delete',
             /* bills */
             'bills',
             'bills.create',
@@ -149,14 +144,7 @@ class PermissionsSeeder extends Seeder
             'rules.read',
             'rules.update',
             'rules.delete',
-            /* rule-groups */
-            'rule-groups',
-            'rule-groups.create',
-            'rule-groups.read',
-            'rule-groups.update',
-            'rule-groups.delete',
-            'rule-groups.execute',
-            'rule-groups.move',
+            'rules.execute',
             /* tags */
             'tags',
             'tags.create',
@@ -169,8 +157,6 @@ class PermissionsSeeder extends Seeder
             'transactions.read',
             'transactions.update',
             'transactions.delete',
-            'transactions.mass',
-            'transactions.bulk',
             'transactions.convert',
             'transactions.link',
             /* webhooks */
@@ -196,6 +182,18 @@ class PermissionsSeeder extends Seeder
                 app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
                 Permission::create($permission);
+            } catch (\Throwable $e) {
+                // @ignoreException
+                Log::error($e->getMessage());
+            }
+        }
+
+        $dbPermissions = Permission::get();
+        foreach ($dbPermissions as $dbPermission) {
+            try {
+                if (!in_array($dbPermission->name, $arrayOfPermissionNames)) {
+                    $dbPermission->delete();
+                }
             } catch (\Throwable $e) {
                 // @ignoreException
                 Log::error($e->getMessage());

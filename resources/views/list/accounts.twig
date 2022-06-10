@@ -64,9 +64,13 @@
           <span class="fa fa-fw fa-bars object-handle"></span>
         </td>
         <td>
-          <a href="{{ route('accounts.show', account.id) }}">
+          {% if can('accounts.read.' ~ objectType) %}
+            <a href="{{ route('accounts.show', account.id) }}">
+              {{ account.name }}
+            </a>
+          {% else %}
             {{ account.name }}
-          </a>
+          {% endif %}
           {% if account.location %}
             <span class="fa fa-fw fa-map-marker"></span>
           {% endif %}
@@ -149,7 +153,7 @@
           {% if
             canAny(
               [
-                'accounts.edit.' ~ objectType,
+                'accounts.update.' ~ objectType,
                 'accounts.delete.' ~ objectType,
                 'accounts.reconcile'
               ]
@@ -163,7 +167,7 @@
                 {{ 'actions'|_ }} <span class="caret"></span>
               </button>
               <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                {% if can('accounts.edit.' ~ objectType) %}
+                {% if can('accounts.update.' ~ objectType) %}
                   <li>
                     <a href="{{ route('accounts.edit', account.id) }}">
                       <span class="fa fa-fw fa-pencil"></span> {{ 'edit'|_ }}

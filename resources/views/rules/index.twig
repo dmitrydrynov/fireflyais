@@ -4,13 +4,15 @@
 {% endblock %}
 {% block content %}
 
-    <div class="row">
-        <div class="col-lg-12 col-md-12 col-sm-12">
-            <p>
-                <a href="{{ route('rule-groups.create') }}" id="new_rule_group" class="btn btn-success">{{ 'new_rule_group'|_ }}</a>
-            </p>
+    {% if can('rules.create') %}
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <p>
+                    <a href="{{ route('rule-groups.create') }}" id="new_rule_group" class="btn btn-success">{{ 'new_rule_group'|_ }}</a>
+                </p>
+            </div>
         </div>
-    </div>
+    {% endif %}
 
     {% if ruleGroups|length == 1 and ruleGroups[0].rules.count() == 0 %}
     {% include 'partials.empty' with {objectType: 'default', type: 'rules',route: route('rules.create')} %}
@@ -31,31 +33,40 @@
                             {% endif %}
                         </h3>
 
-
-                        <div class="box-tools pull-right">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><span class="fa fa-minus"></span>
-                                </button>
-                                <button class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown"><span
-                                            class="fa fa-ellipsis-v"></span></button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="{{ route('rule-groups.edit',ruleGroup.id) }}"><span class="fa fa-fw fa-pencil"></span> {{ 'edit'|_ }}</a></li>
-                                    <li><a href="{{ route('rule-groups.delete',ruleGroup.id) }}"><span class="fa fa-fw fa-trash"></span> {{ 'delete'|_ }}</a></li>
-                                    <li><a href="{{ route('rule-groups.select-transactions',ruleGroup.id) }}"><span
-                                                    class="fa fa-fw fa-power-off"></span> {{ trans('firefly.apply_rule_group_selection', {title: ruleGroup.title}) }}
-                                        </a></li>
-                                    {% if ruleGroup.order > 1 %}
-                                        <li><a href="#" class="move-group" data-direction="up" data-id="{{ ruleGroup.id }}"><span
-                                                        class="fa fa-fw fa-arrow-up"></span> {{ 'move_rule_group_up'|_ }}</a></li>
+                        
+                            <div class="box-tools pull-right">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><span class="fa fa-minus"></span>
+                                    </button>
+                                    {% if can('rules.create') or can('rules.delete') or can('rules.execute') %}
+                                        <button class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown"><span
+                                                    class="fa fa-ellipsis-v"></span></button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            {% if can('rules.update') %}
+                                                <li><a href="{{ route('rule-groups.edit',ruleGroup.id) }}"><span class="fa fa-fw fa-pencil"></span> {{ 'edit'|_ }}</a></li>
+                                            {% endif %}
+                                            {% if can('rules.delete') %}
+                                                <li><a href="{{ route('rule-groups.delete',ruleGroup.id) }}"><span class="fa fa-fw fa-trash"></span> {{ 'delete'|_ }}</a></li>
+                                            {% endif %}
+                                            {% if can('rules.execute') %}
+                                                <li><a href="{{ route('rule-groups.select-transactions',ruleGroup.id) }}"><span
+                                                                class="fa fa-fw fa-power-off"></span> {{ trans('firefly.apply_rule_group_selection', {title: ruleGroup.title}) }}
+                                                    </a></li>
+                                            {% endif %}
+                                            {% if ruleGroup.order > 1 and can('rules.update') %}
+                                                <li><a href="#" class="move-group" data-direction="up" data-id="{{ ruleGroup.id }}"><span
+                                                                class="fa fa-fw fa-arrow-up"></span> {{ 'move_rule_group_up'|_ }}</a></li>
+                                            {% endif %}
+                                            {% if ruleGroup.order < ruleGroups|length and can('rules.update') %}
+                                                <li><a href="#" class="move-group" data-direction="down" data-id="{{ ruleGroup.id }}"><span
+                                                                class="fa fa-fw fa-arrow-down"></span> {{ 'move_rule_group_down'|_ }}
+                                                    </a></li>
+                                            {% endif %}
+                                        </ul>
                                     {% endif %}
-                                    {% if ruleGroup.order < ruleGroups|length %}
-                                        <li><a href="#" class="move-group" data-direction="down" data-id="{{ ruleGroup.id }}"><span
-                                                        class="fa fa-fw fa-arrow-down"></span> {{ 'move_rule_group_down'|_ }}
-                                            </a></li>
-                                    {% endif %}
-                                </ul>
+                                </div>
                             </div>
-                        </div>
+                        
 
                     </div>
                     <div class="box-body">
@@ -67,8 +78,12 @@
                             <table class="table table-hover table-striped group-rules">
                                 <thead>
                                 <tr>
-                                    <th style="width:5%;">&nbsp;</th>
-                                    <th style="width:10%;">&nbsp;</th>
+                                    {% if can('rules.update') %}
+                                        <th style="width:5%;">&nbsp;</th>
+                                    {% endif %}
+                                    {% if can('rules.update') or can('rules.delete') %}
+                                        <th style="width:10%;">&nbsp;</th>
+                                    {% endif %}
                                     <th style="width:10%;">&nbsp;</th>
                                     <th style="width:25%;">{{ 'rule_name'|_ }}</th>
                                     <th style="width:25%;" class="hidden-xs">{{ 'rule_triggers'|_ }}</th>
@@ -78,34 +93,48 @@
                                 <tbody class="rule-connected-list">
                                 {% for rule in ruleGroup.rules %}
                                     <tr class="single-rule" data-order="{{ rule.order }}"  data-id="{{ rule.id }}" data-group-id="{{ ruleGroup.id }}" data-position="{{ loop.index0 }}">
-                                        <td>
-                                            <div class="btn-group btn-group-xs prio_buttons">
-                                                <span class="fa fa-fw fa-bars rule-handle"></span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="btn-group btn-group-xs edit_buttons">
-                                                <a title="{{ 'edit'|_ }}" href="{{ route('rules.edit', rule.id) }}"
-                                                   class="btn btn-default"><span
-                                                            class="fa fa-fw fa-pencil"></span></a>
-                                                <a title="{{ 'delete'|_ }}"
-                                                   href="{{ route('rules.delete', rule.id) }}"
-                                                   class="btn btn-danger"><span
-                                                            class="fa fa-fw fa-trash"></span></a>
-                                            </div>
-                                        </td>
+                                        {% if can('rules.update') %}
+                                            <td>
+                                                <div class="btn-group btn-group-xs prio_buttons">
+                                                    <span class="fa fa-fw fa-bars rule-handle"></span>
+                                                </div>
+                                            </td>
+                                        {% endif %}
+                                        {% if can('rules.update') or can('rules.delete') %}
+                                            <td>
+                                                <div class="btn-group btn-group-xs edit_buttons">
+                                                    {% if can('rules.update') %}
+                                                        <a title="{{ 'edit'|_ }}" href="{{ route('rules.edit', rule.id) }}"
+                                                        class="btn btn-default"><span
+                                                                    class="fa fa-fw fa-pencil"></span></a>
+                                                    {% endif %}
+                                                    {% if can('rules.delete') %}
+                                                        <a title="{{ 'delete'|_ }}"
+                                                        href="{{ route('rules.delete', rule.id) }}"
+                                                        class="btn btn-danger"><span
+                                                                    class="fa fa-fw fa-trash"></span></a>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        {% endif %}
+                                        
                                         <td>
                                             <div class="btn-group btn-group-xs test_buttons">
                                                 {% if rule.active %}
                                                     {# show which transactions would match #}
-                                                    <a href="{{ route('rules.search',rule.id) }}" class="btn btn-default {% if false == rule.strict %}test_rule_triggers{% endif %}" data-id="{{ rule.id }}" title="{{ 'test_rule_triggers'|_ }}"><span data-id="{{ rule.id }}" class="fa fa-fw fa-flask"></span></a>
-
+                                                    {% if can('transactions.read') %}
+                                                        <a href="{{ route('rules.search',rule.id) }}" class="btn btn-default {% if false == rule.strict %}test_rule_triggers{% endif %}" data-id="{{ rule.id }}" title="{{ 'test_rule_triggers'|_ }}"><span data-id="{{ rule.id }}" class="fa fa-fw fa-flask"></span></a>
+                                                    {% endif %}
                                                     {# actually execute rule #}
-                                                <a href="{{ route('rules.select-transactions',rule.id) }}" class="btn btn-default" title=" {{ trans('firefly.apply_rule_selection', {title: rule.title}) }}"><span class="fa fa-fw fa-power-off "></span></a>
+                                                    {% if can('rules.execute') %}
+                                                        <a href="{{ route('rules.select-transactions',rule.id) }}" class="btn btn-default" title=" {{ trans('firefly.apply_rule_selection', {title: rule.title}) }}"><span class="fa fa-fw fa-power-off "></span></a>
+                                                    {% endif %}
                                                 {% endif %}
 
                                                 {# duplicate rule #}
-                                                <a href="#" class="btn btn-default duplicate-rule" data-id="{{ rule.id }}" title=" {{ trans('firefly.duplicate_rule', {title: rule.title}) }}"><span class="fa fa-fw fa-copy"></span></a>
+                                                {% if can('rules.create') and can('rules.read') %}
+                                                    <a href="#" class="btn btn-default duplicate-rule" data-id="{{ rule.id }}" title=" {{ trans('firefly.duplicate_rule', {title: rule.title}) }}"><span class="fa fa-fw fa-copy"></span></a>
+                                                {% endif %}
                                             </div>
                                         </td>
                                         <td class="markdown">
@@ -174,11 +203,13 @@
                                 <em>{{ 'no_rules_in_group'|_ }}</em>
                             </p>
                         {% endif %}
-                        <p>
-                            <br/>
-                            <a href="{{ route('rules.create', ruleGroup.id) }}"
-                               class="btn btn-success new_rule">{{ 'new_rule'|_ }}</a>
-                        </p>
+                        {% if can('rules.create') %}
+                            <p>
+                                <br/>
+                                <a href="{{ route('rules.create', ruleGroup.id) }}"
+                                class="btn btn-success new_rule">{{ 'new_rule'|_ }}</a>
+                            </p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -187,11 +218,13 @@
 
     {% include 'rules.partials.test-trigger-modal' %}
 
-    <div class="row">
-        <div class="col-lg-12 col-md-12 col-sm-12">
-            <a href="{{ route('rule-groups.create') }}" class="btn btn-success">{{ 'new_rule_group'|_ }}</a>
+    {% if can('rules.create') %}
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <a href="{{ route('rule-groups.create') }}" class="btn btn-success">{{ 'new_rule_group'|_ }}</a>
+            </div>
         </div>
-    </div>
+    {% endif %}
 
 {% endblock %}
 {% block scripts %}

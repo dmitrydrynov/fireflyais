@@ -60,11 +60,12 @@
         {% endif %}
         <tr data-date="{{ journal.date.format('Y-m-d') }}" data-id="{{ journal.transaction_journal_id }}">
             <td class="hidden-xs">
-                <div class="btn-group btn-group-xs">
-                    <a href="{{ route('transactions.edit', [journal.transaction_group_id]) }}" class="btn btn-xs btn-default"><span
-                                class="fa fa-fw fa-pencil"></span></a>
-                </div>
-
+                {% if can('transactions.update') %}
+                    <div class="btn-group btn-group-xs">
+                        <a href="{{ route('transactions.edit', [journal.transaction_group_id]) }}" class="btn btn-xs btn-default"><span
+                                    class="fa fa-fw fa-pencil"></span></a>
+                    </div>
+                {% endif %}
             </td>
 
             <!-- icon -->
@@ -91,11 +92,15 @@
 
             <!-- description -->
             <td>
+                {% if can('transactions.read') %}
                 <a href="{{ route('transactions.show', [journal.transaction_group_id]) }}" title="{{ journal.description }}">
                     {% if journal.group_title %}
                         <span class="text-muted"><span class="fa fa-fw fa-share-alt" aria-hidden="true"></span></span> {{ journal.group_title }}:
                     {% endif %}
                     {{ journal.description }}</a>
+                {% else %}
+                    {{ journal.description }}
+                {% endif %}
             </td>
 
             <td style="text-align: right;">
@@ -139,11 +144,19 @@
             </td>
 
             <td class="hidden-xs hidden-sm hidden-md">
-                <a href="{{ route('accounts.show', [journal.source_account_id]) }}" title="{{ journal.source_account_iban|default(journal.source_account_name) }}">{{ journal.source_account_name }}</a>
+                {% if can('accounts.read.asset') or can('accounts.read.expense') or can('accounts.read.liabilities') or can('accounts.read.revenue') %}
+                    <a href="{{ route('accounts.show', [journal.source_account_id]) }}" title="{{ journal.source_account_iban|default(journal.source_account_name) }}">{{ journal.source_account_name }}</a>
+                {% else %}
+                    {{ journal.source_account_name }}
+                {% endif %}
             </td>
 
             <td class="hidden-xs hidden-sm hidden-md">
-                <a href="{{ route('accounts.show', [journal.destination_account_id]) }}" title="{{ journal.destination_account_iban|default(journal.destination_account_name) }}">{{ journal.destination_account_name }}</a>
+                {% if can('accounts.read.asset') or can('accounts.read.expense') or can('accounts.read.liabilities') or can('accounts.read.revenue') %}
+                    <a href="{{ route('accounts.show', [journal.destination_account_id]) }}" title="{{ journal.destination_account_iban|default(journal.destination_account_name) }}">{{ journal.destination_account_name }}</a>
+                {% else %}
+                    {{ journal.destination_account_name }}
+                {% endif %}
             </td>
             {#
             <td class="hidden-xs">

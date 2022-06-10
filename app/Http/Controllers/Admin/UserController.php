@@ -212,12 +212,11 @@ class UserController extends Controller
         // add meta stuff.
         $users->each(
             function (User $user) {
-                $user->isSuperAdmin = $user->hasRole('superadmin');
                 $user->has2FA  = null !== $user->mfa_secret;
+                $user->roleNames = $user->getAllRoleNames(['for_current_user_group' => false])
+                    ->get()->pluck('name');
             }
         );
-
-        setPermissionsTeamId(auth()->user()->user_group_id);
 
         return view('admin.users.index', compact('subTitle', 'subTitleIcon', 'users'));
     }

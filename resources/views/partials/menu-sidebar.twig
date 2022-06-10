@@ -127,7 +127,11 @@
 
   <li class="header text-uppercase">{{ 'others'|_ }}</li>
 
-  {% if can('accounts.read') %}
+  {% if
+    can('accounts.read.asset')
+      or can('accounts.read.expense')
+      or can('accounts.read.revenue')
+      or can('accounts.read.liabilities') %}
     <li class="{{ activeRoutePartial('accounts') }} treeview" id="account-menu">
       <a href="javascript:void(0)">
         <span class="fa fa-credit-card fa-fw"></span>
@@ -138,35 +142,43 @@
       </a>
 
       <ul class="treeview-menu">
-        <li class="{{ activeRoutePartialObjectType('accounts', 'asset') }}">
-          <a href="{{ route('accounts.index', 'asset') }}">
-            <span class="fa fa-angle-right fa-fw"></span>
-            <span>{{ 'asset_accounts'|_ }}</span>
-          </a>
-        </li>
-        <li class="{{ activeRoutePartialObjectType('accounts', 'expense') }}">
-          <a href="{{ route('accounts.index', 'expense') }}">
-            <span class="fa fa-angle-right fa-fw"></span>
-            <span>{{ 'expense_accounts'|_ }}</span>
-          </a>
-        </li>
-        <li class="{{ activeRoutePartialObjectType('accounts', 'revenue') }}">
-          <a href="{{ route('accounts.index', 'revenue') }}">
-            <span class="fa fa-angle-right fa-fw"></span>
-            <span>{{ 'revenue_accounts'|_ }}</span>
-          </a>
-        </li>
-        <li class="{{
-          activeRoutePartialObjectType(
-            'accounts',
-            'liabilities'
-          )
-          }}">
-          <a href="{{ route('accounts.index', 'liabilities') }}">
-            <span class="fa fa-angle-right fa-fw"></span>
-            <span>{{ 'liabilities_accounts'|_ }}</span>
-          </a>
-        </li>
+        {% if can('accounts.read.asset') %}
+          <li class="{{ activeRoutePartialObjectType('accounts', 'asset') }}">
+            <a href="{{ route('accounts.index', 'asset') }}">
+              <span class="fa fa-angle-right fa-fw"></span>
+              <span>{{ 'asset_accounts'|_ }}</span>
+            </a>
+          </li>
+        {% endif %}
+        {% if can('accounts.read.expense') %}
+          <li class="{{ activeRoutePartialObjectType('accounts', 'expense') }}">
+            <a href="{{ route('accounts.index', 'expense') }}">
+              <span class="fa fa-angle-right fa-fw"></span>
+              <span>{{ 'expense_accounts'|_ }}</span>
+            </a>
+          </li>
+        {% endif %}
+        {% if can('accounts.read.revenue') %}
+          <li class="{{ activeRoutePartialObjectType('accounts', 'revenue') }}">
+            <a href="{{ route('accounts.index', 'revenue') }}">
+              <span class="fa fa-angle-right fa-fw"></span>
+              <span>{{ 'revenue_accounts'|_ }}</span>
+            </a>
+          </li>
+        {% endif %}
+        {% if can('accounts.read.liabilities') %}
+          <li class="{{
+            activeRoutePartialObjectType(
+              'accounts',
+              'liabilities'
+            )
+            }}">
+            <a href="{{ route('accounts.index', 'liabilities') }}">
+              <span class="fa fa-angle-right fa-fw"></span>
+              <span>{{ 'liabilities_accounts'|_ }}</span>
+            </a>
+          </li>
+        {% endif %}
       </ul>
     </li>
   {% endif %}

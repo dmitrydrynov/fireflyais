@@ -47,8 +47,11 @@ use FireflyIII\Models\TransactionGroup;
 use FireflyIII\Models\TransactionJournal;
 use FireflyIII\Models\UserGroup;
 use FireflyIII\Models\Webhook;
+use FireflyIII\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -581,4 +584,26 @@ class User extends Authenticatable
         return $this->hasMany(Webhook::class, 'user_group_id', 'user_group_id');
     }
     // end LDAP related code
+
+    /**
+     * Get All Roles
+     *
+     * @return void
+     */
+    public function getAllRoleNames($options = ['for_current_user_group' => true]): BelongsToMany
+    {
+        $relation = $this->morphToMany(
+            config('permission.models.role'),
+            'model',
+            config('permission.table_names.model_has_roles'),
+            config('permission.column_names.model_morph_key'),
+            PermissionRegistrar::$pivotRole
+        );
+
+        if ($options['for_current_user_group']) {
+            return $this->getRoleNames();
+        } else {
+            return $relation;
+        }
+    }
 }

@@ -47,7 +47,6 @@ class RoleSeeder extends Seeder
                 'description'  => 'User has full access to his user group',
                 'permissions' => [
                     'accounts',
-                    'attachments',
                     'bills',
                     'subscriptions',
                     'budgets',
@@ -62,7 +61,6 @@ class RoleSeeder extends Seeder
                     'recurring',
                     'reports',
                     'rules',
-                    'rule-groups',
                     'tags',
                     'transactions',
                     'webhooks',
