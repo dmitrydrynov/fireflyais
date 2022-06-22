@@ -144,7 +144,7 @@
                     {% if transaction.attachments|length > 0 %}
                         <span class="fa fa-paperclip"></span>
                     {% endif %}
-                    {% if group.count == 1 %}
+                    {% if group.count == 1 and can('transactions.read') %}
                     <a href="{{ route('transactions.show', [group.id]) }}" title="{{ transaction.description }}">
                         {% endif %}
                         {{ transaction.description }}

@@ -296,13 +296,13 @@
         </li>
       {% endif %}
       {% if true == featuringWebhooks %}
-        <li class="{{ activeRoutePartial('webhooks') }}">
+        {# <li class="{{ activeRoutePartial('webhooks') }}">
           <a class="{{ activeRoutePartial('webhooks') }}"
             href="{{ route('webhooks.index') }}">
             <span class="fa fa-angle-right fa-fw"></span>
             <span>{{ 'webhooks'|_ }}</span>
           </a>
-        </li>
+        </li> #}
       {% endif %}
       {% if hasRole('superadmin') %}
         <li class="{{ activeRoutePartial('admin') }}">

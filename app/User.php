@@ -162,6 +162,15 @@ use Spatie\Permission\Exceptions\PermissionDoesNotExist;
  * @property-read int|null                                                        $group_memberships_count
  * @property-read UserGroup|null                                                  $userGroup
  * @method static Builder|User whereUserGroupId($value)
+ * @property Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|Permission[] $permissions
+ * @property-read int|null $permissions_count
+ * @method static \Illuminate\Database\Query\Builder|User onlyTrashed()
+ * @method static Builder|User permission($permissions)
+ * @method static Builder|User role($roles, $guard = null)
+ * @method static Builder|User whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|User withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|User withoutTrashed()
  */
 class User extends Authenticatable
 {

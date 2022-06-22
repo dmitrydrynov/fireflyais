@@ -193,7 +193,7 @@ Route::group(
  * Bills Controller.
  */
 Route::group(
-    ['middleware' => ['user-full-auth', 'can:bills.read'], 'namespace' => 'FireflyIII\Http\Controllers', 'prefix' => 'bills', 'as' => 'bills.'],
+    ['middleware' => ['user-full-auth', 'permission:bills.read'], 'namespace' => 'FireflyIII\Http\Controllers', 'prefix' => 'bills', 'as' => 'bills.'],
     static function () {
         Route::get('', ['uses' => 'Bill\IndexController@index', 'as' => 'index']);
         Route::post('rescan/{bill}', ['uses' => 'Bill\ShowController@rescan', 'as' => 'rescan']);
@@ -618,8 +618,9 @@ Route::group(
         // front page
         Route::get('frontpage/piggy-banks', ['uses' => 'Json\FrontpageController@piggyBanks', 'as' => 'fp.piggy-banks']);
 
-        // currency conversion:
-        Route::get('rate/{fromCurrencyCode}/{toCurrencyCode}/{date}', ['uses' => 'Json\ExchangeController@getRate', 'as' => 'rate']);
+        // currency conversion: 
+        // THE CONSTROLLER DOESN'T EXIST
+        // Route::get('rate/{fromCurrencyCode}/{toCurrencyCode}/{date}', ['uses' => 'Json\ExchangeController@getRate', 'as' => 'rate']);
 
         // intro things:
         Route::post('intro/finished/{route}/{specificPage?}', ['uses' => 'Json\IntroController@postFinished', 'as' => 'intro.finished']);
@@ -1077,12 +1078,13 @@ Route::group(
 /*
  * Webhooks management
  */
-Route::group(
-    ['middleware' => 'user-full-auth', 'namespace' => 'FireflyIII\Http\Controllers\Webhooks', 'prefix' => 'webhooks', 'as' => 'webhooks.'],
-    static function () {
-        Route::get('index', ['uses' => 'IndexController@index', 'as' => 'index']);
-    }
-);
+// THE CONTROLLER DOESN'T EXIST
+// Route::group(
+//     ['middleware' => 'user-full-auth', 'namespace' => 'FireflyIII\Http\Controllers\Webhooks', 'prefix' => 'webhooks', 'as' => 'webhooks.'],
+//     static function () {
+//         Route::get('index', ['uses' => 'IndexController@index', 'as' => 'index']);
+//     }
+// );
 
 /**
  * For the admin routes, the user must be logged in and have the role of 'superadmin'.

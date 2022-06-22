@@ -31,10 +31,14 @@
                             </div>
                         {% endif %}
                     </td>
+                    
                     <td style="width:60px;" class="hidden-sm hidden-xs">
-                        <span class="fa fa-fw fa-bars piggy-handle"></span>
-                        <span class="loadSpin"></span>
+                        {% if can('piggy-banks.update') %}
+                            <span class="fa fa-fw fa-bars piggy-handle"></span>
+                            <span class="loadSpin"></span>
+                        {% endif %}
                     </td>
+                    
                     <td style="width:100px;" class="hidden-sm hidden-xs">
                         {% if can('piggy-banks.update') or can('piggy-banks.delete') %}
                             <div class="btn-group btn-group-xs">

@@ -327,7 +327,7 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
             ->where('accounts.user_group_id', $this->user->user_group_id)
             ->with(['account', 'objectGroups'])
             ->orderBy('piggy_banks.order', 'ASC')
-            ->get(['*', 'piggy_banks.name AS name']);
+            ->get(['piggy_banks.*']);
     }
 
     /**

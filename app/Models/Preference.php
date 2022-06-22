@@ -51,6 +51,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @method static Builder|Preference whereUpdatedAt($value)
  * @method static Builder|Preference whereUserId($value)
  * @mixin Eloquent
+ * @property int|null $user_group_id
+ * @method static Builder|Preference whereUserGroupId($value)
  */
 class Preference extends Model
 {

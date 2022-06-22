@@ -368,7 +368,7 @@ class CurrencyController extends Controller
     public function store(CurrencyFormRequest $request)
     {
         /** @var User $user */
-        $user = auth()->user();
+            $user = auth()->user();
         $data = $request->getCurrencyData();
         if (!$this->userRepository->hasRole($user, 'owner')) {
 
