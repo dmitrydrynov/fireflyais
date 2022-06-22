@@ -321,7 +321,7 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
      */
     public function getPiggyBanks(): Collection
     {
-        return $this->user->piggyBanks()->with(['account', 'objectGroups'])->orderBy('order', 'ASC')->get();
+        return PiggyBank::join('accounts', 'account_id', '=', 'accounts.id')->where('accounts.user_group_id', $this->user->user_group_id)->with(['account', 'objectGroups'])->orderBy('piggy_banks.order', 'ASC')->get();
     }
 
     /**

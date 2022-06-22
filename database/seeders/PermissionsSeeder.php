@@ -67,33 +67,12 @@ class PermissionsSeeder extends Seeder
             'bills.read',
             'bills.update',
             'bills.delete',
-            'bills.setOrder',
-            /* subscriptions */
-            'subscriptions',
-            'subscriptions.create',
-            'subscriptions.read',
-            'subscriptions.update',
-            'subscriptions.delete',
-            'subscriptions.setOrder',
             /* budgets */
             'budgets',
             'budgets.create',
             'budgets.read',
             'budgets.update',
             'budgets.delete',
-            'budgets.setOrder',
-            /* available-budgets */
-            'available-budgets',
-            'available-budgets.create',
-            'available-budgets.read',
-            'available-budgets.update',
-            'available-budgets.delete',
-            /* budget-limits */
-            'budget-limits',
-            'budget-limits.create',
-            'budget-limits.read',
-            'budget-limits.update',
-            'budget-limits.delete',
             /* categories */
             'categories',
             'categories.create',
@@ -124,7 +103,6 @@ class PermissionsSeeder extends Seeder
             'piggy-banks.read',
             'piggy-banks.update',
             'piggy-banks.delete',
-            'piggy-banks.setOrder',
             /* piggy-banks */
             'preferences',
             'preferences.read',

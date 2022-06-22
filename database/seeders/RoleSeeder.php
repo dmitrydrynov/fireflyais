@@ -48,10 +48,7 @@ class RoleSeeder extends Seeder
                 'permissions' => [
                     'accounts',
                     'bills',
-                    'subscriptions',
                     'budgets',
-                    'available-budgets',
-                    'budget-limits',
                     'categories',
                     'chart',
                     'export-data',

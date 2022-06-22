@@ -2,4 +2,5 @@
   "prettier.endOfLine": "lf",
   "editor.tabSize": 2,
   "docker.commands.attach": "${config:docker.dockerPath} exec -it -u root ${containerId} ${shellCommand}",
+  "prettier.printWidth": 120,
 }
