@@ -69,7 +69,7 @@ return [
     'go_to_bills'                          => 'Go to your bills',
     'go_to_expense_accounts'               => 'See your expense accounts',
     'go_to_revenue_accounts'               => 'See your revenue accounts',
-    'go_to_piggy-banks'                        => 'Go to your piggy banks',
+    'go_to_piggies'                        => 'Go to your piggy banks',
     'new_deposit'                          => 'New deposit',
     'new_transfer'                         => 'New transfer',
     'new_transfers'                        => 'New transfer',

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Controller.php
  * Copyright (c) 2019 james@firefly-iii.org
@@ -18,6 +19,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace FireflyIII\Http\Controllers;
@@ -29,6 +31,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Route;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class Controller.
@@ -107,6 +110,10 @@ abstract class Controller extends BaseController
                     app('view')->share('shownDemo', $shownDemo);
                     app('view')->share('current_route_name', $page);
                     app('view')->share('original_route_name', Route::currentRouteName());
+
+                    app('view')->share('APP_DATA', [
+                        'permissions' => Auth::user()->permissions()->pluck('name')->toArray()
+                    ]);
                 }
 
                 return $next($request);

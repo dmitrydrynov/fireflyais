@@ -3319,6 +3319,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _mixins_can__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../mixins/can */ "./resources/assets/js/mixins/can.js");
 //
 //
 //
@@ -3554,9 +3555,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "CreateTransaction",
   components: {},
+  mixins: [_mixins_can__WEBPACK_IMPORTED_MODULE_0__.can],
   created: function created() {
     var _this = this;
 
@@ -5917,6 +5925,27 @@ module.exports = new vuei18n({
     'vi': __webpack_require__(/*! ./locales/vi.json */ "./resources/assets/js/locales/vi.json")
   }
 });
+
+/***/ }),
+
+/***/ "./resources/assets/js/mixins/can.js":
+/*!*******************************************!*\
+  !*** ./resources/assets/js/mixins/can.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "can": () => (/* binding */ can)
+/* harmony export */ });
+var can = {
+  methods: {
+    can: function can(permissionName) {
+      return window.App.permissions.indexOf(permissionName) !== -1;
+    }
+  }
+};
 
 /***/ }),
 
@@ -10497,75 +10526,87 @@ var render = function () {
                         attrs: { id: "optional-info" },
                       },
                       [
-                        _c("budget", {
-                          attrs: {
-                            error: transaction.errors.budget_id,
-                            no_budget: _vm.$t("firefly.none_in_select_list"),
-                            transactionType: _vm.transactionType,
-                          },
-                          model: {
-                            value: transaction.budget,
-                            callback: function ($$v) {
-                              _vm.$set(transaction, "budget", $$v)
-                            },
-                            expression: "transaction.budget",
-                          },
-                        }),
+                        _vm.can("budgets.read")
+                          ? _c("budget", {
+                              attrs: {
+                                error: transaction.errors.budget_id,
+                                no_budget: _vm.$t(
+                                  "firefly.none_in_select_list"
+                                ),
+                                transactionType: _vm.transactionType,
+                              },
+                              model: {
+                                value: transaction.budget,
+                                callback: function ($$v) {
+                                  _vm.$set(transaction, "budget", $$v)
+                                },
+                                expression: "transaction.budget",
+                              },
+                            })
+                          : _vm._e(),
                         _vm._v(" "),
-                        _c("category", {
-                          attrs: {
-                            error: transaction.errors.category,
-                            transactionType: _vm.transactionType,
-                          },
-                          model: {
-                            value: transaction.category,
-                            callback: function ($$v) {
-                              _vm.$set(transaction, "category", $$v)
-                            },
-                            expression: "transaction.category",
-                          },
-                        }),
+                        _vm.can("categories.read")
+                          ? _c("category", {
+                              attrs: {
+                                error: transaction.errors.category,
+                                transactionType: _vm.transactionType,
+                              },
+                              model: {
+                                value: transaction.category,
+                                callback: function ($$v) {
+                                  _vm.$set(transaction, "category", $$v)
+                                },
+                                expression: "transaction.category",
+                              },
+                            })
+                          : _vm._e(),
                         _vm._v(" "),
-                        _c("piggy-bank", {
-                          attrs: {
-                            error: transaction.errors.piggy_bank,
-                            no_piggy_bank: _vm.$t("firefly.no_piggy_bank"),
-                            transactionType: _vm.transactionType,
-                          },
-                          model: {
-                            value: transaction.piggy_bank,
-                            callback: function ($$v) {
-                              _vm.$set(transaction, "piggy_bank", $$v)
-                            },
-                            expression: "transaction.piggy_bank",
-                          },
-                        }),
+                        _vm.can("piggy_banks.read")
+                          ? _c("piggy-bank", {
+                              attrs: {
+                                error: transaction.errors.piggy_bank,
+                                no_piggy_bank: _vm.$t("firefly.no_piggy_bank"),
+                                transactionType: _vm.transactionType,
+                              },
+                              model: {
+                                value: transaction.piggy_bank,
+                                callback: function ($$v) {
+                                  _vm.$set(transaction, "piggy_bank", $$v)
+                                },
+                                expression: "transaction.piggy_bank",
+                              },
+                            })
+                          : _vm._e(),
                         _vm._v(" "),
-                        _c("tags", {
-                          attrs: { error: transaction.errors.tags },
-                          model: {
-                            value: transaction.tags,
-                            callback: function ($$v) {
-                              _vm.$set(transaction, "tags", $$v)
-                            },
-                            expression: "transaction.tags",
-                          },
-                        }),
+                        _vm.can("tags.read")
+                          ? _c("tags", {
+                              attrs: { error: transaction.errors.tags },
+                              model: {
+                                value: transaction.tags,
+                                callback: function ($$v) {
+                                  _vm.$set(transaction, "tags", $$v)
+                                },
+                                expression: "transaction.tags",
+                              },
+                            })
+                          : _vm._e(),
                         _vm._v(" "),
-                        _c("bill", {
-                          attrs: {
-                            error: transaction.errors.bill_id,
-                            no_bill: _vm.$t("firefly.none_in_select_list"),
-                            transactionType: _vm.transactionType,
-                          },
-                          model: {
-                            value: transaction.bill,
-                            callback: function ($$v) {
-                              _vm.$set(transaction, "bill", $$v)
-                            },
-                            expression: "transaction.bill",
-                          },
-                        }),
+                        _vm.can("bills.read")
+                          ? _c("bill", {
+                              attrs: {
+                                error: transaction.errors.bill_id,
+                                no_bill: _vm.$t("firefly.none_in_select_list"),
+                                transactionType: _vm.transactionType,
+                              },
+                              model: {
+                                value: transaction.bill,
+                                callback: function ($$v) {
+                                  _vm.$set(transaction, "bill", $$v)
+                                },
+                                expression: "transaction.bill",
+                              },
+                            })
+                          : _vm._e(),
                         _vm._v(" "),
                         _c("custom-transaction-fields", {
                           attrs: { error: transaction.errors.custom_errors },

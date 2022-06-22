@@ -285,7 +285,9 @@
       {% endif %}
 
       {# box for piggy bank data (JSON) #}
-      <div id="piggy_bank_overview"></div>
+      {% if can('piggy-banks.read') %}
+        <div id="piggy_bank_overview"></div>
+      {% endif %}
     </div>
   </div>
   <div class="row">

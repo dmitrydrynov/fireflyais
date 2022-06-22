@@ -143,23 +143,27 @@
                 </div>
                 <div class="col-lg-4">
                   <budget
+                      v-if="can('budgets.read')"
                       v-model="transaction.budget"
                       :error="transaction.errors.budget_id"
                       :no_budget="$t('firefly.none_in_select_list')"
                       :transactionType="transactionType"
                   ></budget>
                   <category
+                      v-if="can('categories.read')"
                       v-model="transaction.category"
                       :error="transaction.errors.category"
                       :transactionType="transactionType"
                   ></category>
                   <tags
+                      v-if="can('tags.read')"
                       v-model="transaction.tags"
                       :error="transaction.errors.tags"
                       :tags="transaction.tags"
                       :transactionType="transactionType"
                   ></tags>
                   <bill
+                      v-if="can('bills.read')"
                       v-model="transaction.bill"
                       :error="transaction.errors.bill_id"
                       :no_bill="$t('firefly.none_in_select_list')"
@@ -237,8 +241,11 @@
 </template>
 
 <script>
+import { can } from '../../mixins/can';
+
 export default {
   name: "EditTransaction",
+  mixins: [can],
   props: {
     groupId: Number
   },
