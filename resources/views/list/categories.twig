@@ -21,7 +21,7 @@
         &nbsp;
       </td>
       <td>
-        {% if can('categories.read') %}
+        {% if can('transactions.read') %}
           <a href="{{ route('categories.no-category') }}">
             <em>{{ 'without_category'|_ }}</em>
           </a>
