@@ -279,7 +279,7 @@
           </a>
         </li>
       {% endif %}
-      {% if hasRole('owner|superadmin') %}
+      {% if hasRole('owner|superadmin') or can('preferences') %}
         <li class="{{ activeRoutePartial('preferences') }}">
           <a class="{{ activeRouteStrict('preferences.index') }}"
             href="{{ route('preferences.index') }}">
@@ -287,13 +287,15 @@
             <span>{{ 'preferences'|_ }}</span>
           </a>
         </li>
-        <li class="{{ activeRoutePartial('currencies') }}">
-          <a class="{{ activeRoutePartial('currencies') }}"
-            href="{{ route('currencies.index') }}">
-            <span class="fa fa-angle-right fa-fw"></span>
-            <span>{{ 'currencies'|_ }}</span>
-          </a>
-        </li>
+        {% if hasRole('superadmin') %}
+          <li class="{{ activeRoutePartial('currencies') }}">
+            <a class="{{ activeRoutePartial('currencies') }}"
+              href="{{ route('currencies.index') }}">
+              <span class="fa fa-angle-right fa-fw"></span>
+              <span>{{ 'currencies'|_ }}</span>
+            </a>
+          </li>
+        {% endif %}
       {% endif %}
       {% if true == featuringWebhooks %}
         {# <li class="{{ activeRoutePartial('webhooks') }}">
