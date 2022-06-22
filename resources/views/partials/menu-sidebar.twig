@@ -37,7 +37,7 @@
     </li>
   {% endif %}
 
-  {% if canAny(['transactions.read', 'rules.read', 'recurring.read']) %}
+  {% if canAny(['transactions.read', 'rules.read']) or (can('recurring.read') and can('transactions.create')) %}
     <li class="header text-uppercase">{{ 'accounting'|_ }}</li>
   {% endif %}
 
@@ -90,7 +90,7 @@
     </li>
   {% endif %}
 
-  {% if canAny(['rules.read', 'recurring.read']) %}
+  {% if can('rules.read') or (can('recurring.read') and can('transactions.create')) %}
     <li class="{{ activeRoutePartial('recurring') }} {{
       activeRoutePartial(
         'rules'
@@ -113,7 +113,7 @@
             </a>
           </li>
         {% endif %}
-        {% if can('recurring.read') %}
+        {% if can('recurring.read') and can('transactions.create') %}
           <li class="{{ activeRoutePartial('recurring') }}">
             <a href="{{ route('recurring.index') }}">
               <span class="fa fa-angle-right fa-fw"></span>

@@ -119,27 +119,37 @@
                         {{ ExpandedForm.amountNoCurrency('foreign_amount') }}
 
                         {# BUDGET ONLY WHEN CREATING A WITHDRAWAL #}
-                        {% if budgets|length > 1 %}
-                            {{ ExpandedForm.select('budget_id', budgets, null) }}
-                        {% else %}
-                            {{ ExpandedForm.select('budget_id', budgets, null, {helpText: trans('firefly.no_budget_pointer', {link: route('budgets.index')})}) }}
+                        {% if can('budgets.read') %}
+                            {% if budgets|length > 1 %}
+                                {{ ExpandedForm.select('budget_id', budgets, null) }}
+                            {% else %}
+                                {{ ExpandedForm.select('budget_id', budgets, null, {helpText: trans('firefly.no_budget_pointer', {link: route('budgets.index')})}) }}
+                            {% endif %}
                         {% endif %}
 
                         {# CATEGORY ALWAYS #}
-                        {{ ExpandedForm.text('category') }}
+                        {% if can('categories.read') and can('categories.create') %}
+                            {{ ExpandedForm.text('category') }}
+                        {% endif %}
 
                         {# BILL / SUBSCRIPTION ONLY FOR WITHDRAWALS #}
-                        {% if bills|length > 1 %}
-                            {{ ExpandedForm.select('bill_id', bills, null) }}
-                        {% else %}
-                            {{ ExpandedForm.select('bill_id', bills, null, {helpText: trans('firefly.no_bill_pointer', {link: route('bills.index')})}) }}
+                        {% if can('bills.read') %}
+                            {% if bills|length > 1 %}
+                                {{ ExpandedForm.select('bill_id', bills, null) }}
+                            {% else %}
+                                {{ ExpandedForm.select('bill_id', bills, null, {helpText: trans('firefly.no_bill_pointer', {link: route('bills.index')})}) }}
+                            {% endif %}
                         {% endif %}
 
                         {# TAGS #}
-                        {{ ExpandedForm.text('tags') }}
+                        {% if can('tags.read') and can('tags.create') %}
+                            {{ ExpandedForm.text('tags') }}
+                        {% endif %}
 
                         {# RELATE THIS TRANSFER TO A PIGGY BANK #}
-                        {{ PiggyBankForm.piggyBankList('piggy_bank_id') }}
+                        {% if can('piggy_banks.read') %}
+                            {{ PiggyBankForm.piggyBankList('piggy_bank_id') }}
+                        {% endif %}
                     </div>
                 </div>
             </div>
