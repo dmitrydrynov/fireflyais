@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace FireflyIII\Http\Controllers;
 
+use FireflyIII\Models\Permission;
 use FireflyIII\Support\Http\Controllers\RequestInformation;
 use FireflyIII\Support\Http\Controllers\UserNavigation;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -31,7 +32,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Route;
-use Illuminate\Support\Facades\Auth;
+
 
 /**
  * Class Controller.
@@ -112,7 +113,8 @@ abstract class Controller extends BaseController
                     app('view')->share('original_route_name', Route::currentRouteName());
 
                     app('view')->share('APP_DATA', [
-                        'permissions' => Auth::user()->permissions()->pluck('name')->toArray()
+                        'roles' => auth()->user()->getRoleNames(),
+                        'permissions' => auth()->user()->permissions()->pluck('name')->toArray()
                     ]);
                 }
 
