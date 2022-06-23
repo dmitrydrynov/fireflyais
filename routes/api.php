@@ -71,6 +71,7 @@ Route::group(
 // Export data API routes
 Route::group(
     [
+        'middleware' => ['permission:export-data'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Data\Export', 'prefix' => 'data/export',
         'as'        => 'api.v1.data.export.',
     ],
@@ -200,6 +201,7 @@ Route::group(
 // Accounts API routes:
 Route::group(
     [
+        'middleware' => ['permission:accounts.read'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Models\Account', 'prefix' => 'accounts',
         'as'        => 'api.v1.accounts.',
     ],
@@ -238,6 +240,7 @@ Route::group(
 // Bills API routes:
 Route::group(
     [
+        'middleware' => ['permission:bills.read'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Models\Bill', 'prefix' => 'bills',
         'as'        => 'api.v1.bills.',
     ],
@@ -258,6 +261,7 @@ Route::group(
 // Available Budget API routes:
 Route::group(
     [
+        'middleware' => ['permission:budgets.read'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Models\AvailableBudget', 'prefix' => 'available_budgets',
         'as'        => 'api.v1.available_budgets.',
     ],
@@ -274,6 +278,7 @@ Route::group(
 // Budget and Budget Limit API routes:
 Route::group(
     [
+        'middleware' => ['permission:budgets.read'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Models', 'prefix' => 'budgets',
         'as'        => 'api.v1.budgets.',
     ],
@@ -301,6 +306,7 @@ Route::group(
 // separate route for budget limits without referring to the budget.
 Route::group(
     [
+        'middleware' => ['permission:budgets.read'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Models\BudgetLimit', 'prefix' => 'budget-limits',
         'as'        => 'api.v1.budget-limits.',
     ],
@@ -312,6 +318,7 @@ Route::group(
 // Category API routes:
 Route::group(
     [
+        'middleware' => ['permission:categories.read'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Models\Category', 'prefix' => 'categories',
         'as'        => 'api.v1.categories.',
     ],
@@ -330,6 +337,7 @@ Route::group(
 // Object Group API routes:
 Route::group(
     [
+        'middleware' => ['permission:object-groups.read'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Models\ObjectGroup', 'prefix' => 'object_groups',
         'as'        => 'api.v1.object-groups.',
     ],
@@ -348,6 +356,7 @@ Route::group(
 // Piggy Bank API routes:
 Route::group(
     [
+        'middleware' => ['permission:piggy-banks.read'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Models\PiggyBank', 'prefix' => 'piggy_banks',
         'as'        => 'api.v1.piggy_banks.',
     ],
@@ -367,6 +376,7 @@ Route::group(
 // Recurrence API routes:
 Route::group(
     [
+        'middleware' => ['permission:recurring.read'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Models\Recurrence', 'prefix' => 'recurrences',
         'as'        => 'api.v1.recurrences.',
     ],
@@ -388,6 +398,7 @@ Route::group(
 // Rules API routes:
 Route::group(
     [
+        'middleware' => ['permission:rules.read'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Models\Rule', 'prefix' => 'rules',
         'as'        => 'api.v1.rules.',
     ],
@@ -409,6 +420,7 @@ Route::group(
 // Rules API routes:
 Route::group(
     [
+        'middleware' => ['permission:rules.read'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Models\RuleGroup', 'prefix' => 'rule_groups',
         'as'        => 'api.v1.rule_groups.',
     ],
@@ -429,6 +441,7 @@ Route::group(
 // Tag API routes:
 Route::group(
     [
+        'middleware' => ['permission:tags.read'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Models\Tag', 'prefix' => 'tags',
         'as'        => 'api.v1.tags.',
     ],
@@ -446,6 +459,7 @@ Route::group(
 // Transaction API routes:
 Route::group(
     [
+        'middleware' => ['permission:transactions.read'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Models\Transaction', 'prefix' => 'transactions',
         'as'        => 'api.v1.transactions.',
     ],
@@ -464,6 +478,7 @@ Route::group(
 
 Route::group(
     [
+        'middleware' => ['permission:transactions.read'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Models\Transaction', 'prefix' => 'transaction-journals',
         'as'        => 'api.v1.transaction-journals.',
     ],
@@ -478,6 +493,7 @@ Route::group(
 // Transaction currency API routes:
 Route::group(
     [
+        'middleware' => ['role:superadmin'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Models\TransactionCurrency', 'prefix' => 'currencies',
         'as'        => 'api.v1.currencies.',
     ],
@@ -508,6 +524,7 @@ Route::group(
 // Transaction Links API routes:
 Route::group(
     [
+        'middleware' => ['permission:transactions.read'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Models\TransactionLink', 'prefix' => 'transaction_links',
         'as'        => 'api.v1.transaction_links.',
     ],
@@ -524,6 +541,7 @@ Route::group(
 // Transaction Link Type API routes:
 Route::group(
     [
+        'middleware' => ['permission:transactions.read'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Models\TransactionLinkType', 'prefix' => 'link_types',
         'as'        => 'api.v1.link_types.',
     ],
@@ -603,6 +621,7 @@ Route::group(
 // Preference API routes:
 Route::group(
     [
+        'middleware' => ['permission:preferences.read'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\User', 'prefix' => 'preferences',
         'as'        => 'api.v1.preferences.',
     ],
@@ -617,6 +636,7 @@ Route::group(
 // Webhook API routes:
 Route::group(
     [
+        'middleware' => ['permission:webhooks.read'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Webhook', 'prefix' => 'webhooks',
         'as'        => 'api.v1.webhooks.',
     ],
@@ -648,6 +668,7 @@ Route::group(
  */
 Route::group(
     [
+        'middleware' => ['permission:members.update'],
         'namespace' => 'FireflyIII\Api\V1\Controllers', 'prefix' => 'members',
         'as'        => 'api.v1.members.',
     ],
