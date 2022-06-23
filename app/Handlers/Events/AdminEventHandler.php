@@ -50,7 +50,7 @@ class AdminEventHandler
         $repository = app(UserRepositoryInterface::class);
 
         // is user even admin?
-        if ($repository->hasRole($event->user, 'superadmin')) {
+        if ($event->user->isSuperAdmin()) {
             $email = $event->user->email;
 
             // if user is demo user, send to owner:

@@ -2,11 +2,35 @@
 
 .main-header {
     .navbar-menu-title {
-        padding: 15px;
-        color: #fff;
+        padding: 10px 15px;
         display: inline-block;
-        line-height: 20px;
-        font-size: 16px;
-        font-weight: bold;
+
+        .company-select {
+            min-width: 150px;
+
+            .ant-select-selection--single {
+                background: transparent;
+                color: white;
+                border: unset;
+                font-size: 16px;
+                font-weight: bold;
+
+                .ant-select-selection__rendered {
+                    margin-right: 32px;
+                }
+
+                &:hover {
+                    background: #ffffff14;
+                }
+            }
+
+            .ant-select-arrow svg {
+                fill: #ffffff77;
+            }
+        }
     }
+}
+
+.ant-message {
+    z-index: 9999;
 }

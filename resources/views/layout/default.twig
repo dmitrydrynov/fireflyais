@@ -50,7 +50,7 @@
     <script type="text/javascript" nonce="{{ JS_NONCE }}">var forceDemoOff = false;</script>
 
     <script type="text/javascript" nonce="{{ JS_NONCE }}">
-        window.App = {{ APP_DATA|json_encode|raw }}
+        window.App = {{ appData|json_encode|raw }}
     </script>
 
     {# favicons #}
@@ -67,7 +67,7 @@
             {# mini logo for sidebar mini 50x50 pixels #}
             <span class="logo-mini">FF</span>
             {# logo for regular state and mobile devices #}
-            <span class="logo-lg"><strong>Firefly</strong>III</span>
+            <span class="logo-lg"><strong>Firefly</strong> III</span>
         </a>
 
         <nav class="navbar navbar-static-top" role="navigation">
@@ -76,7 +76,11 @@
             </a>
 
             <div class="navbar-menu navbar-menu-title">
-                {{ Auth.user.userGroup.title }}
+                {% if appData.companies %}
+                    <div id="company_select"></div>
+                {% else %}
+                    {{ Auth.user.userGroup.title }}
+                {% endif %}
             </div>
 
             <div class="navbar-custom-menu">
@@ -202,6 +206,13 @@
 {% if VUE_SCRIPT_NAME %}
     <script src="v1/js/app_vue.js?v={{ FF_VERSION }}" type="text/javascript" nonce="{{ JS_NONCE }}"></script>
     <script src="v1/js/{{ VUE_SCRIPT_NAME }}.js?v={{ FF_VERSION }}" type="text/javascript" nonce="{{ JS_NONCE }}"></script>
+{% endif %}
+
+{% if isSuperAdmin() %}
+    {% if not VUE_SCRIPT_NAME %}
+        <script src="v1/js/app_vue.js?v={{ FF_VERSION }}" type="text/javascript" nonce="{{ JS_NONCE }}"></script>
+    {% endif %}
+    <script src="v1/js/company_select.js?v={{ FF_VERSION }}" type="text/javascript" nonce="{{ JS_NONCE }}"></script>
 {% endif %}
 
 {# date range picker, current template, etc.#}

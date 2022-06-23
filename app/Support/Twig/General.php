@@ -246,6 +246,7 @@ class General extends AbstractExtension
             $this->menuOpenRoutePartial(),
             $this->formatDate(),
             $this->getMetaField(),
+            $this->isSuperAdmin(),
             $this->hasRole(),
             $this->hasAnyRole(),
             $this->can(),
@@ -398,6 +399,16 @@ class General extends AbstractExtension
                 }
 
                 return $result;
+            }
+        );
+    }
+
+    protected function isSuperAdmin(): TwigFunction
+    {
+        return new TwigFunction(
+            'isSuperAdmin',
+            static function (): bool {
+                return auth()->user()->isSuperAdmin();
             }
         );
     }

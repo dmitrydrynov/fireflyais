@@ -64,7 +64,7 @@ class VersionCheckEventHandler
         /** @var UserRepositoryInterface $repository */
         $repository = app(UserRepositoryInterface::class);
         $user       = $event->user;
-        if (!$repository->hasRole($user, 'superadmin')) {
+        if (!$user->isSuperAdmin()) {
             Log::debug('User is not admin, done.');
 
             return;
@@ -101,7 +101,7 @@ class VersionCheckEventHandler
         $repository = app(UserRepositoryInterface::class);
         $user       = $event->user;
 
-        if (!$repository->hasRole($user, 'superadmin')) {
+        if (!$user->isSuperAdmin()) {
             Log::debug('User is not admin, done.');
 
             return;

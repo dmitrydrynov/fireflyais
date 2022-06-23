@@ -1090,7 +1090,7 @@ Route::group(
  * For the admin routes, the user must be logged in and have the role of 'superadmin'.
  */
 Route::group(
-    ['middleware' => ['admin', 'role:superadmin'], 'namespace' => 'FireflyIII\Http\Controllers\Admin', 'prefix' => 'admin', 'as' => 'admin.'],
+    ['middleware' => ['admin', 'isSuperAdmin'], 'namespace' => 'FireflyIII\Http\Controllers\Admin', 'prefix' => 'admin', 'as' => 'admin.'],
     static function () {
 
         // admin home

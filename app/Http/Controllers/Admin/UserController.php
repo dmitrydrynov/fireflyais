@@ -187,7 +187,7 @@ class UserController extends Controller
         $subTitle     = (string) trans('firefly.edit_user', ['email' => $user->email]);
         $subTitleIcon = 'fa-user-o';
         $currentUser  = auth()->user();
-        $isAdmin      = $user->hasRole('superadmin');
+        $isAdmin      = $user->isSuperAdmin();
         $codes        = [
             ''              => (string) trans('firefly.no_block_code'),
             'bounced'       => (string) trans('firefly.block_code_bounced'),
@@ -213,8 +213,7 @@ class UserController extends Controller
         $users->each(
             function (User $user) {
                 $user->has2FA  = null !== $user->mfa_secret;
-                $user->roleNames = $user->getAllRoleNames(['for_current_user_group' => false])
-                    ->get()->pluck('name');
+                $user->roleNames = $user->getAllRoleNames(['for_current_user_group' => false])->pluck('name');
             }
         );
 

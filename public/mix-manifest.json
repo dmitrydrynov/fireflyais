@@ -4,6 +4,7 @@
     "/v1/js/create_transaction.js": "/v1/js/create_transaction.js",
     "/v1/js/edit_transaction.js": "/v1/js/edit_transaction.js",
     "/v1/js/profile.js": "/v1/js/profile.js",
+    "/v1/js/company_select.js": "/v1/js/company_select.js",
     "/v1/js/create_member.js": "/v1/js/create_member.js",
     "/v1/js/edit_member.js": "/v1/js/edit_member.js",
     "/v1/css/app.css": "/v1/css/app.css"

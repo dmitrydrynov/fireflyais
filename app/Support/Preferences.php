@@ -48,7 +48,7 @@ class Preferences
             return new Collection;
         }
 
-        return Preference::where('user_id', $user->id)->get();
+        return Preference::where('user_group_id', $user->user_group_id)->get();
     }
 
     /**
@@ -59,7 +59,7 @@ class Preferences
      */
     public function beginsWith(User $user, string $search): Collection
     {
-        return Preference::where('user_id', $user->id)->where('name', 'LIKE', $search . '%')->get();
+        return Preference::where('user_group_id', $user->user_group_id)->where('name', 'LIKE', $search . '%')->get();
     }
 
     /**
@@ -75,7 +75,7 @@ class Preferences
             Cache::forget($fullName);
         }
         try {
-            Preference::where('user_id', auth()->user()->id)->where('name', $name)->delete();
+            Preference::where('user_group_id', auth()->user()->user_group_id)->where('name', $name)->delete();
         } catch (Exception $e) {
             throw new FireflyException(sprintf('Could not delete preference: %s', $e->getMessage()), 0, $e);
         }
@@ -113,7 +113,7 @@ class Preferences
     public function getArrayForUser(User $user, array $list): array
     {
         $result      = [];
-        $preferences = Preference::where('user_id', $user->id)->whereIn('name', $list)->get(['id', 'name', 'data']);
+        $preferences = Preference::where('user_group_id', $user->user_group_id)->whereIn('name', $list)->get(['id', 'name', 'data']);
         /** @var Preference $preference */
         foreach ($preferences as $preference) {
             $result[$preference->name] = $preference->data;
@@ -172,7 +172,7 @@ class Preferences
      */
     public function getForUser(User $user, string $name, $default = null): ?Preference
     {
-        $preference = Preference::where('user_id', $user->id)->where('name', $name)->first(['id', 'user_id', 'name', 'data', 'updated_at', 'created_at']);
+        $preference = Preference::where('user_group_id', $user->user_group_id)->where('name', $name)->first(['id', 'user_id', 'name', 'data', 'updated_at', 'created_at']);
         if (null !== $preference && null === $preference->data) {
             try {
                 $preference->delete();
@@ -208,7 +208,7 @@ class Preferences
         $fullName = sprintf('preference%s%s', $user->id, $name);
         Cache::forget($fullName);
         /** @var Preference|null $pref */
-        $pref = Preference::where('user_id', $user->id)->where('name', $name)->first(['id', 'name', 'data', 'updated_at', 'created_at']);
+        $pref = Preference::where('user_group_id', $user->user_group_id)->where('name', $name)->first(['id', 'name', 'data', 'updated_at', 'created_at']);
 
         if (null !== $pref && null === $value) {
             try {

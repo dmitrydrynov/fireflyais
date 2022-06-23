@@ -75,7 +75,8 @@ class AuthServiceProvider extends ServiceProvider
         // set all permissions for super admin
         Gate::after(
             function ($user) {
-                return $user->hasRole('superadmin');
+                setPermissionsTeamId($user->user_group_id);
+                return $user->isSuperAdmin();
             }
         );
     }

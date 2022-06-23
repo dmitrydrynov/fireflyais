@@ -92,9 +92,9 @@ class UserEventHandler
         $count = $repository->count();
 
         // only act when there is 1 user in the system and he has no admin rights.
-        if (1 === $count && !$user->hasRole('superadmin')) {
+        if (1 === $count && !$user->isSuperAdmin()) {
             // user is the only user but does not have role "superadmin".
-            $role = $user->hasRole('superadmin');
+            $role = $user->isSuperAdmin();
             if (!$role) {
                 // create role, does not exist. Very strange situation so let's raise a big fuss about it.
                 $role = $repository->createRole('superadmin', 'Super Admin', 'User runs this instance of FF3');

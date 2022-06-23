@@ -599,7 +599,7 @@ class User extends Authenticatable
      *
      * @return void
      */
-    public function getAllRoleNames($options = ['for_current_user_group' => true]): BelongsToMany
+    public function getAllRoleNames($options = ['for_current_user_group' => true]): Collection
     {
         $relation = $this->morphToMany(
             config('permission.models.role'),
@@ -612,7 +612,25 @@ class User extends Authenticatable
         if ($options['for_current_user_group']) {
             return $this->getRoleNames();
         } else {
-            return $relation;
+            return $relation->get();
         }
+    }
+
+    public function isSuperAdmin()
+    {
+        $relation = $this->morphToMany(
+            config('permission.models.role'),
+            'model',
+            config('permission.table_names.model_has_roles'),
+            config('permission.column_names.model_morph_key'),
+            PermissionRegistrar::$pivotRole
+        );
+
+        return $relation->where('name', 'superadmin')->count() === 1;
+    }
+
+    public function switchToUserGroup($userGroupId)
+    {
+        return $this->update(['user_group_id' => $userGroupId]);
     }
 }

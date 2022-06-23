@@ -23258,10 +23258,29 @@ li.ant-tree-treenode-disabled > .ant-tree-node-content-wrapper:hover {
   }
 }
 .main-header .navbar-menu-title {
-  padding: 15px;
-  color: #fff;
+  padding: 10px 15px;
   display: inline-block;
-  line-height: 20px;
+}
+.main-header .navbar-menu-title .company-select {
+  min-width: 150px;
+}
+.main-header .navbar-menu-title .company-select .ant-select-selection--single {
+  background: transparent;
+  color: white;
+  border: unset;
   font-size: 16px;
   font-weight: bold;
+}
+.main-header .navbar-menu-title .company-select .ant-select-selection--single .ant-select-selection__rendered {
+  margin-right: 32px;
+}
+.main-header .navbar-menu-title .company-select .ant-select-selection--single:hover {
+  background: rgba(255, 255, 255, 0.0784313725);
+}
+.main-header .navbar-menu-title .company-select .ant-select-arrow svg {
+  fill: rgba(255, 255, 255, 0.4666666667);
+}
+
+.ant-message {
+  z-index: 9999;
 }

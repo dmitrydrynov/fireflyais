@@ -493,7 +493,7 @@ Route::group(
 // Transaction currency API routes:
 Route::group(
     [
-        'middleware' => ['role:superadmin'],
+        'middleware' => ['isSuperAdmin'],
         'namespace' => 'FireflyIII\Api\V1\Controllers\Models\TransactionCurrency', 'prefix' => 'currencies',
         'as'        => 'api.v1.currencies.',
     ],
@@ -675,5 +675,20 @@ Route::group(
     static function () {
         Route::post('store', ['uses' => 'MemberController@store', 'as' => 'store']);
         Route::post('update', ['uses' => 'MemberController@update', 'as' => 'update']);
+    }
+);
+
+/**
+ * SUPERADMIN ROUTES
+ */
+Route::group(
+    [
+        'middleware' => ['isSuperAdmin'],
+        'namespace' => 'FireflyIII\Api\V1\Controllers', 'prefix' => 'admin',
+        'as'        => 'api.v1.admin.',
+    ],
+    static function () {
+
+        Route::post('switch-user-group', ['uses' => 'SuperadminController@switchUserGroup', 'as' => 'switch-user-group']);
     }
 );

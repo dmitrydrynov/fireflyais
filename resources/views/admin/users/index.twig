@@ -84,8 +84,8 @@
                                         {{ user.updated_at.isoFormat(monthAndDayFormat) }}
                                         {{ user.updated_at.format('H:i') }}
                                     </td>
-                                    <td class="hidden-xs" data-value="{% if user.isSuperAdmin %}1{% else %}0{% endif %}">
-                                        {% if user.hasRole('superadmin') %}
+                                    <td class="hidden-xs" data-value="{% if user.isSuperAdmin() %}1{% else %}0{% endif %}">
+                                        {% if user.isSuperAdmin() %}
                                             <small class="text-success">
                                                 <span class="fa fa-fw fa-check"></span>
                                             </small>

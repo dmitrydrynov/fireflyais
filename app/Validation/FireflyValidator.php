@@ -88,7 +88,7 @@ class FireflyValidator extends Validator
         if (0 === (int) $value) {
             return true;
         }
-        $count = DB::table($parameters[0])->where('user_id', auth()->user()->id)->where($field, $value)->count();
+        $count = DB::table($parameters[0])->where('user_group_id', auth()->user()->user_group_id)->where($field, $value)->count();
 
         return 1 === $count;
     }
@@ -743,7 +743,7 @@ class FireflyValidator extends Validator
             $exclude = (int) $data['id'];
         }
         // get entries from table
-        $set = DB::table($table)->where('user_id', auth()->user()->id)->whereNull('deleted_at')
+        $set = DB::table($table)->where('user_group_id', auth()->user()->user_group_id)->whereNull('deleted_at')
                  ->where('id', '!=', $exclude)->get([$field]);
 
         foreach ($set as $entry) {

@@ -37,7 +37,9 @@ mix.js("resources/assets/js/edit_transaction.js", "public/v1/js").vue({
     version: 2,
 });
 mix.js("resources/assets/js/profile.js", "public/v1/js").vue({ version: 2 });
-
+mix.js("resources/assets/js/company_select.js", "public/v1/js").vue({
+    version: 2,
+});
 mix.js("resources/assets/js/create_member.js", "public/v1/js").vue({
     version: 2,
 });

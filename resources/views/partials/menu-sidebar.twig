@@ -287,7 +287,7 @@
             <span>{{ 'preferences'|_ }}</span>
           </a>
         </li>
-        {% if hasRole('superadmin') %}
+        {% if isSuperAdmin() %}
           <li class="{{ activeRoutePartial('currencies') }}">
             <a class="{{ activeRoutePartial('currencies') }}"
               href="{{ route('currencies.index') }}">
@@ -306,7 +306,7 @@
           </a>
         </li> #}
       {% endif %}
-      {% if hasRole('superadmin') %}
+      {% if isSuperAdmin() %}
         <li class="{{ activeRoutePartial('admin') }}">
           <a class="{{ activeRoutePartial('admin') }}"
             href="{{ route('admin.index') }}">
