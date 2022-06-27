@@ -317,7 +317,7 @@ Route::group(
  * Currency Controller.
  */
 Route::group(
-    ['middleware' => ['user-full-auth', 'role:superadmin|owner'], 'namespace' => 'FireflyIII\Http\Controllers', 'prefix' => 'currencies', 'as' => 'currencies.'],
+    ['middleware' => ['user-full-auth', 'isSuperAdmin'], 'namespace' => 'FireflyIII\Http\Controllers', 'prefix' => 'currencies', 'as' => 'currencies.'],
     static function () {
         Route::get('', ['uses' => 'CurrencyController@index', 'as' => 'index']);
         Route::get('create', ['uses' => 'CurrencyController@create', 'as' => 'create']);

@@ -77,7 +77,7 @@ class CurrencyController extends Controller
     {
         /** @var User $user */
         $user = auth()->user();
-        if (!$this->userRepository->hasRole($user, 'owner')) {
+        if (!$user->isSuperAdmin()) {
             $request->session()->flash('error', (string) trans('firefly.ask_site_owner', ['owner' => e(config('firefly.site_owner'))]));
 
             return redirect(route('currencies.index'));
