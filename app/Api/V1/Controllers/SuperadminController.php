@@ -17,8 +17,13 @@ class SuperadminController extends Controller
     public function switchUserGroup(Request $request): JsonResponse
     {
         try {
-            $userGroupId = (int)$request->get('userGroupId');
-            $request->user()->switchToUserGroup($userGroupId);
+            $userGroupId = $request->get('userGroupId');
+
+            if ($userGroupId === 'all') {
+                // 
+            } else if (is_int($userGroupId)) {
+                $request->user()->switchToUserGroup((int)$userGroupId);
+            }
 
             return response()->json(['success' => true]);
         } catch (Throwable $exception) {

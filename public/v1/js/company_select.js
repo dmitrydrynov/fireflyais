@@ -17218,6 +17218,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -30641,14 +30643,20 @@ var render = function () {
         expression: "selectedCompanyId",
       },
     },
-    _vm._l(_vm.companies, function (company) {
-      return _c(
-        "a-select-option",
-        { key: company.id, attrs: { value: company.id } },
-        [_vm._v(_vm._s(company.title))]
-      )
-    }),
-    1
+    [
+      _c("a-select-option", { key: "all", attrs: { value: "all" } }, [
+        _vm._v("All companies"),
+      ]),
+      _vm._v(" "),
+      _vm._l(_vm.companies, function (company) {
+        return _c(
+          "a-select-option",
+          { key: company.id, attrs: { value: company.id } },
+          [_vm._v(_vm._s(company.title) + "\n    ")]
+        )
+      }),
+    ],
+    2
   )
 }
 var staticRenderFns = []

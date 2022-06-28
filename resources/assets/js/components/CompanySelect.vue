@@ -1,6 +1,8 @@
 <template>
     <a-select class="company-select" @change="handleChange" v-model="selectedCompanyId">
-        <a-select-option v-for="company in companies" :key="company.id" :value="company.id">{{ company.title }}</a-select-option>
+        <a-select-option key="all" value="all">All companies</a-select-option>
+        <a-select-option v-for="company in companies" :key="company.id" :value="company.id">{{ company.title }}
+        </a-select-option>
     </a-select>
 </template>
 

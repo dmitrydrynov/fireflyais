@@ -1,4 +1,5 @@
 <?php
+
 /**
  * IndexController.php
  * Copyright (c) 2019 james@firefly-iii.org
@@ -19,6 +20,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 /** @noinspection CallableParameterUseCaseInTypeContextInspection */
+
 declare(strict_types=1);
 
 namespace FireflyIII\Http\Controllers\Account;
@@ -121,7 +123,6 @@ class IndexController extends Controller
         $accounts->setPath(route('accounts.inactive.index', [$objectType]));
 
         return view('accounts.index', compact('objectType', 'inactivePage', 'subTitleIcon', 'subTitle', 'page', 'accounts'));
-
     }
 
     /**
@@ -138,6 +139,7 @@ class IndexController extends Controller
      */
     public function index(Request $request, string $objectType)
     {
+        Log::notice(sprintf('[SESSION]: %s', $request->session()->get('activeCompany')));
         Log::debug(sprintf('Now at %s', __METHOD__));
         $objectType   = $objectType ?? 'asset';
         $subTitle     = (string) trans(sprintf('firefly.%s_accounts', $objectType));

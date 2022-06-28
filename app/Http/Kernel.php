@@ -47,6 +47,7 @@ use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
 use Illuminate\Routing\Middleware\ThrottleRequests;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Laravel\Passport\Http\Middleware\CreateFreshApiToken;
@@ -187,6 +188,7 @@ class Kernel extends HttpKernel
         ],
 
         'api'  => [
+            StartSession::class,
             EnsureFrontendRequestsAreStateful::class,
             'auth:api,sanctum',
             'bindings',
