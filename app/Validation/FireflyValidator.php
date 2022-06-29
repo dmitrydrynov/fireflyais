@@ -476,7 +476,9 @@ class FireflyValidator extends Validator
         $type  = AccountType::find($this->data['account_type_id'])->first();
         $value = $this->data['name'];
 
-        $set    = $user->accounts()->where('account_type_id', $type->id)->get();
+        $accountsQuery = ($user->isSuperAdmin() && session()->get('active_user_group') == 'all') ? Account::query() : $user->userGroup->accounts();
+        
+        $set    = $accountsQuery->where('account_type_id', $type->id)->get();
         $result = $set->first(
             function (Account $account) use ($value) {
                 return $account->name === $value;

@@ -27,7 +27,7 @@ namespace FireflyIII\Support\Search;
 use FireflyIII\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use JsonException;
+use FireflyIII\Models\Account;
 
 /**
  * Class AccountSearch
@@ -59,11 +59,11 @@ class AccountSearch implements GenericSearchInterface
      */
     public function search(): Collection
     {
-
-        $searchQuery   = $this->user->accounts()
-                                    ->leftJoin('account_types', 'accounts.account_type_id', '=', 'account_types.id')
-                                    ->leftJoin('account_meta', 'accounts.id', '=', 'account_meta.account_id')
-                                    ->whereIn('account_types.type', $this->types);
+        $accountsQuery = ($this->user->isSuperAdmin() && session()->get('active_user_group') == 'all') ? Account::query() : $this->user->userGroup->accounts();
+        $searchQuery   = $accountsQuery
+            ->leftJoin('account_types', 'accounts.account_type_id', '=', 'account_types.id')
+            ->leftJoin('account_meta', 'accounts.id', '=', 'account_meta.account_id')
+            ->whereIn('account_types.type', $this->types);
         $like          = sprintf('%%%s%%', $this->query);
         $originalQuery = $this->query;
         switch ($this->field) {
@@ -140,5 +140,4 @@ class AccountSearch implements GenericSearchInterface
     {
         $this->user = $user;
     }
-
 }

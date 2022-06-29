@@ -76,7 +76,6 @@ class AuthServiceProvider extends ServiceProvider
         Gate::after(
             function ($user) {
                 setPermissionsTeamId($user->user_group_id);
-                session()->put('activeCompany', $user->user_group_id);
                 return $user->isSuperAdmin();
             }
         );

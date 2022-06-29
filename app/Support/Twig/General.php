@@ -254,6 +254,7 @@ class General extends AbstractExtension
             $this->canAnyAction(),
             $this->getRootSearchOperator(),
             $this->carbonize(),
+            $this->activeUserGroup(),
         ];
     }
 
@@ -409,6 +410,16 @@ class General extends AbstractExtension
             'isSuperAdmin',
             static function (): bool {
                 return auth()->user()->isSuperAdmin();
+            }
+        );
+    }
+
+    protected function activeUserGroup(): TwigFunction
+    {
+        return new TwigFunction(
+            'activeUserGroup',
+            static function (): string | int {
+                return session()->get('active_user_group');
             }
         );
     }

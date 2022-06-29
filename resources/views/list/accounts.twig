@@ -4,9 +4,11 @@
 <table class="table table-responsive table-hover" id="sortable-table">
   <thead>
     <tr>
-      <th class="hidden-sm hidden-xs">
-        &nbsp;
-      </th>
+      {% if can('accounts.update') and activeUserGroup() is not same as('all') %}
+        <th class="hidden-sm hidden-xs">
+          &nbsp;    
+        </th>
+      {% endif %}
       <th>
         {{ trans('list.name') }}
       </th>
@@ -23,7 +25,13 @@
           {{ trans('form.liability_direction') }}
         </th>
         <th>
-          {{ trans('list.interest') }} ({{ trans('list.interest_period') }})
+          {{ trans('list.interest') }}
+          (
+                    
+          {{ trans('list.interest_period') }}
+          )
+                            
+                  
         </th>
       {% endif %}
       <th class="hidden-sm hidden-xs">
@@ -51,18 +59,19 @@
       </th>
       <th class="hidden-sm hidden-xs">
         &nbsp;
+                      
+              
       </th>
     </tr>
   </thead>
   <tbody>
     {% for account in accounts %}
-      <tr class="sortable-object"
-        data-id="{{ account.id }}"
-        data-order="{{ account.order }}"
-        data-position="{{ loop.index0 }}">
-        <td class="hidden-sm hidden-xs">
-          <span class="fa fa-fw fa-bars object-handle"></span>
-        </td>
+      <tr class="sortable-object" data-id="{{ account.id }}" data-order="{{ account.order }}" data-position="{{ loop.index0 }}">
+        {% if can('accounts.update') and activeUserGroup() is not same as('all') %}
+          <td class="hidden-sm hidden-xs">
+            <span class="fa fa-fw fa-bars object-handle"></span>
+          </td>
+        {% endif %}
         <td>
           {% if can('accounts.read.' ~ objectType) %}
             <a href="{{ route('accounts.show', account.id) }}">
@@ -92,21 +101,26 @@
             {{ account.accountTypeString }}
           </td>
           <td>
-            {{
-              trans(
+            {{ trans(
                 'firefly.liability_direction_' ~ account.liability_direction
                   ~ '_short'
-              )
-            }}
+              ) }}
           </td>
           <td>
-            {{ account.interest }}% ({{ account.interestPeriod|lower }})
+            {{ account.interest }}
+            % (
+                        
+            {{ account.interestPeriod|lower }}
+            )
+                                  
+                      
           </td>
         {% endif %}
         <td class="hidden-sm hidden-xs">
-          {{ account.iban }}{% if account.iban == '' %}{{
-            accountGetMetaField(account, 'account_number')
-          }}{% endif %}
+          {{ account.iban }}
+          {% if account.iban == '' %}
+            {{ accountGetMetaField(account, 'account_number') }}
+          {% endif %}
         </td>
         <td style="text-align: right;">
           <span style="margin-right:5px;">
@@ -117,9 +131,7 @@
           <td style="text-align: right;">
             {% if '-' != account.current_debt %}
               <span class="text-info">
-                {{
-                  formatAmountByAccount(account, account.current_debt, false)
-                }}
+                {{ formatAmountByAccount(account, account.current_debt, false) }}
               </span>
             {% endif %}
           </td>
@@ -140,7 +152,9 @@
             </td>
           {% else %}
             <td class="hidden-sm hidden-xs hidden-md">
-              <em>{{ 'never'|_ }}</em>
+              <em>
+                {{ 'never'|_ }}
+              </em>
             </td>
           {% endif %}
         {% endif %}
@@ -159,25 +173,24 @@
               ]
             ) %}
             <div class="btn-group btn-group-xs pull-right">
-              <button type="button"
-                class="btn btn-default dropdown-toggle"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false">
-                {{ 'actions'|_ }} <span class="caret"></span>
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ 'actions'|_ }}
+                <span class="caret"></span>
               </button>
               <ul class="dropdown-menu dropdown-menu-right" role="menu">
                 {% if can('accounts.update.' ~ objectType) %}
                   <li>
                     <a href="{{ route('accounts.edit', account.id) }}">
-                      <span class="fa fa-fw fa-pencil"></span> {{ 'edit'|_ }}
+                      <span class="fa fa-fw fa-pencil"></span>
+                      {{ 'edit'|_ }}
                     </a>
                   </li>
                 {% endif %}
                 {% if can('accounts.delete.' ~ objectType) %}
                   <li>
                     <a href="{{ route('accounts.delete', account.id) }}">
-                      <span class="fa fa-fw fa-trash"></span> {{ 'delete'|_ }}
+                      <span class="fa fa-fw fa-trash"></span>
+                      {{ 'delete'|_ }}
                     </a>
                   </li>
                 {% endif %}

@@ -139,7 +139,6 @@ class IndexController extends Controller
      */
     public function index(Request $request, string $objectType)
     {
-        Log::notice(sprintf('[SESSION]: %s', $request->session()->get('activeCompany')));
         Log::debug(sprintf('Now at %s', __METHOD__));
         $objectType   = $objectType ?? 'asset';
         $subTitle     = (string) trans(sprintf('firefly.%s_accounts', $objectType));

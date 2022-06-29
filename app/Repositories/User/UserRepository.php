@@ -30,7 +30,7 @@ use FireflyIII\Models\BudgetLimit;
 use FireflyIII\Models\Role;
 use FireflyIII\Models\UserGroup;
 use FireflyIII\User;
-use Illuminate\Database\QueryException;
+use FireflyIII\Models\Account;
 use Illuminate\Support\Collection;
 use Log;
 use Str;
@@ -227,12 +227,14 @@ class UserRepository implements UserRepositoryInterface
     {
         $return = [];
 
+        $accountsQuery = ($user->isSuperAdmin() && session()->get('active_user_group') == 'all') ? Account::query() : $user->userGroup->accounts();
+
         // two factor:
         $return['has_2fa']             = $user->mfa_secret !== null;
         $return['is_admin']            = $this->hasRole($user, 'owner');
         $return['blocked']             = 1 === (int) $user->blocked;
         $return['blocked_code']        = $user->blocked_code;
-        $return['accounts']            = $user->accounts()->count();
+        $return['accounts']            = $accountsQuery->count();
         $return['journals']            = $user->transactionJournals()->count();
         $return['transactions']        = $user->transactions()->count();
         $return['attachments']         = $user->attachments()->count();
