@@ -17219,7 +17219,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -17259,8 +17258,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 console.log('Active company changed', value);
                 _context.prev = 1;
                 _context.next = 4;
-                return axios.post("/api/v1/admin/switch-user-group", {
+                return axios.post("/admin/switch-user-group", {
                   userGroupId: value
+                }, {
+                  headers: {
+                    'X-CSRF-TOKEN': window.App._token
+                  }
                 });
 
               case 4:
@@ -30643,20 +30646,14 @@ var render = function () {
         expression: "selectedCompanyId",
       },
     },
-    [
-      _c("a-select-option", { key: "all", attrs: { value: "all" } }, [
-        _vm._v("All companies"),
-      ]),
-      _vm._v(" "),
-      _vm._l(_vm.companies, function (company) {
-        return _c(
-          "a-select-option",
-          { key: company.id, attrs: { value: company.id } },
-          [_vm._v(_vm._s(company.title) + "\n    ")]
-        )
-      }),
-    ],
-    2
+    _vm._l(_vm.companies, function (company) {
+      return _c(
+        "a-select-option",
+        { key: company.id, attrs: { value: company.id } },
+        [_vm._v(_vm._s(company.title) + "\n    ")]
+      )
+    }),
+    1
   )
 }
 var staticRenderFns = []

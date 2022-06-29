@@ -117,16 +117,20 @@ abstract class Controller extends BaseController
                     $user = auth()->user();
 
                     $appData = [
+                        '_token' => csrf_token(),
                         'roles' => $user->getRoleNames(),
                         'permissions' => $user->permissions()->pluck('name')->toArray()
                     ];
 
                     if ($user->isSuperAdmin()) {
+                        $aciveCompnay = $request->session()->has('active_user_group') ? $request->session()->get('active_user_group') : $user->user_group_id;
                         $companies = UserGroup::select('id', 'title')->get();
 
-                        $companies->each(function ($company) use ($user) {
-                            $company->active = $company->id === $user->user_group_id;
+                        $companies->each(function ($company) use ($aciveCompnay) {
+                            $company->active = $company->id === $aciveCompnay;
                         });
+
+                        $companies->prepend(['id' => 'all', 'title' => 'All companies', 'active' => $aciveCompnay === 'all']);
 
                         $appData['companies'] = $companies->toArray();
                         $appData['roles'] = ['superadmin'];

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FireflyIII\Api\V1\Controllers;
+namespace FireflyIII\Http\Controllers\Admin;
 
-use FireflyIII\Api\V1\Controllers\Controller;
+use FireflyIII\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Throwable;
@@ -18,6 +18,8 @@ class SuperadminController extends Controller
     {
         try {
             $userGroupId = $request->get('userGroupId');
+
+            $request->session()->put('active_user_group', $userGroupId);
 
             if ($userGroupId === 'all') {
                 // 
