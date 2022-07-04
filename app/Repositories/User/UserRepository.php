@@ -31,6 +31,15 @@ use FireflyIII\Models\Role;
 use FireflyIII\Models\UserGroup;
 use FireflyIII\User;
 use FireflyIII\Models\Account;
+use FireflyIII\Models\Attachment;
+use FireflyIII\Models\Bill;
+use FireflyIII\Models\Category;
+use FireflyIII\Models\Rule;
+use FireflyIII\Models\RuleGroup;
+use FireflyIII\Models\Tag;
+use FireflyIII\Models\Transaction;
+use FireflyIII\Models\TransactionJournal;
+use FireflyIII\Models\Budget;
 use Illuminate\Support\Collection;
 use Log;
 use Str;
@@ -227,14 +236,12 @@ class UserRepository implements UserRepositoryInterface
     {
         $return = [];
 
-        $accountsQuery = ($user->isSuperAdmin() && session()->get('active_user_group') == 'all') ? Account::query() : $user->userGroup->accounts();
-
         // two factor:
         $return['has_2fa']             = $user->mfa_secret !== null;
         $return['is_admin']            = $this->hasRole($user, 'owner');
         $return['blocked']             = 1 === (int) $user->blocked;
         $return['blocked_code']        = $user->blocked_code;
-        $return['accounts']            = $accountsQuery->count();
+        $return['accounts']            = $user->accounts()->count();
         $return['journals']            = $user->transactionJournals()->count();
         $return['transactions']        = $user->transactions()->count();
         $return['attachments']         = $user->attachments()->count();

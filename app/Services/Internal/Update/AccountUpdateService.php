@@ -217,8 +217,7 @@ class AccountUpdateService
         }
 
         if ($newOrder > $oldOrder) {
-            $accountsQuery = ($this->user->isSuperAdmin() && session()->get('active_user_group') == 'all') ? Account::query() : $this->user->userGroup->accounts();
-            $accountsQuery->where('accounts.order', '<=', $newOrder)->where('accounts.order', '>', $oldOrder)
+            $this->user->accounts()->where('accounts.order', '<=', $newOrder)->where('accounts.order', '>', $oldOrder)
                        ->where('accounts.id', '!=', $account->id)
                        ->whereIn('accounts.account_type_id', $list)
                        ->decrement('order');
@@ -229,8 +228,7 @@ class AccountUpdateService
             return $account;
         }
 
-        $accountsQuery = ($this->user->isSuperAdmin() && session()->get('active_user_group') == 'all') ? Account::query() : $this->user->userGroup->accounts();
-        $accountsQuery->where('accounts.order', '>=', $newOrder)->where('accounts.order', '<', $oldOrder)
+        $this->user->accounts()->where('accounts.order', '>=', $newOrder)->where('accounts.order', '<', $oldOrder)
                    ->where('accounts.id', '!=', $account->id)
                    ->whereIn('accounts.account_type_id', $list)
                    ->increment('order');

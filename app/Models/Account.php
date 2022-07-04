@@ -142,8 +142,7 @@ class Account extends Model
             /** @var User $user */
             $user = auth()->user();
             /** @var Account $account */
-            $accountsQuery = ($user->isSuperAdmin() && session()->get('active_user_group') == 'all') ? Account::query() : $user->userGroup->accounts();
-            $account = $accountsQuery->find($accountId);
+            $account = $user->accounts()->find($accountId);
             if (null !== $account) {
                 return $account;
             }

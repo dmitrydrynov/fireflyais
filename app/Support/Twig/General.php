@@ -419,7 +419,11 @@ class General extends AbstractExtension
         return new TwigFunction(
             'activeUserGroup',
             static function (): string | int {
-                return session()->get('active_user_group');
+                if (auth()->user()->isSuperAdmin() && session()->has('active_user_group')) {
+                    return session()->get('active_user_group');
+                } else {
+                    return auth()->user()->user_group_id;
+                }
             }
         );
     }

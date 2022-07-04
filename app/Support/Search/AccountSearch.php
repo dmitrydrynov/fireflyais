@@ -59,8 +59,7 @@ class AccountSearch implements GenericSearchInterface
      */
     public function search(): Collection
     {
-        $accountsQuery = ($this->user->isSuperAdmin() && session()->get('active_user_group') == 'all') ? Account::query() : $this->user->userGroup->accounts();
-        $searchQuery   = $accountsQuery
+        $searchQuery   = $this->user->accounts()
             ->leftJoin('account_types', 'accounts.account_type_id', '=', 'account_types.id')
             ->leftJoin('account_meta', 'accounts.id', '=', 'account_meta.account_id')
             ->whereIn('account_types.type', $this->types);

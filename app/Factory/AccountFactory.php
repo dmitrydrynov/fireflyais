@@ -85,9 +85,7 @@ class AccountFactory
             throw new FireflyException(sprintf('Cannot find account type "%s"', $accountType));
         }
 
-        $accountsQuery = ($this->user->isSuperAdmin() && session()->get('active_user_group') == 'all') ? Account::query() : $this->user->userGroup->accounts();
-
-        $return = $accountsQuery->where('account_type_id', $type->id)->where('name', $accountName)->first();
+        $return = $this->user->accounts()->where('account_type_id', $type->id)->where('name', $accountName)->first();
 
         if (null === $return) {
             Log::debug('Found nothing. Will create a new one.');
@@ -178,9 +176,7 @@ class AccountFactory
     {
         $type = AccountType::whereType($accountType)->first();
 
-        $accountsQuery = ($this->user->isSuperAdmin() && session()->get('active_user_group') == 'all') ? Account::query() : $this->user->userGroup->accounts();
-
-        return $accountsQuery->where('account_type_id', $type->id)->where('name', $accountName)->first();
+        return $this->user->accounts()->where('account_type_id', $type->id)->where('name', $accountName)->first();
     }
 
     /**

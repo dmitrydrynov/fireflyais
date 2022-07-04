@@ -68,4 +68,34 @@ class UserGroup extends Model
     {
         return $this->hasMany(Account::class);
     }
+
+    public function budgets(): HasMany
+    {
+        return $this->hasMany(Budget::class);
+    }
+
+    public function bills(): HasMany
+    {
+        return $this->hasMany(Bill::class);
+    }
+
+    public function availableBudgets(): HasMany
+    {
+        return $this->hasMany(AvailableBudget::class);
+    }
+
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class);
+    }
+
+    public function rules(): HasMany
+    {
+        return $this->hasMany(Rule::class);
+    }
+
+    public function tags(): HasMany
+    {
+        return $this->hasMany(Tag::class);
+    }
 }
