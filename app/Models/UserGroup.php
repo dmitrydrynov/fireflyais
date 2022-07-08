@@ -24,10 +24,12 @@ declare(strict_types=1);
 
 namespace FireflyIII\Models;
 
+use FireflyIII\User;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
@@ -61,7 +63,7 @@ class UserGroup extends Model
      */
     public function members(): HasMany
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::class );
     }
 
     public function accounts(): HasMany
