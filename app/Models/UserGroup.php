@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Carbon;
 
 /**
@@ -99,5 +100,15 @@ class UserGroup extends Model
     public function tags(): HasMany
     {
         return $this->hasMany(Tag::class);
+    }
+
+    public function transactions(): HasManyThrough
+    {
+        return $this->hasManyThrough(Transaction::class, TransactionJournal::class);
+    }
+
+    public function transactionJournals(): HasMany
+    {
+        return $this->hasMany(TransactionJournal::class);
     }
 }

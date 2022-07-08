@@ -171,7 +171,7 @@
                 'accounts.delete.' ~ objectType,
                 'accounts.reconcile'
               ]
-            ) %}
+            ) and activeUserGroup() is not same as('all') %}
             <div class="btn-group btn-group-xs pull-right">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{ 'actions'|_ }}

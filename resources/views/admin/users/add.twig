@@ -25,6 +25,7 @@
           </h3>
         </div>
         <div class="box-body">
+          {{ ExpandedForm.text('companyName', null) }}
           {{
             ExpandedForm.text(
               'email',
@@ -34,7 +35,6 @@
               }
             )
           }}
-          {{ ExpandedForm.text('companyName', null) }}
           {{ ExpandedForm.password('password') }}
           {{ ExpandedForm.password('password_confirmation') }}
         </div>

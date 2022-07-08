@@ -2207,5 +2207,6 @@ return [
 
     // other stuff
     'placeholder'                     => '[Placeholder]',
+    'superadmin_cant_create_anything' => "There are no entries here.<br>You can't create anything for 'All companies'. Switch to one of the companies first",
 
 ];

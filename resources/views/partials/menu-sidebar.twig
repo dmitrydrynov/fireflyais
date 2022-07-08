@@ -270,7 +270,7 @@
           <span>{{ 'profile'|_ }}</span>
         </a>
       </li>
-      {% if hasRole('owner|superadmin') or can('members.read') %}
+      {% if (hasRole('owner|superadmin') or can('members.read')) and activeUserGroup() is not same as('all') %}
         <li class="{{ activeRoutePartial('members') }}">
           <a class="{{ activeRouteStrict('members.index') }}"
             href="{{ route('members.index') }}">
@@ -279,7 +279,7 @@
           </a>
         </li>
       {% endif %}
-      {% if hasRole('owner|superadmin') or can('preferences') %}
+      {% if (hasRole('owner|superadmin') or can('preferences')) and activeUserGroup() is not same as('all') %}
         <li class="{{ activeRoutePartial('preferences') }}">
           <a class="{{ activeRouteStrict('preferences.index') }}"
             href="{{ route('preferences.index') }}">
