@@ -42,6 +42,11 @@ class RoleSeeder extends Seeder
                 'description'  => 'User runs this instance of FF3',
             ],
             [
+                'name'         => 'member',
+                'display_name' => 'Member',
+                'description'  => 'User has customized access to his user group',
+            ],
+            [
                 'name'         => 'owner',
                 'display_name' => 'Site Owner',
                 'description'  => 'User has full access to his user group',

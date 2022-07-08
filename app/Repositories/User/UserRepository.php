@@ -320,7 +320,7 @@ class UserRepository implements UserRepositoryInterface
      *
      * @return bool
      */
-    public function attachRole(User $user, string $role): bool
+    public function attachRole(User $user, mixed $role): bool
     {
         setPermissionsTeamId($user->user_group_id);
         $user->assignRole($role);
