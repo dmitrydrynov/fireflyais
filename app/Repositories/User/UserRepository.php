@@ -162,7 +162,7 @@ class UserRepository implements UserRepositoryInterface
         $groups = UserGroup::get();
         /** @var UserGroup $group */
         foreach ($groups as $group) {
-            $count = $group->groupMemberships()->count();
+            $count = $group->members()->count();
             if (0 === $count) {
                 Log::info(sprintf('Deleted empty group #%d ("%s")', $group->id, $group->title));
                 $group->delete();

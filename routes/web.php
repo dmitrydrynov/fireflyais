@@ -1136,7 +1136,7 @@ Route::group(
 Route::group(
     ['middleware' => ['user-full-auth', 'permission:members.read'], 'namespace' => 'FireflyIII\Http\Controllers', 'prefix' => 'members', 'as' => 'members.'],
     static function () {
-        Route::get('', ['uses' => 'Member\IndexController@index', 'as' => 'index'])->middleware(['permission:members.read']);
+        Route::get('', ['uses' => 'Member\IndexController@index', 'as' => 'index']);
         Route::get('create', ['uses' => 'Member\CreateController@create', 'as' => 'create']);
         Route::get('edit/{user}', ['uses' => 'Member\EditController@edit', 'as' => 'edit']);
         Route::get('delete/{user}', ['uses' => 'Member\DeleteController@delete', 'as' => 'delete']);

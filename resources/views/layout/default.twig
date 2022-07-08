@@ -79,7 +79,7 @@
                 {% if appData.companies %}
                     <div id="company_select"></div>
                 {% else %}
-                    {{ Auth.user.userGroup.title }}
+                    <div class="company-name">{{ Auth.user.userGroup.title }}</div>
                 {% endif %}
             </div>
 

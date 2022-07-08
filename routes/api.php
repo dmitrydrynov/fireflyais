@@ -668,13 +668,12 @@ Route::group(
  */
 Route::group(
     [
-        'middleware' => ['permission:members.update'],
         'namespace' => 'FireflyIII\Api\V1\Controllers', 'prefix' => 'members',
         'as'        => 'api.v1.members.',
     ],
     static function () {
-        Route::post('store', ['uses' => 'MemberController@store', 'as' => 'store']);
-        Route::post('update', ['uses' => 'MemberController@update', 'as' => 'update']);
+        Route::post('store', ['uses' => 'MemberController@store', 'as' => 'store'])->middleware('permission:members.create');
+        Route::post('update', ['uses' => 'MemberController@update', 'as' => 'update'])->middleware('permission:members.update');
     }
 );
 
