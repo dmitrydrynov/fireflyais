@@ -272,8 +272,12 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function accounts(): HasMany
+    public function accounts(): HasMany | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Account::query();
+        }
+
         return $this->hasMany(Account::class, 'user_group_id', 'user_group_id');
     }
 
@@ -283,8 +287,12 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function attachments(): HasMany
+    public function attachments(): HasMany | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Attachment::query();
+        }
+
         return $this->hasMany(Attachment::class, 'user_group_id', 'user_group_id');
     }
 
@@ -294,8 +302,12 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function availableBudgets(): HasMany
+    public function availableBudgets(): HasMany | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return AvailableBudget::query();
+        }
+
         return $this->hasMany(AvailableBudget::class, 'user_group_id', 'user_group_id');
     }
 
@@ -305,8 +317,12 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function bills(): HasMany
+    public function bills(): HasMany | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Bill::query();
+        }
+
         return $this->hasMany(Bill::class, 'user_group_id', 'user_group_id');
     }
 
@@ -316,8 +332,12 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function budgets(): HasMany
+    public function budgets(): HasMany | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Budget::query();
+        }
+
         return $this->hasMany(Budget::class, 'user_group_id', 'user_group_id');
     }
 
@@ -327,8 +347,12 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function categories(): HasMany
+    public function categories(): HasMany | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Category::query();
+        }
+
         return $this->hasMany(Category::class, 'user_group_id', 'user_group_id');
     }
 
@@ -338,8 +362,12 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function currencyExchangeRates(): HasMany
+    public function currencyExchangeRates(): HasMany | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return CurrencyExchangeRate::query();
+        }
+
         return $this->hasMany(CurrencyExchangeRate::class);
     }
 
@@ -428,8 +456,12 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function objectGroups(): HasMany
+    public function objectGroups(): HasMany | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return ObjectGroup::query();
+        }
+
         return $this->hasMany(ObjectGroup::class);
     }
 
@@ -439,8 +471,12 @@ class User extends Authenticatable
      *
      * @return HasManyThrough
      */
-    public function piggyBanks(): HasManyThrough
+    public function piggyBanks(): HasManyThrough | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return PiggyBank::query();
+        }
+        
         return $this->hasManyThrough(PiggyBank::class, Account::class);
     }
 
@@ -461,8 +497,12 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function recurrences(): HasMany
+    public function recurrences(): HasMany | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Recurrence::query();
+        }
+
         return $this->hasMany(Recurrence::class, 'user_group_id', 'user_group_id');
     }
 
@@ -472,8 +512,12 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function ruleGroups(): HasMany
+    public function ruleGroups(): HasMany | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return RuleGroup::query();
+        }
+
         return $this->hasMany(RuleGroup::class, 'user_group_id', 'user_group_id');
     }
 
@@ -483,8 +527,12 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function rules(): HasMany
+    public function rules(): HasMany | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Rule::query();
+        }
+
         return $this->hasMany(Rule::class, 'user_group_id', 'user_group_id');
     }
 
@@ -534,8 +582,12 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function tags(): HasMany
+    public function tags(): HasMany | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Tag::query();
+        }
+
         return $this->hasMany(Tag::class, 'user_group_id', 'user_group_id');
     }
 
@@ -545,8 +597,12 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function transactionGroups(): HasMany
+    public function transactionGroups(): HasMany | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return TransactionGroup::query();
+        }
+
         return $this->hasMany(TransactionGroup::class, 'user_group_id', 'user_group_id');
     }
 
@@ -556,8 +612,12 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function transactionJournals(): HasMany
+    public function transactionJournals(): HasMany | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return TransactionJournal::query();
+        }
+
         return $this->hasMany(TransactionJournal::class, 'user_group_id', 'user_group_id');
     }
 
@@ -567,8 +627,12 @@ class User extends Authenticatable
      *
      * @return HasManyThrough
      */
-    public function transactions(): HasManyThrough
+    public function transactions(): HasManyThrough | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Transaction::query();
+        }
+
         return $this->hasManyThrough(Transaction::class, TransactionJournal::class);
     }
 
@@ -588,8 +652,12 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function webhooks(): HasMany
+    public function webhooks(): HasMany | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Webhook::query();
+        }
+
         return $this->hasMany(Webhook::class, 'user_group_id', 'user_group_id');
     }
     // end LDAP related code

@@ -676,18 +676,3 @@ Route::group(
         Route::post('update', ['uses' => 'MemberController@update', 'as' => 'update'])->middleware('permission:members.update');
     }
 );
-
-/**
- * SUPERADMIN ROUTES
- */
-Route::group(
-    [
-        'middleware' => ['isSuperAdmin'],
-        'namespace' => 'FireflyIII\Api\V1\Controllers', 'prefix' => 'admin',
-        'as'        => 'api.v1.admin.',
-    ],
-    static function () {
-
-        Route::post('switch-user-group', ['uses' => 'SuperadminController@switchUserGroup', 'as' => 'switch-user-group']);
-    }
-);

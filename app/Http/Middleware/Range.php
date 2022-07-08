@@ -57,6 +57,8 @@ class Range
             // set more view variables:
             $this->configureList();
 
+            $this->setActiveCompany();
+
         }
 
         return $next($request);
@@ -142,5 +144,10 @@ class Range
             app('view')->share('upgrade_security_message', app('fireflyconfig')->get('upgrade_security_message')->data);
             app('view')->share('upgrade_security_level', app('fireflyconfig')->get('upgrade_security_level')->data);
         }
+    }
+
+    private function setActiveCompany(): void
+    {
+        app('session')->put('activeCompany', getPermissionsTeamId());
     }
 }

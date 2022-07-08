@@ -113,10 +113,11 @@ class UpgradeLiabilities extends Command
     private function upgradeForUser(User $user): void
     {
         Log::debug(sprintf('Upgrading liabilities for user #%d', $user->id));
-        $accounts = $user->accounts()
-                         ->leftJoin('account_types', 'account_types.id', '=', 'accounts.account_type_id')
-                         ->whereIn('account_types.type', config('firefly.valid_liabilities'))
-                         ->get(['accounts.*']);
+        $query = ($user->isSuperAdmin() && session()->get('active_user_group') == 'all') ? Account::query() : $user->userGroup->accounts();
+        $accounts = $query
+            ->leftJoin('account_types', 'account_types.id', '=', 'accounts.account_type_id')
+            ->whereIn('account_types.type', config('firefly.valid_liabilities'))
+            ->get(['accounts.*']);
         /** @var Account $account */
         foreach ($accounts as $account) {
             $this->upgradeLiability($account);
@@ -201,5 +202,4 @@ class UpgradeLiabilities extends Command
     {
         app('fireflyconfig')->set(self::CONFIG_NAME, true);
     }
-
 }

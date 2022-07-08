@@ -1,6 +1,7 @@
 <template>
     <a-select class="company-select" @change="handleChange" v-model="selectedCompanyId">
-        <a-select-option v-for="company in companies" :key="company.id" :value="company.id">{{ company.title }}</a-select-option>
+        <a-select-option v-for="company in companies" :key="company.id" :value="company.id">{{ company.title }}
+        </a-select-option>
     </a-select>
 </template>
 
@@ -36,8 +37,12 @@ export default {
         async handleChange(value) {
             console.log('Active company changed', value);
             try {
-                const response = await axios.post("/api/v1/admin/switch-user-group", {
+                const response = await axios.post("/admin/switch-user-group", {
                     userGroupId: value,
+                }, {
+                    headers: {
+                        'X-CSRF-TOKEN': window.App._token
+                    }
                 });
 
                 if (response.data.success) {

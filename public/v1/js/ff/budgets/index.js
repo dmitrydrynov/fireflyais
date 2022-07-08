@@ -202,7 +202,7 @@ function createBudgetLimit(e) {
     e.preventDefault();
     var button = $(e.currentTarget);
     var budgetId = button.data('id'); 
-    debugger;
+
     $('#defaultModal').empty().load(createBudgetLimitUrl.replace('REPLACEME', budgetId.toString()), function () {
         $('#defaultModal').modal('show');
     });

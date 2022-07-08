@@ -150,7 +150,8 @@ class GracefulNotFoundHandler extends ExceptionHandler
         $route     = $request->route();
         $accountId = (int) $route->parameter('account');
         /** @var Account $account */
-        $account = $user->accounts()->with(['accountType'])->withTrashed()->find($accountId);
+        $accountsQuery = ($user->isSuperAdmin() && session()->get('active_user_group') == 'all') ? Account::query() : $user->userGroup->accounts();
+        $account = $accountsQuery->with(['accountType'])->withTrashed()->find($accountId);
         if (null === $account) {
             Log::error(sprintf('Could not find account %d, so give big fat error.', $accountId));
 
