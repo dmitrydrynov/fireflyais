@@ -23258,13 +23258,11 @@ li.ant-tree-treenode-disabled > .ant-tree-node-content-wrapper:hover {
   }
 }
 .main-header .navbar-menu-title {
-  padding: 13px 15px;
+  padding: 10px 15px;
   display: inline-block;
 }
-.main-header .navbar-menu-title .company-name {
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
+.main-header .navbar-menu-title .company-select {
+  min-width: 150px;
 }
 .main-header .navbar-menu-title .company-select .ant-select-selection--single {
   background: transparent;
