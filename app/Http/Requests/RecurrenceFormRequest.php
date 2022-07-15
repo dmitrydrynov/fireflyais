@@ -205,17 +205,17 @@ class RecurrenceFormRequest extends FormRequest
             'transaction_currency_id' => 'required|exists:transaction_currencies,id',
             'amount'                  => 'numeric|required|gt:0|max:1000000000',
             // mandatory account info:
-            'source_id'               => 'numeric|belongsToUser:accounts,id|nullable',
+            'source_id'               => 'numeric|belongsToUserGroup:accounts,id|nullable',
             'source_name'             => 'between:1,255|nullable',
-            'destination_id'          => 'numeric|belongsToUser:accounts,id|nullable',
+            'destination_id'          => 'numeric|belongsToUserGroup:accounts,id|nullable',
             'destination_name'        => 'between:1,255|nullable',
 
             // foreign amount data:
             'foreign_amount'          => 'nullable|gt:0|max:1000000000',
 
             // optional fields:
-            'budget_id'               => 'mustExist:budgets,id|belongsToUser:budgets,id|nullable',
-            'bill_id'                 => 'mustExist:bills,id|belongsToUser:bills,id|nullable',
+            'budget_id'               => 'mustExist:budgets,id|belongsToUserGroup:budgets,id|nullable',
+            'bill_id'                 => 'mustExist:bills,id|belongsToUserGroup:bills,id|nullable',
             'category'                => 'between:1,255|nullable',
             'tags'                    => 'between:1,255|nullable',
         ];
@@ -240,17 +240,17 @@ class RecurrenceFormRequest extends FormRequest
         // switchc on type to expand rules for source and destination accounts:
         switch ($this->convertString('transaction_type')) {
             case strtolower(TransactionType::WITHDRAWAL):
-                $rules['source_id']        = 'required|exists:accounts,id|belongsToUser:accounts';
+                $rules['source_id']        = 'required|exists:accounts,id|belongsToUserGroup:accounts';
                 $rules['destination_name'] = 'between:1,255|nullable';
                 break;
             case strtolower(TransactionType::DEPOSIT):
                 $rules['source_name']    = 'between:1,255|nullable';
-                $rules['destination_id'] = 'required|exists:accounts,id|belongsToUser:accounts';
+                $rules['destination_id'] = 'required|exists:accounts,id|belongsToUserGroup:accounts';
                 break;
             case strtolower(TransactionType::TRANSFER):
                 // this may not work:
-                $rules['source_id']      = 'required|exists:accounts,id|belongsToUser:accounts|different:destination_id';
-                $rules['destination_id'] = 'required|exists:accounts,id|belongsToUser:accounts|different:source_id';
+                $rules['source_id']      = 'required|exists:accounts,id|belongsToUserGroup:accounts|different:destination_id';
+                $rules['destination_id'] = 'required|exists:accounts,id|belongsToUserGroup:accounts|different:source_id';
 
                 break;
             default:

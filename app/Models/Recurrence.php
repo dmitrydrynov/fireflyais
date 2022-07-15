@@ -115,7 +115,7 @@ class Recurrence extends Model
         ];
     /** @var array Fields that can be filled */
     protected $fillable
-        = ['user_id', 'transaction_type_id', 'title', 'description', 'first_date', 'repeat_until', 'latest_date', 'repetitions', 'apply_rules', 'active'];
+        = ['user_id', 'transaction_type_id', 'title', 'description', 'first_date', 'repeat_until', 'latest_date', 'repetitions', 'apply_rules', 'active', 'user_group_id'];
     /** @var string The table to store the data in */
     protected $table = 'recurrences';
 

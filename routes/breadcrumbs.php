@@ -170,6 +170,37 @@ try {
         }
     );
 
+    // MEMBERS
+    Breadcrumbs::for(
+        'members.index',
+        static function (Generator $breadcrumbs) {
+            $breadcrumbs->parent('home');
+            $breadcrumbs->push(trans('firefly.list_all_members'), route('members.index'));
+        }
+    );
+    Breadcrumbs::for(
+        'members.create',
+        static function (Generator $breadcrumbs) {
+            $breadcrumbs->parent('home');
+            $breadcrumbs->push(trans('firefly.list_all_members'), route('members.index'));
+            $breadcrumbs->push(trans('firefly.add_member'), route('members.create'));
+        }
+    );
+    Breadcrumbs::for(
+        'members.edit',
+        static function (Generator $breadcrumbs, User $member) {
+            $breadcrumbs->parent('members.index');
+            $breadcrumbs->push(trans('firefly.list_all_members'), route('members.edit', [$member->id]));
+        }
+    );
+    Breadcrumbs::for(
+        'members.delete',
+        static function (Generator $breadcrumbs, User $member) {
+            $breadcrumbs->parent('home');
+            $breadcrumbs->push(trans('firefly.delete_member', ['email' => $member->email]), route('members.delete', [$member->id]));
+        }
+    );
+
     // ADMIN
     Breadcrumbs::for(
         'admin.index',
@@ -192,6 +223,13 @@ try {
         static function (Generator $breadcrumbs, User $user) {
             $breadcrumbs->parent('admin.users');
             $breadcrumbs->push(trans('firefly.single_user_administration', ['email' => $user->email]), route('admin.users.show', [$user->id]));
+        }
+    );
+    Breadcrumbs::for(
+        'admin.users.add',
+        static function (Generator $breadcrumbs) {
+            $breadcrumbs->parent('admin.users');
+            $breadcrumbs->push(trans('firefly.add_user'), route('admin.users.add'));
         }
     );
     Breadcrumbs::for(

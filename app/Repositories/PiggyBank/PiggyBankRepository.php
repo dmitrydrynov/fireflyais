@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PiggyBankRepository.php
  * Copyright (c) 2019 james@firefly-iii.org
@@ -18,6 +19,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace FireflyIII\Repositories\PiggyBank;
@@ -239,7 +241,7 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
         $room    = bcsub((string) $piggyBank->targetamount, (string) $repetition->currentamount);
         $compare = bcmul($repetition->currentamount, '-1');
 
-        if(bccomp((string) $piggyBank->targetamount,'0') === 0) {
+        if (bccomp((string) $piggyBank->targetamount, '0') === 0) {
             // amount is zero? then the "room" is positive amount of we wish to add or remove.
             $room = app('steam')->positive($amount);
             Log::debug(sprintf('Room is now %s', $room));
@@ -321,7 +323,11 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
      */
     public function getPiggyBanks(): Collection
     {
-        return $this->user->piggyBanks()->with(['account', 'objectGroups'])->orderBy('order', 'ASC')->get();
+        return PiggyBank::join('accounts', 'account_id', '=', 'accounts.id')
+            ->where('accounts.user_group_id', $this->user->user_group_id)
+            ->with(['account', 'objectGroups'])
+            ->orderBy('piggy_banks.order', 'ASC')
+            ->get(['piggy_banks.*']);
     }
 
     /**
@@ -396,7 +402,7 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
             $search->where('piggy_banks.name', 'LIKE', sprintf('%%%s%%', $query));
         }
         $search->orderBy('piggy_banks.order', 'ASC')
-               ->orderBy('piggy_banks.name', 'ASC');
+            ->orderBy('piggy_banks.name', 'ASC');
 
         return $search->take($limit)->get();
     }

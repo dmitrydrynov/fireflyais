@@ -1,29 +1,43 @@
-/*!
- * app.scss
- * Copyright (c) 2019 james@firefly-iii.org
- *
- * This file is part of Firefly III (https://github.com/firefly-iii).
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
+@import url(ant-design-vue/dist/antd.css);
 
-/* TODO REMOVE ME */
-// Variables
-//@import "variables";
+.main-header {
+    .navbar-menu-title {
+        padding: 10px 15px;
+        display: inline-block;
 
-// Bootstrap
-//@import "~bootstrap-sass/assets/stylesheets/bootstrap";
+        .company-name {
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 30px;
+        }
 
-// Font awesome
-//@import "~font-awesome/css/font-awesome";
+        .company-select {
+            min-width: 150px;
+
+            .ant-select-selection--single {
+                background: transparent;
+                color: white;
+                border: unset;
+                font-size: 16px;
+                font-weight: bold;
+
+                .ant-select-selection__rendered {
+                    margin-right: 32px;
+                }
+
+                &:hover {
+                    background: #ffffff14;
+                }
+            }
+
+            .ant-select-arrow svg {
+                fill: #ffffff77;
+            }
+        }
+    }
+}
+
+.ant-message {
+    z-index: 9999;
+}

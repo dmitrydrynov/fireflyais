@@ -118,7 +118,7 @@ class PiggyBank extends Model
             $piggyBankId = (int) $value;
             $piggyBank   = self::where('piggy_banks.id', $piggyBankId)
                                ->leftJoin('accounts', 'accounts.id', '=', 'piggy_banks.account_id')
-                               ->where('accounts.user_id', auth()->user()->id)->first(['piggy_banks.*']);
+                               ->where('accounts.user_group_id', auth()->user()->user_group_id)->first(['piggy_banks.*']);
             if (null !== $piggyBank) {
                 return $piggyBank;
             }

@@ -23,6 +23,10 @@
 declare(strict_types=1);
 
 return [
+    '403_header'              => "User doesn't have the right permissions.",
+    '403_page_does_not_have_permissions' => "You doesn't have the right permissions for this page. Please check your permissions with the administrator or user group owner.",
+    '403_page_return_to_dashboard' => 'Return to Dashboard',
+    '403_page_return_to_home' => 'Return to home page',
     '404_header'              => 'Firefly III cannot find this page.',
     '404_page_does_not_exist' => 'The page you have requested does not exist. Please check that you have not entered the wrong URL. Did you make a typo perhaps?',
     '404_send_error'          => 'If you were redirected to this page automatically, please accept my apologies. There is a mention of this error in your log files and I would be grateful if you sent me the error to me.',

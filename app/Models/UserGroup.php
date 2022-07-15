@@ -24,11 +24,14 @@ declare(strict_types=1);
 
 namespace FireflyIII\Models;
 
+use FireflyIII\User;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Carbon;
 
 /**
@@ -39,7 +42,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null                       $updated_at
  * @property string|null                       $deleted_at
  * @property string                            $title
- * @property-read Collection|GroupMembership[] $groupMemberships
  * @property-read int|null                     $group_memberships_count
  * @method static Builder|UserGroup newModelQuery()
  * @method static Builder|UserGroup newQuery()
@@ -60,8 +62,53 @@ class UserGroup extends Model
      *
      * @return HasMany
      */
-    public function groupMemberships(): HasMany
+    public function members(): HasMany
     {
-        return $this->hasMany(GroupMembership::class);
+        return $this->hasMany(User::class );
+    }
+
+    public function accounts(): HasMany
+    {
+        return $this->hasMany(Account::class);
+    }
+
+    public function budgets(): HasMany
+    {
+        return $this->hasMany(Budget::class);
+    }
+
+    public function bills(): HasMany
+    {
+        return $this->hasMany(Bill::class);
+    }
+
+    public function availableBudgets(): HasMany
+    {
+        return $this->hasMany(AvailableBudget::class);
+    }
+
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class);
+    }
+
+    public function rules(): HasMany
+    {
+        return $this->hasMany(Rule::class);
+    }
+
+    public function tags(): HasMany
+    {
+        return $this->hasMany(Tag::class);
+    }
+
+    public function transactions(): HasManyThrough
+    {
+        return $this->hasManyThrough(Transaction::class, TransactionJournal::class);
+    }
+
+    public function transactionJournals(): HasMany
+    {
+        return $this->hasMany(TransactionJournal::class);
     }
 }

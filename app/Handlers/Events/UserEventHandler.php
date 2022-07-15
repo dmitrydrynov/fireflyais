@@ -1,4 +1,5 @@
 <?php
+
 /**
  * UserEventHandler.php
  * Copyright (c) 2019 james@firefly-iii.org
@@ -19,6 +20,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 /** @noinspection NullPointerExceptionInspection */
+
 declare(strict_types=1);
 
 namespace FireflyIII\Handlers\Events;
@@ -69,7 +71,7 @@ class UserEventHandler
         // first user ever?
         if (1 === $repository->count()) {
             Log::debug('User count is one, attach role.');
-            $repository->attachRole($event->user, 'owner');
+            $repository->attachRole($event->user, ['superadmin', 'owner']);
         }
 
         return true;
@@ -92,18 +94,18 @@ class UserEventHandler
         $count = $repository->count();
 
         // only act when there is 1 user in the system and he has no admin rights.
-        if (1 === $count && !$repository->hasRole($user, 'owner')) {
-            // user is the only user but does not have role "owner".
-            $role = $repository->getRole('owner');
-            if (null === $role) {
+        if (1 === $count && !$user->isSuperAdmin()) {
+            // user is the only user but does not have role "superadmin".
+            $role = $user->isSuperAdmin();
+            if (!$role) {
                 // create role, does not exist. Very strange situation so let's raise a big fuss about it.
-                $role = $repository->createRole('owner', 'Site Owner', 'User runs this instance of FF3');
-                Log::error('Could not find role "owner". This is weird.');
+                $role = $repository->createRole('superadmin', 'Super Admin', 'User runs this instance of FF3');
+                Log::error('Could not find role "superadmin". This is weird.');
             }
 
             Log::info(sprintf('Gave user #%d role #%d ("%s")', $user->id, $role->id, $role->name));
             // give user the role
-            $repository->attachRole($user, 'owner');
+            $repository->attachRole($user, 'superadmin');
         }
 
         return true;
@@ -117,6 +119,7 @@ class UserEventHandler
      */
     public function createGroupMembership(RegisteredUser $event): bool
     {
+        $group = (object)[];
         $user        = $event->user;
         $groupExists = true;
         $groupTitle  = $user->email;
@@ -205,7 +208,6 @@ class UserEventHandler
             if (false === $entry['notified']) {
                 try {
                     Mail::to($email)->send(new NewIPAddressWarningMail($ipAddress));
-
                 } catch (Exception $e) { // @phpstan-ignore-line
                     Log::error($e->getMessage());
                 }
@@ -233,7 +235,6 @@ class UserEventHandler
         $url      = route('profile.confirm-email-change', [$token->data]);
         try {
             Mail::to($newEmail)->send(new ConfirmEmailChangeMail($newEmail, $oldEmail, $url));
-
         } catch (Exception $e) { // @phpstan-ignore-line
             Log::error($e->getMessage());
         }
@@ -259,7 +260,6 @@ class UserEventHandler
         $url      = route('profile.undo-email-change', [$token->data, $hashed]);
         try {
             Mail::to($oldEmail)->send(new UndoEmailChangeMail($newEmail, $oldEmail, $url));
-
         } catch (Exception $e) { // @phpstan-ignore-line
             Log::error($e->getMessage());
         }
@@ -285,7 +285,6 @@ class UserEventHandler
         // send email.
         try {
             Mail::to($email)->send(new RequestedNewPasswordMail($url, $ipAddress));
-
         } catch (Exception $e) { // @phpstan-ignore-line
             Log::error($e->getMessage());
         }
@@ -319,11 +318,9 @@ class UserEventHandler
             // send email.
             try {
                 Mail::to($email)->send(new RegisteredUserMail($url));
-
             } catch (Exception $e) { // @phpstan-ignore-line
                 Log::error($e->getMessage());
             }
-
         }
 
         return true;
@@ -339,7 +336,7 @@ class UserEventHandler
         $user = $event->user;
         /** @var array $preference */
 
-        if($user->hasRole('demo')) {
+        if ($user->hasRole('demo')) {
             Log::debug('Do not log demo user logins');
             return;
         }
@@ -384,6 +381,5 @@ class UserEventHandler
         if (false === $inArray && true === config('firefly.warn_new_ip')) {
             event(new DetectedNewIPAddress($user, $ip));
         }
-
     }
 }

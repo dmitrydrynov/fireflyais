@@ -413,9 +413,9 @@ class Steam
     {
         $list = [];
 
-        $set = auth()->user()->transactions()
+        $set = auth()->user()->userGroup->transactions()
                      ->whereIn('transactions.account_id', $accounts)
-                     ->groupBy(['transactions.account_id', 'transaction_journals.user_id'])
+                     ->groupBy(['transactions.account_id', 'transaction_journals.user_group_id'])
                      ->get(['transactions.account_id', DB::raw('MAX(transaction_journals.date) AS max_date')]); // @phpstan-ignore-line
 
         foreach ($set as $entry) {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AuthServiceProvider.php
  * Copyright (c) 2019 james@firefly-iii.org
@@ -18,6 +19,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace FireflyIII\Providers;
@@ -27,6 +29,7 @@ use FireflyIII\Support\Authentication\RemoteUserProvider;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\Passport;
+use Illuminate\Support\Facades\Gate;
 
 /**
  * @codeCoverageIgnore
@@ -40,9 +43,9 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies
-        = [
-            // 'FireflyIII\Model' => 'FireflyIII\Policies\ModelPolicy',
-        ];
+    = [
+        // 'FireflyIII\Model' => 'FireflyIII\Policies\ModelPolicy',
+    ];
 
     /**
      * Register any authentication / authorization services.
@@ -52,19 +55,34 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Auth::provider(
-            'remote_user_provider', function ($app, array $config) {
-            return new RemoteUserProvider;
-        }
+            'remote_user_provider',
+            function ($app, array $config) {
+                return new RemoteUserProvider;
+            }
         );
 
         Auth::extend(
-            'remote_user_guard', static function ($app, string $name, array $config) {
-            return new RemoteUserGuard(Auth::createUserProvider($config['provider']), $app);
-        }
+            'remote_user_guard',
+            static function ($app, string $name, array $config) {
+                return new RemoteUserGuard(Auth::createUserProvider($config['provider']), $app);
+            }
         );
 
         $this->registerPolicies();
         Passport::routes();
         Passport::tokensExpireIn(now()->addDays(14));
+
+        // set all permissions for super admin
+        Gate::after(
+            function ($user) {
+                setPermissionsTeamId($user->user_group_id);
+
+                if (!session()->has('active_user_group')) {
+                    session()->put('active_user_group', $user->user_group_id);
+                }
+
+                return $user->isSuperAdmin();
+            }
+        );
     }
 }

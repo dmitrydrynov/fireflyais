@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NewUserController.php
  * Copyright (c) 2019 james@firefly-iii.org
@@ -18,6 +19,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace FireflyIII\Http\Controllers;
@@ -95,7 +97,6 @@ class NewUserController extends Controller
         $language = $request->convertString('language');
         if (!array_key_exists($language, config('firefly.languages'))) {
             $language = 'en_US';
-
         }
 
         // set language preference:
@@ -124,8 +125,10 @@ class NewUserController extends Controller
         app('preferences')->mark();
 
         // set default optional fields:
-        $visibleFields = ['interest_date' => true, 'book_date' => false, 'process_date' => false, 'due_date' => false, 'payment_date' => false,
-                          'invoice_date'  => false, 'internal_reference' => false, 'notes' => true, 'attachments' => true,];
+        $visibleFields = [
+            'interest_date' => true, 'book_date' => false, 'process_date' => false, 'due_date' => false, 'payment_date' => false,
+            'invoice_date'  => false, 'internal_reference' => false, 'notes' => true, 'attachments' => true,
+        ];
         app('preferences')->set('transaction_journal_optional_fields', $visibleFields);
 
         session()->flash('success', (string) trans('firefly.stored_new_accounts_new_user'));
@@ -133,5 +136,4 @@ class NewUserController extends Controller
 
         return redirect(route('index'));
     }
-
 }

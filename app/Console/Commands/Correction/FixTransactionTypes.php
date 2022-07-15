@@ -108,11 +108,7 @@ class FixTransactionTypes extends Command
         }
         $expectedType = (string) config(sprintf('firefly.account_to_transaction.%s.%s', $source->accountType->type, $destination->accountType->type));
         if ($expectedType !== $type) {
-            $this->line(
-                sprintf('Transaction journal #%d was of type "%s" but is corrected to "%s" (%s -> %s)',
-                        $journal->id, $type, $expectedType,
-                        $source->accountType->type, $destination->accountType->type,
-                        ));
+            $this->line(sprintf('Transaction journal #%d was of type "%s" but is corrected to "%s"', $journal->id, $type, $expectedType));
             $this->changeJournal($journal, $expectedType);
 
             return true;

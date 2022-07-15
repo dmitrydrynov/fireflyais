@@ -62,6 +62,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @method static Builder|ObjectGroup whereUpdatedAt($value)
  * @method static Builder|ObjectGroup whereUserId($value)
  * @mixin Eloquent
+ * @property int|null $user_group_id
+ * @method static Builder|ObjectGroup whereUserGroupId($value)
  */
 class ObjectGroup extends Model
 {
@@ -77,7 +79,7 @@ class ObjectGroup extends Model
             'user_id'    => 'integer',
             'deleted_at' => 'datetime',
         ];
-    protected $fillable = ['title', 'order', 'user_id'];
+    protected $fillable = ['title', 'order', 'user_id', 'user_group_id'];
 
     /**
      * Route binder. Converts the key in the URL to the specified object (or throw 404).

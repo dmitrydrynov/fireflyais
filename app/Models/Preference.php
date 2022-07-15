@@ -24,6 +24,7 @@ namespace FireflyIII\Models;
 
 use Eloquent;
 use FireflyIII\User;
+use FireflyIII\Model\UserGroup;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -50,6 +51,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @method static Builder|Preference whereUpdatedAt($value)
  * @method static Builder|Preference whereUserId($value)
  * @mixin Eloquent
+ * @property int|null $user_group_id
+ * @method static Builder|Preference whereUserGroupId($value)
  */
 class Preference extends Model
 {
@@ -92,6 +95,7 @@ class Preference extends Model
                 $preference->name    = $value;
                 $preference->data    = $default[$value];
                 $preference->user_id = $user->id;
+                $preference->user_group_id = $user->user_group_id;
                 $preference->save();
 
                 return $preference;
@@ -107,5 +111,14 @@ class Preference extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @codeCoverageIgnore
+     * @return BelongsTo
+     */
+    public function userGroup(): BelongsTo
+    {
+        return $this->belongsTo(UserGroup::class);
     }
 }

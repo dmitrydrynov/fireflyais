@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Controller.php
  * Copyright (c) 2019 james@firefly-iii.org
@@ -18,10 +19,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace FireflyIII\Http\Controllers;
 
+use FireflyIII\Models\Permission;
+use FireflyIII\Models\UserGroup;
 use FireflyIII\Support\Http\Controllers\RequestInformation;
 use FireflyIII\Support\Http\Controllers\UserNavigation;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -29,6 +33,8 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Route;
+
+use function GuzzleHttp\Promise\each;
 
 /**
  * Class Controller.
@@ -107,6 +113,30 @@ abstract class Controller extends BaseController
                     app('view')->share('shownDemo', $shownDemo);
                     app('view')->share('current_route_name', $page);
                     app('view')->share('original_route_name', Route::currentRouteName());
+
+                    $user = auth()->user();
+
+                    $appData = [
+                        '_token' => csrf_token(),
+                        'roles' => $user->getRoleNames(),
+                        'permissions' => $user->permissions()->pluck('name')->toArray()
+                    ];
+
+                    if ($user->isSuperAdmin()) {
+                        $aciveCompnay = $request->session()->has('active_user_group') ? $request->session()->get('active_user_group') : $user->user_group_id;
+                        $companies = UserGroup::select('id', 'title')->get();
+
+                        $companies->each(function ($company) use ($aciveCompnay) {
+                            $company->active = $company->id === $aciveCompnay;
+                        });
+
+                        $companies->prepend(['id' => 'all', 'title' => 'All companies', 'active' => $aciveCompnay === 'all']);
+
+                        $appData['companies'] = $companies->toArray();
+                        $appData['roles'] = ['superadmin'];
+                    }
+
+                    app('view')->share('appData', $appData);
                 }
 
                 return $next($request);

@@ -224,6 +224,7 @@ class TransactionJournalFactory
                 'order'                   => $order,
                 'tag_count'               => 0,
                 'completed'               => 0,
+                'user_group_id'           => $this->user->user_group_id,
             ]
         );
         Log::debug(sprintf('Created new journal #%d: "%s"', $journal->id, $journal->description));

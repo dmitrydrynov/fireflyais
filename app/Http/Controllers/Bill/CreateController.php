@@ -128,6 +128,10 @@ class CreateController extends Controller
             $request->session()->flash('info', $this->attachments->getMessages()->get('attachments'));
         }
 
-        return redirect(route('rules.create-from-bill', [$bill->id]));
+        if ($request->user()->can('rules.create')) {
+            return redirect(route('rules.create-from-bill', [$bill->id]));
+        } else {
+            return redirect(route('bills.index'));
+        }
     }
 }

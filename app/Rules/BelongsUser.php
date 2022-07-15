@@ -153,11 +153,11 @@ class BelongsUser implements Rule
         // get all objects belonging to user:
         if (PiggyBank::class === $class) {
             $objects = PiggyBank::leftJoin('accounts', 'accounts.id', '=', 'piggy_banks.account_id')
-                                ->where('accounts.user_id', '=', auth()->user()->id)->get(['piggy_banks.*']);
+                                ->where('accounts.user_group_id', '=', auth()->user()->user_group_id)->get(['piggy_banks.*']);
 
         }
         if (PiggyBank::class !== $class) {
-            $objects = $class::where('user_id', '=', auth()->user()->id)->get();
+            $objects = $class::where('user_group_id', '=', auth()->user()->user_group_id)->get();
         }
         $count = 0;
         foreach ($objects as $object) {
@@ -182,7 +182,7 @@ class BelongsUser implements Rule
         if (0 === $value) {
             return true;
         }
-        $count = Bill::where('id', '=', $value)->where('user_id', '=', auth()->user()->id)->count();
+        $count = Bill::where('id', '=', $value)->where('user_group_id', '=', auth()->user()->user_group_id)->count();
 
         return 1 === $count;
     }
@@ -197,7 +197,7 @@ class BelongsUser implements Rule
         if (0 === $value) {
             return true;
         }
-        $count = TransactionJournal::where('id', '=', $value)->where('user_id', '=', auth()->user()->id)->count();
+        $count = TransactionJournal::where('id', '=', $value)->where('user_group_id', '=', auth()->user()->user_group_id)->count();
 
         return 1 === $count;
     }
@@ -225,7 +225,7 @@ class BelongsUser implements Rule
         if (0 === $value) {
             return true;
         }
-        $count = Budget::where('id', '=', $value)->where('user_id', '=', auth()->user()->id)->count();
+        $count = Budget::where('id', '=', $value)->where('user_group_id', '=', auth()->user()->user_group_id)->count();
 
         return 1 === $count;
     }
@@ -237,7 +237,7 @@ class BelongsUser implements Rule
      */
     private function validateCategoryId(int $value): bool
     {
-        $count = Category::where('id', '=', $value)->where('user_id', '=', auth()->user()->id)->count();
+        $count = Category::where('id', '=', $value)->where('user_group_id', '=', auth()->user()->user_group_id)->count();
 
         return 1 === $count;
     }
@@ -265,7 +265,7 @@ class BelongsUser implements Rule
             // its ok to submit 0. other checks will fail.
             return true;
         }
-        $count = Account::where('id', '=', $value)->where('user_id', '=', auth()->user()->id)->count();
+        $count = Account::where('id', '=', $value)->where('user_group_id', '=', auth()->user()->user_group_id)->count();
 
         return 1 === $count;
     }

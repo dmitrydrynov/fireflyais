@@ -89,7 +89,7 @@ class Category extends Model
             'encrypted'  => 'boolean',
         ];
     /** @var array Fields that can be filled */
-    protected $fillable = ['user_id', 'name'];
+    protected $fillable = ['user_id', 'name', 'user_group_id'];
     /** @var array Hidden from view */
     protected $hidden = ['encrypted'];
 

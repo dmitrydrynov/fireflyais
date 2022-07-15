@@ -1,0 +1,100 @@
+version: '3'
+services:
+    dev:
+        container_name: fireflyais_app-dev
+        build:
+            context: .
+            dockerfile: .deploy/docker/local/Dockerfile
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '${APP_PORT:-80}:80'
+            - '${HMR_PORT:-8080}:8080'
+        env_file: .env
+        environment:
+            WWWUSER: '${WWWUSER:-1000}'
+        volumes:
+            - '.:/app'
+        networks:
+            - fireflyais-network
+        depends_on:
+            - db
+            - redis
+            - mailhog
+    prod:
+        container_name: fireflyais_app-prod
+        build:
+            context: .
+            dockerfile: .deploy/docker/production/Dockerfile
+        tty: true
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '${APP_PORT:-80}:80'
+            - '${HMR_PORT:-8080}:8080'
+        env_file: .env
+        environment:
+            WWWUSER: '${WWWUSER:-1000}'
+        networks:
+            - fireflyais-network
+        depends_on:
+            - db
+            - redis
+    db:
+        container_name: fireflyais_db
+        image: 'postgres:14'
+        ports:
+            - '${FORWARD_DB_PORT:-5432}:5432'
+        environment:
+            PGPASSWORD: '${DB_PASSWORD:-secret}'
+            POSTGRES_DB: '${DB_DATABASE}'
+            POSTGRES_USER: '${DB_USERNAME}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+        volumes:
+            - 'fireflyais-pgsql:/var/lib/postgresql/data'
+        networks:
+            - fireflyais-network
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "pg_isready",
+                    "-q",
+                    "-d",
+                    "${DB_DATABASE}",
+                    "-U",
+                    "${DB_USERNAME}"
+                ]
+            retries: 3
+            timeout: 5s
+    redis:
+        container_name: fireflyais_redis
+        image: 'redis:alpine'
+        ports:
+            - '${FORWARD_REDIS_PORT:-6379}:6379'
+        volumes:
+            - 'fireflyais-redis:/data'
+        networks:
+            - fireflyais-network
+        healthcheck:
+            test: [ "CMD", "redis-cli", "ping" ]
+            retries: 3
+            timeout: 5s
+    mailhog:
+        container_name: fireflyais_mailserver
+        image: mailhog/mailhog:latest
+        tty: true
+        ports:
+            - "1025:1025"
+            - "8025:8025"
+        networks:
+            - fireflyais-network
+
+networks:
+    fireflyais-network:
+        driver: bridge
+volumes:
+    fireflyais-pgsql:
+        driver: local
+    fireflyais-redis:
+        driver: local

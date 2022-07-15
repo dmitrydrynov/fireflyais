@@ -18,18 +18,41 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-let mix = require('laravel-mix');
+let mix = require("laravel-mix");
 
 mix.webpackConfig({
-                      resolve: {
-                          alias: {
-                              'vue$': 'vue/dist/vue.runtime.common.js'
-                          }
-                      }
-                  });
+    resolve: {
+        alias: {
+            vue$: "vue/dist/vue.runtime.common.js",
+        },
+    },
+});
 
-mix.js('resources/assets/js/app.js', 'public/v1/js');
-mix.js('resources/assets/js/app_vue.js', 'public/v1/js').vue({version: 2});
-mix.js('resources/assets/js/create_transaction.js', 'public/v1/js').vue({version: 2});
-mix.js('resources/assets/js/edit_transaction.js', 'public/v1/js').vue({version: 2});
-mix.js('resources/assets/js/profile.js', 'public/v1/js').vue({version: 2});
+mix.js("resources/assets/js/app.js", "public/v1/js");
+mix.js("resources/assets/js/app_vue.js", "public/v1/js").vue({ version: 2 });
+mix.js("resources/assets/js/create_transaction.js", "public/v1/js").vue({
+    version: 2,
+});
+mix.js("resources/assets/js/edit_transaction.js", "public/v1/js").vue({
+    version: 2,
+});
+mix.js("resources/assets/js/profile.js", "public/v1/js").vue({ version: 2 });
+mix.js("resources/assets/js/company_select.js", "public/v1/js").vue({
+    version: 2,
+});
+mix.js("resources/assets/js/create_member.js", "public/v1/js").vue({
+    version: 2,
+});
+mix.js("resources/assets/js/edit_member.js", "public/v1/js").vue({
+    version: 2,
+});
+
+mix.sass("resources/assets/sass/app.scss", "public/v1/css");
+
+// mix.browserSync({
+//     proxy: process.env.APP_URL,
+//     files: ["public/**/*", "resources/**/*"],
+//     open: false,
+//     watch: true,
+//     codeSync: true,
+// });

@@ -15,15 +15,21 @@
                             balance: formatAmountBySymbol(balance, currency.symbol, currency.decimal_places, true),
                             name: account.name|escape, start: start.isoFormat(monthAndDayFormat), end: end.isoFormat(monthAndDayFormat) })|raw }}
                     </h3>
-                    <div class="box-tools pull-right">
-                        <div class="btn-group">
-                            <button class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown"><span class="fa fa-ellipsis-v"></span></button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{ route('accounts.edit', account.id) }}"><span class="fa fa-pencil fa-fw"></span> {{ 'edit'|_ }}</a></li>
-                                <li><a href="{{ route('accounts.delete', account.id) }}"><span class="fa fa-trash fa-fw"></span> {{ 'delete'|_ }}</a></li>
-                            </ul>
+                    {% if can('accounts.update') or can('accounts.delete') %}
+                        <div class="box-tools pull-right">
+                            <div class="btn-group">
+                                <button class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown"><span class="fa fa-ellipsis-v"></span></button>
+                                <ul class="dropdown-menu" role="menu">
+                                    {% if can('accounts.update') %}
+                                        <li><a href="{{ route('accounts.edit', account.id) }}"><span class="fa fa-pencil fa-fw"></span> {{ 'edit'|_ }}</a></li>
+                                    {% endif %}
+                                    {% if can('accounts.delete') %}
+                                        <li><a href="{{ route('accounts.delete', account.id) }}"><span class="fa fa-trash fa-fw"></span> {{ 'delete'|_ }}</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
                 </div>
                 <div class="box-body">
                     <div>

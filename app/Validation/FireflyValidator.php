@@ -88,7 +88,26 @@ class FireflyValidator extends Validator
         if (0 === (int) $value) {
             return true;
         }
-        $count = DB::table($parameters[0])->where('user_id', auth()->user()->id)->where($field, $value)->count();
+        $count = DB::table($parameters[0])->where('user_group_id', auth()->user()->user_group_id)->where($field, $value)->count();
+
+        return 1 === $count;
+    }
+
+    /**
+     * @param mixed $attribute
+     * @param mixed $value
+     * @param mixed $parameters
+     *
+     * @return bool
+     */
+    public function validateBelongsToUserGroup($attribute, $value, $parameters): bool
+    {
+        $field = $parameters[1] ?? 'id';
+
+        if (0 === (int) $value) {
+            return true;
+        }
+        $count = DB::table($parameters[0])->where('user_group_id', auth()->user()->user_group_id)->where($field, $value)->count();
 
         return 1 === $count;
     }
@@ -456,7 +475,6 @@ class FireflyValidator extends Validator
         $user  = User::find($this->data['user_id']);
         $type  = AccountType::find($this->data['account_type_id'])->first();
         $value = $this->data['name'];
-
         $set    = $user->accounts()->where('account_type_id', $type->id)->get();
         $result = $set->first(
             function (Account $account) use ($value) {
@@ -724,7 +742,7 @@ class FireflyValidator extends Validator
             $exclude = (int) $data['id'];
         }
         // get entries from table
-        $set = DB::table($table)->where('user_id', auth()->user()->id)->whereNull('deleted_at')
+        $set = DB::table($table)->where('user_group_id', auth()->user()->user_group_id)->whereNull('deleted_at')
                  ->where('id', '!=', $exclude)->get([$field]);
 
         foreach ($set as $entry) {

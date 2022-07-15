@@ -1,4 +1,5 @@
 <?php
+
 /**
  * UserController.php
  * Copyright (c) 2019 james@firefly-iii.org
@@ -18,6 +19,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace FireflyIII\Http\Controllers\Admin;
@@ -25,20 +27,26 @@ namespace FireflyIII\Http\Controllers\Admin;
 use FireflyIII\Http\Controllers\Controller;
 use FireflyIII\Http\Middleware\IsDemoUser;
 use FireflyIII\Http\Requests\UserFormRequest;
+use FireflyIII\Http\Requests\UserStoreRequest;
 use FireflyIII\Repositories\User\UserRepositoryInterface;
 use FireflyIII\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
+use FireflyIII\Support\Http\Controllers\CreateStuff;
 use Illuminate\Routing\Redirector;
 use Illuminate\View\View;
 use Log;
+use FireflyIII\Events\RegisteredUser;
+use FireflyIII\Exceptions\FireflyException;
 
 /**
  * Class UserController.
  */
 class UserController extends Controller
 {
+    use CreateStuff;
+
     protected bool                  $externalIdentity;
     private UserRepositoryInterface $repository;
 
@@ -103,6 +111,61 @@ class UserController extends Controller
     }
 
     /**
+     * Add user form.
+     *
+     * @param User $user
+     *
+     * @return Factory|View
+     */
+    public function add()
+    {
+        $subTitle     = (string) trans('firefly.add_user');
+        $subTitleIcon = 'fa-user-o';
+        $user = new User();
+        $codes        = [
+            ''              => (string) trans('firefly.no_block_code'),
+            'bounced'       => (string) trans('firefly.block_code_bounced'),
+            'expired'       => (string) trans('firefly.block_code_expired'),
+            'email_changed' => (string) trans('firefly.block_code_email_changed'),
+        ];
+
+        return view('admin.users.add', compact('user', 'codes', 'subTitle', 'subTitleIcon'));
+    }
+
+    /**
+     * Store new currency.
+     *
+     * @param UserStoreRequest $request
+     *
+     * @return $this|RedirectResponse|Redirector
+     * @throws FireflyException
+     */
+    public function store(UserStoreRequest $request)
+    {
+        Log::debug('Store new user');
+
+        try {
+            $user = $this->createUser($request->except(['companyName']));
+            Log::info(sprintf('Registered new user %s', $user->email));
+            event(new RegisteredUser($user));
+
+            if ($request->has('companyName') && null !== $user->userGroup) {
+                $user->userGroup->update(['title' => $request->get('companyName')]);
+
+                setPermissionsTeamId($user->user_group_id);
+                $user->assignRole('owner');
+            }
+
+            session()->flash('success', (string) trans('firefly.created_new_user'));
+        } catch (FireflyException $error) {
+            session()->flash('error', trans('firefly.created_user_wrong'));
+        }
+
+        return response()->redirectToRoute('admin.users');
+    }
+
+
+    /**
      * Edit user form.
      *
      * @param User $user
@@ -124,7 +187,7 @@ class UserController extends Controller
         $subTitle     = (string) trans('firefly.edit_user', ['email' => $user->email]);
         $subTitleIcon = 'fa-user-o';
         $currentUser  = auth()->user();
-        $isAdmin      = $this->repository->hasRole($user, 'owner');
+        $isAdmin      = $user->isSuperAdmin();
         $codes        = [
             ''              => (string) trans('firefly.no_block_code'),
             'bounced'       => (string) trans('firefly.block_code_bounced'),
@@ -149,8 +212,8 @@ class UserController extends Controller
         // add meta stuff.
         $users->each(
             function (User $user) {
-                $user->isAdmin = $this->repository->hasRole($user, 'owner');
                 $user->has2FA  = null !== $user->mfa_secret;
+                $user->roleNames = $user->getAllRoleNames(['for_current_user_group' => false])->pluck('name');
             }
         );
 
@@ -204,12 +267,12 @@ class UserController extends Controller
         if (array_key_exists('password', $data) && '' !== $data['password']) {
             $this->repository->changePassword($user, $data['password']);
         }
-        if (true === $data['is_owner']) {
-            $this->repository->attachRole($user, 'owner');
+        if (true === $data['is_superadmin']) {
+            $this->repository->attachRole($user, 'superadmin');
             session()->flash('info', trans('firefly.give_admin_careful'));
         }
-        if (false === $data['is_owner'] && $user->id !== auth()->user()->id) {
-            $this->repository->removeRole($user, 'owner');
+        if (false === $data['is_superadmin'] && $user->id !== auth()->user()->id) {
+            $this->repository->removeRole($user, 'superadmin');
         }
 
         $this->repository->changeStatus($user, $data['blocked'], $data['blocked_code']);
@@ -223,7 +286,6 @@ class UserController extends Controller
             session()->put('users.edit.fromUpdate', true);
 
             $redirect = redirect(route('admin.users.edit', [$user->id]))->withInput(['return_to_edit' => 1]);
-
         }
 
         // redirect to previous URL.

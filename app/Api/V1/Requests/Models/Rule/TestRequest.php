@@ -86,7 +86,7 @@ class TestRequest extends FormRequest
             'start'      => 'date',
             'end'        => 'date|after:start',
             'accounts'   => '',
-            'accounts.*' => 'required|exists:accounts,id|belongsToUser:accounts',
+            'accounts.*' => 'required|exists:accounts,id|belongsToUserGroup:accounts',
         ];
     }
 

@@ -70,7 +70,7 @@ class Authenticate
      */
     public function handle($request, Closure $next, ...$guards)
     {
-        $this->authenticate($request, $guards);
+        $t = $this->authenticate($request, $guards);
 
         return $next($request);
     }
@@ -87,7 +87,6 @@ class Authenticate
      */
     protected function authenticate($request, array $guards)
     {
-
         if (empty($guards)) {
             try {
                 // go for default guard:

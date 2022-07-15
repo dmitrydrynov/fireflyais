@@ -1,4 +1,5 @@
 <?php
+
 /**
  * UserRepository.php
  * Copyright (c) 2019 james@firefly-iii.org
@@ -18,17 +19,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace FireflyIII\Repositories\User;
 
+use Error;
 use Exception;
 use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Models\BudgetLimit;
 use FireflyIII\Models\Role;
 use FireflyIII\Models\UserGroup;
 use FireflyIII\User;
-use Illuminate\Database\QueryException;
+use FireflyIII\Models\Account;
+use FireflyIII\Models\Attachment;
+use FireflyIII\Models\Bill;
+use FireflyIII\Models\Category;
+use FireflyIII\Models\Rule;
+use FireflyIII\Models\RuleGroup;
+use FireflyIII\Models\Tag;
+use FireflyIII\Models\Transaction;
+use FireflyIII\Models\TransactionJournal;
+use FireflyIII\Models\Budget;
 use Illuminate\Support\Collection;
 use Log;
 use Str;
@@ -141,6 +153,10 @@ class UserRepository implements UserRepositoryInterface
     {
         Log::debug(sprintf('Calling delete() on user %d', $user->id));
 
+        if ($user->hasRole('owner')) {
+            $user->userGroup()->delete();
+        }
+
         $user->groupMemberships()->delete();
         $user->delete();
         $this->deleteEmptyGroups();
@@ -156,7 +172,7 @@ class UserRepository implements UserRepositoryInterface
         $groups = UserGroup::get();
         /** @var UserGroup $group */
         foreach ($groups as $group) {
-            $count = $group->groupMemberships()->count();
+            $count = $group->members()->count();
             if (0 === $count) {
                 Log::info(sprintf('Deleted empty group #%d ("%s")', $group->id, $group->title));
                 $group->delete();
@@ -235,11 +251,11 @@ class UserRepository implements UserRepositoryInterface
         $return['categories']          = $user->categories()->count();
         $return['budgets']             = $user->budgets()->count();
         $return['budgets_with_limits'] = BudgetLimit::distinct()
-                                                    ->leftJoin('budgets', 'budgets.id', '=', 'budget_limits.budget_id')
-                                                    ->where('amount', '>', 0)
-                                                    ->whereNull('budgets.deleted_at')
-                                                    ->where('budgets.user_id', $user->id)
-                                                    ->count('budget_limits.budget_id');
+            ->leftJoin('budgets', 'budgets.id', '=', 'budget_limits.budget_id')
+            ->where('amount', '>', 0)
+            ->whereNull('budgets.deleted_at')
+            ->where('budgets.user_id', $user->id)
+            ->count('budget_limits.budget_id');
         $return['rule_groups']         = $user->ruleGroups()->count();
         $return['rules']               = $user->rules()->count();
         $return['tags']                = $user->tags()->count();
@@ -255,14 +271,9 @@ class UserRepository implements UserRepositoryInterface
      */
     public function hasRole(User $user, string $role): bool
     {
-        /** @var Role $userRole */
-        foreach ($user->roles as $userRole) {
-            if ($userRole->name === $role) {
-                return true;
-            }
-        }
+        setPermissionsTeamId($user->user_group_id);
 
-        return false;
+        return $user->hasRole($role);
     }
 
     /**
@@ -290,10 +301,13 @@ class UserRepository implements UserRepositoryInterface
                 'blocked_code' => $data['blocked_code'] ?? null,
                 'email'        => $data['email'],
                 'password'     => Str::random(24),
+                'user_group_id' => auth()->user()->user_group_id || null,
             ]
         );
-        $role = $data['role'] ?? '';
-        if ('' !== $role) {
+
+        $roles = $data['role'] ? explode(',', $data['role']) : [];
+
+        if (count($roles) > 0) foreach ($roles as $role) {
             $this->attachRole($user, $role);
         }
 
@@ -306,23 +320,27 @@ class UserRepository implements UserRepositoryInterface
      *
      * @return bool
      */
-    public function attachRole(User $user, string $role): bool
+    public function attachRole(User $user, mixed $role): bool
     {
-        $roleObject = Role::where('name', $role)->first();
-        if (null === $roleObject) {
-            Log::error(sprintf('Could not find role "%s" in attachRole()', $role));
-
-            return false;
-        }
-
-        try {
-            $user->roles()->attach($roleObject);
-        } catch (QueryException $e) {
-            // don't care
-            Log::error(sprintf('Query exception when giving user a role: %s', $e->getMessage()));
-        }
+        setPermissionsTeamId($user->user_group_id);
+        $user->assignRole($role);
 
         return true;
+        // $roleObject = Role::where('name', $role)->first();
+        // if (null === $roleObject) {
+        //     Log::error(sprintf('Could not find role "%s" in attachRole()', $role));
+
+        //     return false;
+        // }
+
+        // try {
+        //     $user->roles()->attach($roleObject);
+        // } catch (QueryException $e) {
+        //     // don't care
+        //     Log::error(sprintf('Query exception when giving user a role: %s', $e->getMessage()));
+        // }
+
+        // return true;
     }
 
     /**
@@ -333,7 +351,6 @@ class UserRepository implements UserRepositoryInterface
         $user->blocked      = false;
         $user->blocked_code = '';
         $user->save();
-
     }
 
     /**
@@ -355,8 +372,8 @@ class UserRepository implements UserRepositoryInterface
             $user->blocked_code = $data['blocked_code'];
         }
         if (array_key_exists('role', $data) && '' === $data['role']) {
-            $this->removeRole($user, 'owner');
-            $this->removeRole($user, 'demo');
+            $user->removeRole('owner');
+            $user->removeRole('demo');
         }
 
         $user->save();
@@ -400,11 +417,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function removeRole(User $user, string $role): void
     {
-        $roleObj = $this->getRole($role);
-        if (null === $roleObj) {
-            return;
-        }
-        $user->roles()->detach($roleObj->id);
+        $user->removeRole($role);
     }
 
     /**

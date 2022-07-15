@@ -175,10 +175,13 @@ trait CreateStuff
      */
     protected function createUser(array $data): User // create object
     {
+        $users_count = User::count();
+
         return User::create(
             [
                 'email'    => $data['email'],
                 'password' => bcrypt($data['password']),
+                'user_group_id'=> $users_count > 0 ? auth()->user()->user_group_id : null,
             ]
         );
     }

@@ -81,7 +81,7 @@ return [
     'api_key'                     => 'API-ключ',
     'remember_me'                 => 'Запомнить меня',
     'liability_type_id'           => 'Вид ответственности',
-    'liability_type'              => 'Вид обязательств',
+    'liability_type'              => 'Liability type',
     'interest'                    => 'Процентная ставка',
     'interest_period'             => 'Период начисления процентов',
     'extension_date'              => 'Extension date',

@@ -81,7 +81,7 @@ return [
     'email'                   => 'Email',
     'registered_at'           => 'Registered at',
     'is_blocked'              => 'Is blocked',
-    'is_admin'                => 'Is admin',
+    'is_super_admin'          => 'Is super admin',
     'has_two_factor'          => 'Has 2FA',
     'blocked_code'            => 'Block code',
     'source_account'          => 'Source account',
@@ -138,4 +138,6 @@ return [
     'payment_info'            => 'Payment information',
     'expected_info'           => 'Next expected transaction',
     'start_date'              => 'Start date',
+    'company_name'            => 'Company',
+    'company_role'            => 'Role',
 ];

@@ -84,7 +84,8 @@ class AccountFactory
         if (null === $type) {
             throw new FireflyException(sprintf('Cannot find account type "%s"', $accountType));
         }
-        $return = $this->user->accounts->where('account_type_id', $type->id)->where('name', $accountName)->first();
+
+        $return = $this->user->accounts()->where('account_type_id', $type->id)->where('name', $accountName)->first();
 
         if (null === $return) {
             Log::debug('Found nothing. Will create a new one.');
@@ -200,6 +201,7 @@ class AccountFactory
                            'virtual_balance' => $virtualBalance,
                            'active'          => $active,
                            'iban'            => $data['iban'],
+                           'user_group_id'   => $this->user->user_group_id,
         ];
         // fix virtual balance when it's empty
         if ('' === (string) $databaseData['virtual_balance']) {

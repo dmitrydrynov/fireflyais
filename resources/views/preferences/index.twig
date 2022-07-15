@@ -23,6 +23,17 @@
                             <div class="row">
                                 {# general settings column A #}
                                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                    {# user group name #}
+                                    <div class="preferences-box">
+                                        <h3>{{ 'user_group_name'|_ }}</h3>
+                                        <p class="text-info">{{ 'user_group_name_help'|_ }}</p>
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <input type="text" name="user_group_name" class="form-control" value="{{ userGroupName }}" />
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     {# language #}
                                     <div class="preferences-box">
                                         <h3>{{ 'pref_languages'|_ }}</h3>

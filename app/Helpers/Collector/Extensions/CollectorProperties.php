@@ -26,6 +26,7 @@ namespace FireflyIII\Helpers\Collector\Extensions;
 
 use FireflyIII\User;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Trait CollectorProperties
@@ -45,7 +46,7 @@ trait CollectorProperties
     private ?int    $limit;
     private ?int    $page;
     private array   $postFilters;
-    private HasMany $query;
+    private HasMany | Builder $query;
     private int     $total;
     private ?User   $user;
 }

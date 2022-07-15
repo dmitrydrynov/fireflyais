@@ -39,7 +39,6 @@ use FireflyIII\Models\ObjectGroup;
 use FireflyIII\Models\PiggyBank;
 use FireflyIII\Models\Preference;
 use FireflyIII\Models\Recurrence;
-use FireflyIII\Models\Role;
 use FireflyIII\Models\Rule;
 use FireflyIII\Models\RuleGroup;
 use FireflyIII\Models\Tag;
@@ -48,11 +47,14 @@ use FireflyIII\Models\TransactionGroup;
 use FireflyIII\Models\TransactionJournal;
 use FireflyIII\Models\UserGroup;
 use FireflyIII\Models\Webhook;
+use FireflyIII\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
@@ -63,7 +65,11 @@ use Laravel\Passport\Client;
 use Laravel\Passport\HasApiTokens;
 use Laravel\Passport\Token;
 use Request;
+use Spatie\Permission\Traits\HasPermissions;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Spatie\Permission\Traits\HasRoles;
+use FireflyIII\Models\Permission;
+use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 
 /**
  * Class User.
@@ -156,10 +162,20 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @property-read int|null                                                        $group_memberships_count
  * @property-read UserGroup|null                                                  $userGroup
  * @method static Builder|User whereUserGroupId($value)
+ * @property Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|Permission[] $permissions
+ * @property-read int|null $permissions_count
+ * @method static \Illuminate\Database\Query\Builder|User onlyTrashed()
+ * @method static Builder|User permission($permissions)
+ * @method static Builder|User role($roles, $guard = null)
+ * @method static Builder|User whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|User withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|User withoutTrashed()
  */
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens;
+    use Notifiable, HasApiTokens, SoftDeletes;
+    use HasRoles, HasPermissions;
 
     /**
      * The attributes that should be cast to native types.
@@ -167,17 +183,17 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts
-        = [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-            'blocked'    => 'boolean',
-        ];
+    = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'blocked'    => 'boolean',
+    ];
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['email', 'password', 'blocked', 'blocked_code'];
+    protected $fillable = ['email', 'password', 'blocked', 'blocked_code', 'user_group_id'];
     /**
      * The attributes excluded from the model's JSON form.
      *
@@ -209,15 +225,60 @@ class User extends Authenticatable
         throw new NotFoundHttpException;
     }
 
+    public function hasPermissionTo($permission, $guardName = '*'): bool
+    {
+        if (config('permission.enable_wildcard_permission', false)) {
+            return $this->hasWildcardPermission($permission, $guardName);
+        }
+
+        $permissionClass = $this->getPermissionClass();
+
+        if (is_string($permission)) {
+            $permission = $permissionClass->findByName(
+                $permission,
+                $guardName ?? $this->getDefaultGuardName()
+            );
+        }
+
+        if (is_int($permission)) {
+            $permission = $permissionClass->findById(
+                $permission,
+                $guardName ?? $this->getDefaultGuardName()
+            );
+        }
+
+        if (!$permission instanceof Permission) {
+            throw new PermissionDoesNotExist();
+        }
+
+        return $this->hasDirectPermission($permission) || $this->hasPermissionViaRole($permission);
+    }
+
+    protected $guard_name = '*';
+
+    /**
+     * Get Default Guard Name
+     *
+     * @return string
+     */
+    protected function getDefaultGuardName(): string
+    {
+        return '*';
+    }
+
     /**
      * @codeCoverageIgnore
      * Link to accounts.
      *
      * @return HasMany
      */
-    public function accounts(): HasMany
+    public function accounts(): HasMany | Builder
     {
-        return $this->hasMany(Account::class);
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Account::query();
+        }
+
+        return $this->hasMany(Account::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -226,9 +287,13 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function attachments(): HasMany
+    public function attachments(): HasMany | Builder
     {
-        return $this->hasMany(Attachment::class);
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Attachment::query();
+        }
+
+        return $this->hasMany(Attachment::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -237,9 +302,13 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function availableBudgets(): HasMany
+    public function availableBudgets(): HasMany | Builder
     {
-        return $this->hasMany(AvailableBudget::class);
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return AvailableBudget::query();
+        }
+
+        return $this->hasMany(AvailableBudget::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -248,9 +317,13 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function bills(): HasMany
+    public function bills(): HasMany | Builder
     {
-        return $this->hasMany(Bill::class);
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Bill::query();
+        }
+
+        return $this->hasMany(Bill::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -259,9 +332,13 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function budgets(): HasMany
+    public function budgets(): HasMany | Builder
     {
-        return $this->hasMany(Budget::class);
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Budget::query();
+        }
+
+        return $this->hasMany(Budget::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -270,9 +347,13 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function categories(): HasMany
+    public function categories(): HasMany | Builder
     {
-        return $this->hasMany(Category::class);
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Category::query();
+        }
+
+        return $this->hasMany(Category::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -281,8 +362,12 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function currencyExchangeRates(): HasMany
+    public function currencyExchangeRates(): HasMany | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return CurrencyExchangeRate::query();
+        }
+
         return $this->hasMany(CurrencyExchangeRate::class);
     }
 
@@ -349,30 +434,20 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function groupMemberships(): HasMany
+    public function groupMemberships(Int $user_group_id = null): HasMany
     {
-        return $this->hasMany(GroupMembership::class)->with(['userGroup', 'userRole']);
+        $relation = $this->hasMany(GroupMembership::class, 'user_id')->with(['userGroup', 'userRole']);
+
+        if ($user_group_id !== null) {
+            $relation = $relation->where('user_group_id', $user_group_id);
+        }
+
+        return $relation;
     }
 
-    /**
-     * @param string $role
-     *
-     * @return bool
-     */
-    public function hasRole(string $role): bool
+    public function getMembers()
     {
-        return $this->roles()->where('name', $role)->count() === 1;
-    }
-
-    /**
-     * @codeCoverageIgnore
-     * Link to roles.
-     *
-     * @return BelongsToMany
-     */
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(Role::class);
+        return User::where('user_group_id', $this->user_group_id);
     }
 
     /**
@@ -381,8 +456,12 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function objectGroups(): HasMany
+    public function objectGroups(): HasMany | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return ObjectGroup::query();
+        }
+
         return $this->hasMany(ObjectGroup::class);
     }
 
@@ -392,8 +471,12 @@ class User extends Authenticatable
      *
      * @return HasManyThrough
      */
-    public function piggyBanks(): HasManyThrough
+    public function piggyBanks(): HasManyThrough | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return PiggyBank::query();
+        }
+        
         return $this->hasManyThrough(PiggyBank::class, Account::class);
     }
 
@@ -405,7 +488,7 @@ class User extends Authenticatable
      */
     public function preferences(): HasMany
     {
-        return $this->hasMany(Preference::class);
+        return $this->hasMany(Preference::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -414,9 +497,13 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function recurrences(): HasMany
+    public function recurrences(): HasMany | Builder
     {
-        return $this->hasMany(Recurrence::class);
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Recurrence::query();
+        }
+
+        return $this->hasMany(Recurrence::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -425,9 +512,13 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function ruleGroups(): HasMany
+    public function ruleGroups(): HasMany | Builder
     {
-        return $this->hasMany(RuleGroup::class);
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return RuleGroup::query();
+        }
+
+        return $this->hasMany(RuleGroup::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -436,9 +527,13 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function rules(): HasMany
+    public function rules(): HasMany | Builder
     {
-        return $this->hasMany(Rule::class);
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Rule::query();
+        }
+
+        return $this->hasMany(Rule::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -487,9 +582,13 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function tags(): HasMany
+    public function tags(): HasMany | Builder
     {
-        return $this->hasMany(Tag::class);
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Tag::query();
+        }
+
+        return $this->hasMany(Tag::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -498,9 +597,13 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function transactionGroups(): HasMany
+    public function transactionGroups(): HasMany | Builder
     {
-        return $this->hasMany(TransactionGroup::class);
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return TransactionGroup::query();
+        }
+
+        return $this->hasMany(TransactionGroup::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -509,9 +612,13 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function transactionJournals(): HasMany
+    public function transactionJournals(): HasMany | Builder
     {
-        return $this->hasMany(TransactionJournal::class);
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return TransactionJournal::query();
+        }
+
+        return $this->hasMany(TransactionJournal::class, 'user_group_id', 'user_group_id');
     }
 
     /**
@@ -520,8 +627,12 @@ class User extends Authenticatable
      *
      * @return HasManyThrough
      */
-    public function transactions(): HasManyThrough
+    public function transactions(): HasManyThrough | Builder
     {
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Transaction::query();
+        }
+
         return $this->hasManyThrough(Transaction::class, TransactionJournal::class);
     }
 
@@ -531,7 +642,7 @@ class User extends Authenticatable
      */
     public function userGroup(): BelongsTo
     {
-        return $this->belongsTo(UserGroup::class,);
+        return $this->belongsTo(UserGroup::class);
     }
 
     /**
@@ -541,9 +652,53 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function webhooks(): HasMany
+    public function webhooks(): HasMany | Builder
     {
-        return $this->hasMany(Webhook::class);
+        if ($this->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Webhook::query();
+        }
+
+        return $this->hasMany(Webhook::class, 'user_group_id', 'user_group_id');
     }
     // end LDAP related code
+
+    /**
+     * Get All Roles
+     *
+     * @return void
+     */
+    public function getAllRoleNames($options = ['for_current_user_group' => true]): Collection
+    {
+        $relation = $this->morphToMany(
+            config('permission.models.role'),
+            'model',
+            config('permission.table_names.model_has_roles'),
+            config('permission.column_names.model_morph_key'),
+            PermissionRegistrar::$pivotRole
+        );
+
+        if ($options['for_current_user_group']) {
+            return $this->getRoleNames();
+        } else {
+            return $relation->get();
+        }
+    }
+
+    public function isSuperAdmin()
+    {
+        $relation = $this->morphToMany(
+            config('permission.models.role'),
+            'model',
+            config('permission.table_names.model_has_roles'),
+            config('permission.column_names.model_morph_key'),
+            PermissionRegistrar::$pivotRole
+        );
+
+        return $relation->where('name', 'superadmin')->count() === 1;
+    }
+
+    public function switchToUserGroup($userGroupId)
+    {
+        return $this->update(['user_group_id' => $userGroupId]);
+    }
 }

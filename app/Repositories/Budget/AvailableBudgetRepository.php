@@ -256,7 +256,7 @@ class AvailableBudgetRepository implements AvailableBudgetRepositoryInterface
                 'amount'                  => $data['amount'],
                 'start_date'              => $start,
                 'end_date'                => $end,
-
+                'user_group_id'           => $this->user->user_group_id,
             ]
         );
     }

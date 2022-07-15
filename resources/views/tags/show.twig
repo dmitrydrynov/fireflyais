@@ -11,21 +11,26 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">{{ 'meta_data'|_ }}</h3>
 
-
-                    <div class="box-tools pull-right">
-                        <div class="btn-group">
-                            <button class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown"><span
-                                        class="fa fa-ellipsis-v"></span></button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{ route('tags.edit',tag.id) }}"><span
-                                                class="fa fa-pencil fa-fw"></span> {{ trans('firefly.edit_tag',{tag: tag.tag}) }}
-                                    </a></li>
-                                <li><a href="{{ route('tags.delete',tag.id) }}"><span
-                                                class="fa fa-trash fa-fw"></span> {{ trans('firefly.delete_tag',{tag: tag.tag}) }}
-                                    </a></li>
-                            </ul>
+                    {% if can('tags.update') or can('tags.delete') %}
+                        <div class="box-tools pull-right">
+                            <div class="btn-group">
+                                <button class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown"><span
+                                            class="fa fa-ellipsis-v"></span></button>
+                                <ul class="dropdown-menu" role="menu">
+                                    {% if can('tags.update') %}
+                                        <li><a href="{{ route('tags.edit',tag.id) }}"><span
+                                                        class="fa fa-pencil fa-fw"></span> {{ trans('firefly.edit_tag',{tag: tag.tag}) }}
+                                            </a></li>
+                                    {% endif %}
+                                    {% if can('tags.delete') %}
+                                        <li><a href="{{ route('tags.delete',tag.id) }}"><span
+                                                        class="fa fa-trash fa-fw"></span> {{ trans('firefly.delete_tag',{tag: tag.tag}) }}
+                                            </a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
                 </div>
                 <div class="box-body no-padding">
                     <table class="table table-bordered">
@@ -162,12 +167,18 @@
                     </table>
                 </div>
                 <div class="box-footer">
-                    <div class="btn-group btn-group-sm">
-                        <a href="{{ route('tags.edit',tag.id) }}" class="btn btn-default"><span
-                                    class="fa fa-pencil fa-fw"></span></a>
-                        <a href="{{ route('tags.delete',tag.id) }}" class="btn btn-danger"><span
-                                    class="fa fa-trash fa-fw"></span></a>
-                    </div>
+                    {% if can('tags.update') or can('tags.delete') %}
+                        <div class="btn-group btn-group-sm">
+                            {% if can('tags.update') %}
+                                <a href="{{ route('tags.edit',tag.id) }}" class="btn btn-default"><span
+                                        class="fa fa-pencil fa-fw"></span></a>
+                            {% endif %}
+                            {% if can('tags.delete') %}
+                                <a href="{{ route('tags.delete',tag.id) }}" class="btn btn-danger"><span
+                                        class="fa fa-trash fa-fw"></span></a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
                     <p class="text-muted">
                         <small>{{ 'sums_apply_to_range'|_ }}</small>
                     </p>
@@ -178,20 +189,26 @@
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">{{ 'location'|_ }}</h3>
-                    <div class="box-tools pull-right">
-                        <div class="btn-group">
-                            <button class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown"><span
-                                        class="fa fa-ellipsis-v"></span></button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{ route('tags.edit',tag.id) }}"><span
-                                                class="fa fa-pencil fa-fw"></span> {{ trans('firefly.edit_tag',{tag: tag.tag}) }}
-                                    </a></li>
-                                <li><a href="{{ route('tags.delete',tag.id) }}"><span
-                                                class="fa fa-trash fa-fw"></span> {{ trans('firefly.delete_tag',{tag: tag.tag}) }}
-                                    </a></li>
-                            </ul>
+                    {% if can('tags.update') or can('tags.delete') %}
+                        <div class="box-tools pull-right">
+                            <div class="btn-group">
+                                <button class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown"><span
+                                            class="fa fa-ellipsis-v"></span></button>
+                                <ul class="dropdown-menu" role="menu">
+                                    {% if can('tags.update') %}
+                                        <li><a href="{{ route('tags.edit',tag.id) }}"><span
+                                                        class="fa fa-pencil fa-fw"></span> {{ trans('firefly.edit_tag',{tag: tag.tag}) }}
+                                            </a></li>
+                                    {% endif %}
+                                    {% if can('tags.delete') %}
+                                        <li><a href="{{ route('tags.delete',tag.id) }}"><span
+                                                        class="fa fa-trash fa-fw"></span> {{ trans('firefly.delete_tag',{tag: tag.tag}) }}
+                                            </a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
                 </div>
                 <div class="box-body">
                     {% if(location) %}
@@ -220,7 +237,7 @@
         </div>
     {% endif %}
 
-    {% if periods|length > 0 %}
+    {% if periods|length > 0 and can('tags.read') %}
         <div class="row">
             <div class="col-lg-offset-10 col-lg-2 col-md-offset-10 col-md-2 col-sm-12 col-xs-12">
                 <p class="small text-center"><a
@@ -228,56 +245,65 @@
             </div>
         </div>
     {% endif %}
-    <div class="row">
-        <div class="{% if periods|length > 0 %}col-lg-10 col-md-10 col-sm-12 col-xs-12{% else %}col-lg-12 col-md-12 col-sm-12 col-xs-12{% endif %}">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">{{ 'transactions'|_ }}</h3>
+    {% if can('transactions.read') %}
+        <div class="row">
+            <div class="{% if periods|length > 0 %}col-lg-10 col-md-10 col-sm-12 col-xs-12{% else %}col-lg-12 col-md-12 col-sm-12 col-xs-12{% endif %}">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{ 'transactions'|_ }}</h3>
 
+                        {% if can('tags.update') or can('tags.delete') %}
+                            <div class="box-tools pull-right">
+                                <div class="btn-group">
+                                    <button class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown"><span
+                                                class="fa fa-ellipsis-v"></span></button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        {% if can('tags.update') %}
+                                            <li><a href="{{ route('tags.edit',tag.id) }}"><span
+                                                            class="fa fa-pencil fa-fw"></span> {{ trans('firefly.edit_tag',{tag: tag.tag}) }}
+                                                </a></li>
+                                        {% endif %}
+                                        {% if can('tags.delete') %}
+                                            <li><a href="{{ route('tags.delete',tag.id) }}"><span
+                                                            class="fa fa-trash fa-fw"></span> {{ trans('firefly.delete_tag',{tag: tag.tag}) }}
+                                                </a></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="box-body">
+                        {% include 'list.groups' with {showBudget:true, showCategory: true} %}
 
-                    <div class="box-tools pull-right">
-                        <div class="btn-group">
-                            <button class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown"><span
-                                        class="fa fa-ellipsis-v"></span></button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{ route('tags.edit',tag.id) }}"><span
-                                                class="fa fa-pencil fa-fw"></span> {{ trans('firefly.edit_tag',{tag: tag.tag}) }}
-                                    </a></li>
-                                <li><a href="{{ route('tags.delete',tag.id) }}"><span
-                                                class="fa fa-trash fa-fw"></span> {{ trans('firefly.delete_tag',{tag: tag.tag}) }}
-                                    </a></li>
-                            </ul>
-                        </div>
+                        {% if can('tags.read')  %}
+                            {% if periods|length > 0 %}
+                                <p>
+                                    <span class="fa fa-calendar"></span>
+                                    <a href="{{ route('tags.show', [tag.id,'all']) }}">
+                                        {{ 'show_all_no_filter'|_ }}
+                                    </a>
+                                </p>
+                            {% else %}
+                                <p>
+                                    <span class="fa fa-calendar"></span>
+                                    <a href="{{ route('tags.show', [tag.id]) }}">
+                                        {{ 'show_the_current_period_and_overview'|_ }}
+                                    </a>
+                                </p>
+                            {% endif %}
+                        {% endif %}
                     </div>
                 </div>
-                <div class="box-body">
-                    {% include 'list.groups' with {showBudget:true, showCategory: true} %}
-
-                    {% if periods|length > 0 %}
-                        <p>
-                            <span class="fa fa-calendar"></span>
-                            <a href="{{ route('tags.show', [tag.id,'all']) }}">
-                                {{ 'show_all_no_filter'|_ }}
-                            </a>
-                        </p>
-                    {% else %}
-                        <p>
-                            <span class="fa fa-calendar"></span>
-                            <a href="{{ route('tags.show', [tag.id]) }}">
-                                {{ 'show_the_current_period_and_overview'|_ }}
-                            </a>
-                        </p>
-                    {% endif %}
+            </div>
+            {% if periods|length > 0 %}
+                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                    {% include 'list.periods' %}
                 </div>
-            </div>
+            {% endif %}
         </div>
-        {% if periods|length > 0 %}
-            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-                {% include 'list.periods' %}
-            </div>
-        {% endif %}
-    </div>
-    {% if periods|length > 0 %}
+    {% endif %}
+    {% if periods|length > 0 and can('tags.read') %}
         <div class="row">
             <div class="col-lg-offset-10 col-lg-2 col-md-offset-10 col-md-2 col-sm-12 col-xs-12">
                 <p class="small text-center"><a href="{{ route('tags.show',[tag.id]) }}">{{ 'showEverything'|_ }}</a>

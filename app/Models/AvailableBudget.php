@@ -83,7 +83,7 @@ class AvailableBudget extends Model
             'transaction_currency_id' => 'int',
         ];
     /** @var array Fields that can be filled */
-    protected $fillable = ['user_id', 'transaction_currency_id', 'amount', 'start_date', 'end_date'];
+    protected $fillable = ['user_id', 'transaction_currency_id', 'amount', 'start_date', 'end_date', 'user_group_id'];
 
     /**
      * Route binder. Converts the key in the URL to the specified object (or throw 404).

@@ -60,11 +60,11 @@ class ValidJournals implements Rule
         if (!is_array($value)) {
             return true;
         }
-        $userId = auth()->user()->id;
+        $userGroupId = auth()->user()->user_group_id;
         foreach ($value as $journalId) {
-            $count = TransactionJournal::where('id', $journalId)->where('user_id', $userId)->count();
+            $count = TransactionJournal::where('id', $journalId)->where('user_group_id', $userGroupId)->count();
             if (0 === $count) {
-                Log::debug(sprintf('Count for transaction #%d and user #%d is zero! Return FALSE', $journalId, $userId));
+                Log::debug(sprintf('Count for transaction #%d and user #%d is zero! Return FALSE', $journalId, $userGroupId));
 
                 return false;
             }

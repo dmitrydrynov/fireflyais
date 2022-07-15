@@ -1,0 +1,21 @@
+{% set VUE_SCRIPT_NAME = 'edit_member' %}
+
+{% extends './layout/default' %}
+
+{% block breadcrumbs %}
+    {{ Breadcrumbs.render(Route.getCurrentRoute.getName, member) }}
+{% endblock %}
+
+{% block content %}
+    <div id="edit_member"></div>
+{% endblock %}
+
+{% block definitions %}
+    <script type="text/javascript" nonce="{{ JS_NONCE }}">
+        const previousUrl = '{{ previousUrl }}';
+        const email = '{{ member.email }}';
+        const permissions = {{ permissions|json_encode|raw }};
+        const userPermissions = {{ userPermissions|json_encode|raw }};
+        const memberId = {{ member.id }};
+    </script>
+{% endblock %}

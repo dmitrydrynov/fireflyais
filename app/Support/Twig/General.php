@@ -1,4 +1,5 @@
 <?php
+
 /**
  * General.php
  * Copyright (c) 2019 james@firefly-iii.org
@@ -18,6 +19,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace FireflyIII\Support\Twig;
@@ -25,7 +27,7 @@ namespace FireflyIII\Support\Twig;
 use Carbon\Carbon;
 use FireflyIII\Models\Account;
 use FireflyIII\Repositories\Account\AccountRepositoryInterface;
-use FireflyIII\Repositories\User\UserRepositoryInterface;
+use FireflyIII\Models\Permission;
 use FireflyIII\Support\Search\OperatorQuerySearch;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use Route;
@@ -114,7 +116,7 @@ class General extends AbstractExtension
                         return 'fa-file-o';
                     case 'application/pdf':
                         return 'fa-file-pdf-o';
-                    /* image */
+                        /* image */
                     case 'image/png':
                     case 'image/jpeg':
                     case 'image/svg+xml':
@@ -122,7 +124,7 @@ class General extends AbstractExtension
                     case 'image/heic-sequence':
                     case 'application/vnd.oasis.opendocument.image':
                         return 'fa-file-image-o';
-                    /* MS word */
+                        /* MS word */
                     case 'application/msword':
                     case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
                     case 'application/vnd.openxmlformats-officedocument.wordprocessingml.template':
@@ -137,7 +139,7 @@ class General extends AbstractExtension
                     case 'application/vnd.oasis.opendocument.text-web':
                     case 'application/vnd.oasis.opendocument.text-master':
                         return 'fa-file-word-o';
-                    /* MS excel */
+                        /* MS excel */
                     case 'application/vnd.ms-excel':
                     case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
                     case 'application/vnd.openxmlformats-officedocument.spreadsheetml.template':
@@ -147,7 +149,7 @@ class General extends AbstractExtension
                     case 'application/vnd.oasis.opendocument.spreadsheet':
                     case 'application/vnd.oasis.opendocument.spreadsheet-template':
                         return 'fa-file-excel-o';
-                    /* MS powerpoint */
+                        /* MS powerpoint */
                     case 'application/vnd.ms-powerpoint':
                     case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
                     case 'application/vnd.openxmlformats-officedocument.presentationml.template':
@@ -158,7 +160,7 @@ class General extends AbstractExtension
                     case 'application/vnd.oasis.opendocument.presentation':
                     case 'application/vnd.oasis.opendocument.presentation-template':
                         return 'fa-file-powerpoint-o';
-                    /* calc */
+                        /* calc */
                     case 'application/vnd.sun.xml.draw':
                     case 'application/vnd.sun.xml.draw.template':
                     case 'application/vnd.stardivision.draw':
@@ -171,7 +173,6 @@ class General extends AbstractExtension
                     case 'application/vnd.oasis.opendocument.formula':
                     case 'application/vnd.oasis.opendocument.database':
                         return 'fa-calculator';
-
                 }
             },
             ['is_safe' => ['html']]
@@ -184,7 +185,7 @@ class General extends AbstractExtension
     protected function markdown(): TwigFilter
     {
         return new TwigFilter(
-               'markdown',
+            'markdown',
             static function (string $text): string {
 
                 $converter = new GithubFlavoredMarkdownConverter(
@@ -196,7 +197,8 @@ class General extends AbstractExtension
                 );
 
                 return (string) $converter->convert($text);
-            }, ['is_safe' => ['html']]
+            },
+            ['is_safe' => ['html']]
         );
     }
 
@@ -244,9 +246,15 @@ class General extends AbstractExtension
             $this->menuOpenRoutePartial(),
             $this->formatDate(),
             $this->getMetaField(),
+            $this->isSuperAdmin(),
             $this->hasRole(),
+            $this->hasAnyRole(),
+            $this->can(),
+            $this->canAny(),
+            $this->canAnyAction(),
             $this->getRootSearchOperator(),
             $this->carbonize(),
+            $this->activeUserGroup(),
         ];
     }
 
@@ -396,6 +404,30 @@ class General extends AbstractExtension
         );
     }
 
+    protected function isSuperAdmin(): TwigFunction
+    {
+        return new TwigFunction(
+            'isSuperAdmin',
+            static function (): bool {
+                return auth()->user()->isSuperAdmin();
+            }
+        );
+    }
+
+    protected function activeUserGroup(): TwigFunction
+    {
+        return new TwigFunction(
+            'activeUserGroup',
+            static function (): string | int {
+                if (auth()->user()->isSuperAdmin() && session()->has('active_user_group')) {
+                    return session()->get('active_user_group');
+                } else {
+                    return auth()->user()->user_group_id;
+                }
+            }
+        );
+    }
+
     /**
      * Will return true if the user is of role X.
      *
@@ -406,12 +438,61 @@ class General extends AbstractExtension
         return new TwigFunction(
             'hasRole',
             static function (string $role): bool {
-                $repository = app(UserRepositoryInterface::class);
-                if ($repository->hasRole(auth()->user(), $role)) {
-                    return true;
-                }
+                setPermissionsTeamId(auth()->user()->user_group_id);
+                return auth()->user()->hasRole($role);
+            }
+        );
+    }
 
-                return false;
+    protected function hasAnyRole(): TwigFunction
+    {
+        return new TwigFunction(
+            'hasAnyRole',
+            static function (...$roles): bool {
+                setPermissionsTeamId(auth()->user()->user_group_id);
+                return auth()->user()->hasRole($roles);
+            }
+        );
+    }
+
+    /**
+     * Will return true if the user has one of the permissions.
+     *
+     * @return TwigFunction
+     */
+    protected function can(): TwigFunction
+    {
+        return new TwigFunction(
+            'can',
+            static function (string $permissions): bool {
+                setPermissionsTeamId(auth()->user()->user_group_id);
+                return auth()->user()->can($permissions);
+            }
+        );
+    }
+
+    protected function canAny(): TwigFunction
+    {
+        return new TwigFunction(
+            'canAny',
+            static function (array $permissions): bool {
+                setPermissionsTeamId(auth()->user()->user_group_id);
+                return auth()->user()->canany($permissions);
+            }
+        );
+    }
+
+    protected function canAnyAction(): TwigFunction
+    {
+        return new TwigFunction(
+            'canAnyAction',
+            static function (string $action): bool {
+                $permissionsWithAction = Permission::where('name', 'like', '%.' . $action . '%')->get()->pluck('name');
+
+                dd($permissionsWithAction->toArray());
+
+                setPermissionsTeamId(auth()->user()->user_group_id);
+                return auth()->user()->canany($permissions);
             }
         );
     }

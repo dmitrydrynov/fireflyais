@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AppServiceProvider.php
  * Copyright (c) 2019 james@firefly-iii.org
@@ -18,6 +19,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace FireflyIII\Providers;
@@ -42,7 +44,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
-        if ('heroku' === config('app.env')) {
+        if ('heroku' === config('app.env') || env('APP_ENV') === 'production') {
             URL::forceScheme('https');
         }
     }
@@ -54,6 +56,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        if ($this->app->environment() !== 'production') {
+            $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+        }
+
         Passport::ignoreMigrations();
         Sanctum::ignoreMigrations();
     }

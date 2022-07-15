@@ -96,6 +96,6 @@ class AccountType extends Model
      */
     public function accounts(): HasMany
     {
-        return $this->hasMany(Account::class);
+        return $this->hasMany(Account::class, 'user_group_id', 'user_group_id');
     }
 }

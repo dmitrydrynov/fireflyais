@@ -72,6 +72,7 @@ class CategoryFactory
                     [
                         'user_id' => $this->user->id,
                         'name'    => $categoryName,
+                        'user_group_id'   => $this->user->user_group_id,
                     ]
                 );
             } catch (QueryException $e) {

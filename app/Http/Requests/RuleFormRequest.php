@@ -119,7 +119,7 @@ class RuleFormRequest extends FormRequest
             'title'            => 'required|between:1,100|uniqueObjectForUser:rules,title',
             'description'      => 'between:1,5000|nullable',
             'stop_processing'  => 'boolean',
-            'rule_group_id'    => 'required|belongsToUser:rule_groups',
+            'rule_group_id'    => 'required|belongsToUserGroup:rule_groups',
             'trigger'          => 'required|in:store-journal,update-journal',
             'triggers.*.type'  => 'required|in:' . implode(',', $validTriggers),
             'triggers.*.value' => sprintf('required_if:triggers.*.type,%s|min:1|ruleTriggerValue', $contextTriggers),

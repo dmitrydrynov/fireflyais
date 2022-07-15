@@ -32,6 +32,7 @@
 
     {# Firefly III customisations #}
     <link href="v1/css/firefly.css?v={{ FF_VERSION }}" rel="stylesheet" type="text/css" nonce="{{ JS_NONCE }}">
+    <link href="v1/css/app.css?v={{ FF_VERSION }}" rel="stylesheet" type="text/css" nonce="{{ JS_NONCE }}">
 
     {# Extra CSS for the demo: #}
     {% if not shownDemo %}
@@ -48,6 +49,10 @@
     {# this entry is in the header so it's loaded early #}
     <script type="text/javascript" nonce="{{ JS_NONCE }}">var forceDemoOff = false;</script>
 
+    <script type="text/javascript" nonce="{{ JS_NONCE }}">
+        window.App = {{ appData|json_encode|raw }}
+    </script>
+
     {# favicons #}
     {% include 'partials.favicons' %}
 
@@ -62,13 +67,22 @@
             {# mini logo for sidebar mini 50x50 pixels #}
             <span class="logo-mini">FF</span>
             {# logo for regular state and mobile devices #}
-            <span class="logo-lg"><strong>Firefly</strong>III</span>
+            <span class="logo-lg"><strong>Firefly</strong> III</span>
         </a>
 
         <nav class="navbar navbar-static-top" role="navigation">
             <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
                 <span class="sr-only">{{ 'toggleNavigation'|_ }}</span>
             </a>
+
+            <div class="navbar-menu navbar-menu-title">
+                {% if appData.companies %}
+                    <div id="company_select"></div>
+                {% else %}
+                    <div class="company-name">{{ Auth.user.userGroup.title }}</div>
+                {% endif %}
+            </div>
+
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
 
@@ -89,9 +103,11 @@
                         <span class="hidden-xs">{{ Auth.user.email }}</span>
                     </span>
                     </li>
-                    <li id="sidebar-toggle">
-                        <a href="#" data-toggle="control-sidebar"><span class="fa fa-plus-circle"></span></a>
-                    </li>
+                    {% if activeUserGroup() is not same as('all') and canAny(['transactions.create', 'accounts.create', 'budgets.create', 'categories.create', 'piggy-banks.create', 'bills.create', 'rules.create', 'recurring.create']) %}
+                        <li id="sidebar-toggle">
+                            <a href="#" data-toggle="control-sidebar"><span class="fa fa-plus-circle"></span></a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
 
@@ -143,7 +159,9 @@
         {% if FF_IS_BETA %}<small class="text-warning hidden-xs"><br>{{ 'is_beta_warning'|_ }}</small>{% endif %}
     </footer>
 
-    {% include('partials.control-bar') %}
+    {% if canAny(['transactions.create', 'accounts.create', 'budgets.create', 'categories.create', 'piggy-banks.create', 'bills.create', 'rules.create', 'recurring.create']) %}
+        {% include('partials.control-bar') %}
+    {% endif %}
 
 </div>
 <div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
@@ -188,6 +206,13 @@
 {% if VUE_SCRIPT_NAME %}
     <script src="v1/js/app_vue.js?v={{ FF_VERSION }}" type="text/javascript" nonce="{{ JS_NONCE }}"></script>
     <script src="v1/js/{{ VUE_SCRIPT_NAME }}.js?v={{ FF_VERSION }}" type="text/javascript" nonce="{{ JS_NONCE }}"></script>
+{% endif %}
+
+{% if isSuperAdmin() %}
+    {% if not VUE_SCRIPT_NAME %}
+        <script src="v1/js/app_vue.js?v={{ FF_VERSION }}" type="text/javascript" nonce="{{ JS_NONCE }}"></script>
+    {% endif %}
+    <script src="v1/js/company_select.js?v={{ FF_VERSION }}" type="text/javascript" nonce="{{ JS_NONCE }}"></script>
 {% endif %}
 
 {# date range picker, current template, etc.#}

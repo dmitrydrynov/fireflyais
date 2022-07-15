@@ -14,21 +14,25 @@
                         <h3 class="box-title">
                             {{ 'recurrences'|_ }}
                         </h3>
-                        <div class="box-tools pull-right">
-                            <div class="btn-group">
-                                <button class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown"><span class="fa fa-ellipsis-v"></span></button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="{{ route('recurring.create') }}"><span class="fa fa-plus fa-fw"></span> {{ ('make_new_recurring')|_ }}</a></li>
-                                </ul>
+                        {% if can('recurring.create') %}
+                            <div class="box-tools pull-right">
+                                <div class="btn-group">
+                                    <button class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown"><span class="fa fa-ellipsis-v"></span></button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="{{ route('recurring.create') }}"><span class="fa fa-plus fa-fw"></span> {{ ('make_new_recurring')|_ }}</a></li>
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
+                        {% endif %}
                     </div>
 
                     <div class="box-body no-padding">
-                        <div style="padding:8px;">
-                            <a href="{{ route('recurring.create') }}" class="btn btn-success"><span class="fa fa-plus fa-fw"></span> {{ ('make_new_recurring')|_ }}
-                            </a>
-                        </div>
+                        {% if can('recurring.create') %}
+                            <div style="padding:8px;">
+                                <a href="{{ route('recurring.create') }}" class="btn btn-success"><span class="fa fa-plus fa-fw"></span> {{ ('make_new_recurring')|_ }}
+                                </a>
+                            </div>
+                        {% endif %}
 
                         <!-- list of recurring here -->
                         <div style="padding-left:8px;">
@@ -49,10 +53,15 @@
                                 <tr>
                                     <td class="hidden-sm hidden-xs">
                                         <div class="btn-group btn-group-xs edit_tr_buttons">
-                                            <a class="btn btn-default btn-xs" title="{{ 'edit'|_ }}" href="{{ route('recurring.edit',rt.id) }}"><span
-                                                        class="fa fa-fw fa-pencil"></span></a><a class="btn btn-danger btn-xs" title="{{ 'delete'|_ }}"
-                                                                                              href="{{ route('recurring.delete',rt.id) }}"><span
-                                                        class="fa fa-fw fa-trash-o"></span></a>
+                                            {% if can('recurring.update') %}
+                                                <a class="btn btn-default btn-xs" title="{{ 'edit'|_ }}" href="{{ route('recurring.edit',rt.id) }}"><span
+                                                        class="fa fa-fw fa-pencil"></span></a>
+                                            {% endif %}
+                                            {% if can('recurring.delete') %}
+                                                <a class="btn btn-danger btn-xs" title="{{ 'delete'|_ }}"
+                                                                                        href="{{ route('recurring.delete',rt.id) }}"><span
+                                                class="fa fa-fw fa-trash-o"></span></a>
+                                            {% endif %}
                                         </div>
                                     </td>
                                     <td data-value="{{ rt.title }}">
@@ -80,9 +89,17 @@
                                                     {% if null != rtt['foreign_amount'] %}
                                                         ({{ formatAmountBySymbol(rtt['foreign_amount'],rtt['foreign_currency_symbol'],rtt['foreign_currency_decimal_places']) }}),
                                                     {% endif %}
-                                                    <a href="{{ route('accounts.show', rtt['source_id']) }}">{{ rtt['source_name'] }}</a>
+                                                    {% if can('accounts.read') %}
+                                                        <a href="{{ route('accounts.show', rtt['source_id']) }}">{{ rtt['source_name'] }}</a>
+                                                    {% else %}
+                                                        {{ rtt['source_name'] }}
+                                                    {% endif %}
                                                     &rarr;
-                                                    <a href="{{ route('accounts.show', rtt['destination_id']) }}">{{ rtt['destination_name'] }}</a>
+                                                    {% if can('accounts.read') %}
+                                                        <a href="{{ route('accounts.show', rtt['destination_id']) }}">{{ rtt['destination_name'] }}</a>
+                                                    {% else %}
+                                                        {{ rtt['destination_name'] }}
+                                                    {% endif %}
                                                 </li>
                                             {% endfor %}
                                         </ol>
@@ -145,9 +162,11 @@
                             {{ paginator.links('pagination.bootstrap-4')|raw }}
                         </div>
                     </div>
-                    <div class="box-footer">
-                        <a href="{{ route('recurring.create') }}" class="btn btn-success"><span class="fa fa-plus fa-fw"></span> {{ ('make_new_recurring')|_ }}</a>
-                    </div>
+                    {% if can('recurring.create') %}
+                        <div class="box-footer">
+                            <a href="{{ route('recurring.create') }}" class="btn btn-success"><span class="fa fa-plus fa-fw"></span> {{ ('make_new_recurring')|_ }}</a>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

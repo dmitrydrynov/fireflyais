@@ -1007,6 +1007,18 @@ return [
     'optional_field_attachments'                => 'Attachments',
     'optional_field_meta_data'                  => 'Optional meta data',
     'external_url'                              => 'External URL',
+    'user_group_name'                           => 'Company name',
+    'user_group_name_help'                      => 'Name of your company',
+
+    // members:
+    'members'                                   => 'Members',
+    'list_all_members'                          => 'All members',
+    'create_member'                             => 'Add member',
+    'created_member'                            => 'Member added',
+    'edit_member'                               => 'Edit member',
+    'updated_member'                            => 'Member data has been changed.',
+    'delete_member'                             => 'Delete member :email',
+    'member_deleted'                            => 'The member has been deleted',
 
     // profile:
     'delete_stuff_header'                       => 'Delete data',
@@ -1913,6 +1925,8 @@ return [
     'setting_single_user_mode_explain' => 'By default, Firefly III only accepts one (1) registration: you. This is a security measure, preventing others from using your instance unless you allow them to. Future registrations are blocked. When you uncheck this box, others can use your instance as well, assuming they can reach it (when it is connected to the internet).',
     'store_configuration'              => 'Store configuration',
     'single_user_administration'       => 'User administration for :email',
+    'add_owner'                        => 'Add owner',
+    'add_member'                       => 'Add member',
     'edit_user'                        => 'Edit user :email',
     'hidden_fields_preferences'        => 'You can enable more transaction options in your <a href="preferences">preferences</a>.',
     'user_data_information'            => 'User data',
@@ -1942,6 +1956,7 @@ return [
     'admin_maintanance_title'          => 'Maintenance',
     'admin_maintanance_expl'           => 'Some nifty buttons for Firefly III maintenance',
     'admin_maintenance_clear_cache'    => 'Clear cache',
+    'addUserFormTitle'                 => 'Add owner',
 
     'split_transaction_title'               => 'Description of the split transaction',
     'split_transaction_title_help'          => 'If you create a split transaction, there must be a global description for all splits of the transaction.',
@@ -2077,14 +2092,19 @@ return [
     'no_transactions_intro_transfers'       => 'You have no transfers yet. When you move money between asset accounts, it is recorded as a transfer.',
     'no_transactions_imperative_transfers'  => 'Have you moved some money around? Then you should write it down:',
     'no_transactions_create_transfers'      => 'Create a transfer',
-    'no_piggies_title_default'              => 'Let\'s create a piggy bank!',
-    'no_piggies_intro_default'              => 'You have no piggy banks yet. You can create piggy banks to divide your savings and keep track of what you\'re saving up for.',
-    'no_piggies_imperative_default'         => 'Do you have things you\'re saving money for? Create a piggy bank and keep track:',
-    'no_piggies_create_default'             => 'Create a new piggy bank',
+    'no_piggy-banks_title_default'              => 'Let\'s create a piggy bank!',
+    'no_piggy-banks_intro_default'              => 'You have no piggy banks yet. You can create piggy banks to divide your savings and keep track of what you\'re saving up for.',
+    'no_piggy-banks_imperative_default'         => 'Do you have things you\'re saving money for? Create a piggy bank and keep track:',
+    'no_piggy-banks_create_default'             => 'Create a new piggy bank',
     'no_bills_title_default'                => 'Let\'s create a bill!',
     'no_bills_intro_default'                => 'You have no bills yet. You can create bills to keep track of regular expenses, like your rent or insurance.',
     'no_bills_imperative_default'           => 'Do you have such regular bills? Create a bill and keep track of your payments:',
     'no_bills_create_default'               => 'Create a bill',
+    'no_members_title_default'                => 'Let\'s invite a member!',
+    'no_members_intro_default'                => 'You have no members yet. You can invite a member and set his permissions.',
+    'no_members_imperative_default'           => 'Members will help you manage your finances.',
+    'no_members_create_default'               => 'Invite a member',
+
 
     // recurring transactions
     'recurrences'                           => 'Recurring transactions',
@@ -2187,5 +2207,6 @@ return [
 
     // other stuff
     'placeholder'                     => '[Placeholder]',
+    'superadmin_cant_create_anything' => "There are no entries here.<br>You can't create anything for 'All companies'. Switch to one of the companies first",
 
 ];

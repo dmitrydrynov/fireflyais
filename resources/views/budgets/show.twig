@@ -16,15 +16,21 @@
                             {{ trans('firefly.chart_all_journals_for_budget', {name:budget.name}) }}
                         {% endif %}
                     </h3>
+                    {% if can('budgets.update') or can('budgets.delete') %}
                     <div class="box-tools pull-right">
                         <div class="btn-group">
                             <button class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown"><span class="fa fa-ellipsis-v"></span></button>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{ route('budgets.edit',budget.id) }}"><span class="fa fa-pencil fa-fw"></span> {{ 'edit'|_ }}</a></li>
-                                <li><a href="{{ route('budgets.delete',budget.id) }}"><span class="fa fa-trash fa-fw"></span> {{ 'delete'|_ }}</a></li>
+                                {% if can('budgets.update') %}
+                                    <li><a href="{{ route('budgets.edit',budget.id) }}"><span class="fa fa-pencil fa-fw"></span> {{ 'edit'|_ }}</a></li>
+                                {% endif %}
+                                {% if can('budgets.delete') %}
+                                    <li><a href="{{ route('budgets.delete',budget.id) }}"><span class="fa fa-trash fa-fw"></span> {{ 'delete'|_ }}</a></li>
+                                {% endif %}
                             </ul>
                         </div>
                     </div>
+                    {% endif %}
                 </div>
                 <div class="box-body">
                     <canvas id="budgetOverview" style="width:100%;height:400px;" height="400" width="100%"></canvas>
@@ -120,7 +126,8 @@
     </div>
     {% endif %}
 
-    <div class="row">
+    {% if can('transactions.read') %}
+        <div class="row">
         <div class="{% if limits|length > 0 %}col-lg-9 col-md-9 col-sm-12 col-xs-12{% else %}col-lg-12 col-md-12 col-sm-12 col-xs-12{% endif %}">
 
             <div class="box">
@@ -199,6 +206,7 @@
         </div>
         {% endif %}
     </div>
+    {% endif %}
 
 {% endblock %}
 {% block scripts %}

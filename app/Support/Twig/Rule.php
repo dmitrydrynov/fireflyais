@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Rule.php
  * Copyright (c) 2019 james@firefly-iii.org
@@ -18,6 +19,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace FireflyIII\Support\Twig;
@@ -91,11 +93,29 @@ class Rule extends AbstractExtension
             'allRuleActions',
             static function () {
                 // array of valid values for actions
-                $ruleActions     = array_keys(Config::get('firefly.rule-actions'));
+                $ruleActionsConfig     = Config::get('firefly.rule-actions');
+                $ruleActions     = array_keys($ruleActionsConfig);
                 $possibleActions = [];
+                $user = auth()->user();
+
                 foreach ($ruleActions as $key) {
-                    $possibleActions[$key] = (string) trans('firefly.rule_action_' . $key . '_choice');
+                    $action = $ruleActionsConfig[$key];
+                    $allow = true;
+
+                    if (!empty($action['permissions'])) {
+                        foreach ($action['permissions'] as $permissions) {
+                            if (!$user->can($permissions)) {
+                                $allow = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    if ($allow) {
+                        $possibleActions[$key] = (string) trans('firefly.rule_action_' . $key . '_choice');
+                    }
                 }
+
                 unset($ruleActions);
                 asort($possibleActions);
 

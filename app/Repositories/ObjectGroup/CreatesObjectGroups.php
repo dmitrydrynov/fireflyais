@@ -55,6 +55,7 @@ trait CreatesObjectGroups
                     'user_id' => $this->user->id,
                     'title'   => $title,
                     'order'   => $maxOrder + 1,
+                    'user_group_id' => $this->user->user_group_id,
                 ]
             );
         }

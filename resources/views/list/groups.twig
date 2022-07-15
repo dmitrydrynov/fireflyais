@@ -8,20 +8,26 @@
         {% endif %}
         <td colspan="1" class="hidden-xs">
             <!-- Single button -->
-            <div class="btn-group btn-group-xs action-menu pull-right" style="display: none;">
-                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                    {{ 'actions'|_ }} <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li><a href="#" class="mass-edit"><span class="fa fa-fw fa-pencil"></span>
-                            <span class="txt">{{ 'mass_edit'|_ }}</span></a></li>
-                    <li><a href="#" class="bulk-edit"><span class="fa fa-fw fa-pencil-square-o"></span>
-                            <span class="txt">{{ 'bulk_edit'|_ }}</span></a></li>
-                    <li><a href="#" class="mass-delete"><span class="fa fa-fw fa-trash"></span>
-                            <span class="txt">{{ 'mass_delete'|_ }}</span></a></li>
-                </ul>
-            </div>
+            {% if can('transactions.update') or can('transactions.delete') %}
+                <div class="btn-group btn-group-xs action-menu pull-right" style="display: none;">
+                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        {{ 'actions'|_ }} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        {% if can('transactions.update') %}
+                            <li><a href="#" class="mass-edit"><span class="fa fa-fw fa-pencil"></span>
+                                <span>{{ 'mass_edit'|_ }}</span></a></li>
+                            <li><a href="#" class="bulk-edit"><span class="fa fa-fw fa-pencil-square-o"></span>
+                                <span>{{ 'bulk_edit'|_ }}</span></a></li>
+                        {% endif %}
+                        {% if can('transactions.delete') %}
+                            <li><a href="#" class="mass-delete"><span class="fa fa-fw fa-trash"></span>
+                                <span>{{ 'mass_delete'|_ }}</span></a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            {% endif %}
         </td>
         <td colspan="1" class="hidden-xs">
             <div class="pull-right">
@@ -76,19 +82,27 @@
                     <td style="border-top:1px #aaa solid;" colspan="2">&nbsp;</td>
                 {% endif %}
                 <td style="border-top:1px #aaa solid;" class="hidden-xs">
-                    <div class="btn-group btn-group-xs pull-right">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
-                            {{ 'actions'|_ }} <span class="caret"></span></button>
-                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                            <li><a href="{{ route('transactions.edit', [group.id]) }}"><span
-                                            class="fa fa-fw fa-pencil"></span> {{ 'edit'|_ }}</a></li>
-                            <li><a href="{{ route('transactions.delete', [group.id]) }}"><span
-                                            class="fa fa-fw fa-trash"></span> {{ 'delete'|_ }}</a></li>
-                            <li><a href="#" data-id="{{ group.id }}" class="clone-transaction"><span
-                                            class="fa fa-copy fa-fw"></span> {{ 'clone'|_ }}</a></li>
-                        </ul>
-                    </div>
+                    {% if can('transactions.update') or can('transactions.delete') or can('transactions.create') %}
+                        <div class="btn-group btn-group-xs pull-right">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                {{ 'actions'|_ }} <span class="caret"></span></button>
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                {% if can('transactions.update') %}
+                                    <li><a href="{{ route('transactions.edit', [group.id]) }}"><span
+                                                class="fa fa-fw fa-pencil"></span> {{ 'edit'|_ }}</a></li>
+                                {% endif %}
+                                {% if can('transactions.delete') %}
+                                    <li><a href="{{ route('transactions.delete', [group.id]) }}"><span
+                                                class="fa fa-fw fa-trash"></span> {{ 'delete'|_ }}</a></li>
+                                {% endif %}
+                                {% if can('transactions.update') and can('transactions.create') %}
+                                    <li><a href="#" data-id="{{ group.id }}" class="clone-transaction"><span
+                                                class="fa fa-copy fa-fw"></span> {{ 'clone'|_ }}</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    {% endif %}
                 </td>
                 <td style="border-top:1px #aaa solid;" class="hidden-xs">&nbsp;</td>
             </tr>
@@ -130,7 +144,7 @@
                     {% if transaction.attachments|length > 0 %}
                         <span class="fa fa-paperclip"></span>
                     {% endif %}
-                    {% if group.count == 1 %}
+                    {% if group.count == 1 and can('transactions.read') %}
                     <a href="{{ route('transactions.show', [group.id]) }}" title="{{ transaction.description }}">
                         {% endif %}
                         {{ transaction.description }}
@@ -209,16 +223,26 @@
                     {% if 'Cash account' == transaction.source_account_type %}
                         <span class="text-success">({{ 'cash'|_ }})</span>
                     {% else %}
-                        <a href="{{ route('accounts.show', [transaction.source_account_id|default(1)]) }}"
-                           title="{{ transaction.source_account_iban|default(transaction.source_account_name) }}">{{ transaction.source_account_name }}</a>
+                        {% if can('accounts.read') %}
+                            <a href="{{ route('accounts.show', [transaction.source_account_id|default(1)]) }}"
+                            title="{{ transaction.source_account_iban|default(transaction.source_account_name) }}">{{ transaction.source_account_name }}
+                            </a>
+                        {% else %}
+                            {{ transaction.source_account_name }}
+                        {% endif %}
                     {% endif %}
                 </td>
                 <td style=" {{ style|raw }}">
                     {% if 'Cash account' == transaction.destination_account_type %}
                         <span class="text-success">({{ 'cash'|_ }})</span>
                     {% else %}
-                        <a href="{{ route('accounts.show', [transaction.destination_account_id|default(1)]) }}"
-                           title="{{ transaction.destination_account_iban|default(transaction.destination_account_name) }}">{{ transaction.destination_account_name }}</a>
+                        {% if can('accounts.read') %}
+                            <a href="{{ route('accounts.show', [transaction.destination_account_id|default(1)]) }}"
+                                title="{{ transaction.destination_account_iban|default(transaction.destination_account_name) }}">{{ transaction.destination_account_name }}
+                           </a>
+                        {% else %}
+                            {{ transaction.source_account_name }}
+                        {% endif %}
                     {% endif %}
                 </td>
                 {% if showCategory %}
@@ -240,23 +264,34 @@
 
                 {% if group.count == 1 %}
                     <td style=" {{ style|raw }};" class="hidden-xs">
-                        <div class="btn-group btn-group-xs pull-right">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
-                                {{ 'actions'|_ }} <span class="caret"></span></button>
-                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                <li><a href="{{ route('transactions.edit', [group.id]) }}"><span
-                                                class="fa fa-fw fa-pencil"></span> {{ 'edit'|_ }}</a></li>
-                                <li><a href="{{ route('transactions.delete', [group.id]) }}"><span
-                                                class="fa fa-fw fa-trash"></span> {{ 'delete'|_ }}</a></li>
-                                <li><a href="#" data-id="{{ group.id }}" class="clone-transaction"><span
-                                                class="fa fa-copy fa-fw"></span> {{ 'clone'|_ }}</a></li>
-                                <li>
-                                    <a href="{{ route('rules.create-from-journal', [transaction.transaction_journal_id]) }}"><span
-                                                class="fa fa-fw fa-random"></span> {{ 'create_rule_from_transaction'|_ }}
-                                    </a></li>
-                            </ul>
-                        </div>
+                        {% if can('transactions.update') or can('transactions.delete') or can('transactions.create') or can('transactions.read') %}
+                            <div class="btn-group btn-group-xs pull-right">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">
+                                    {{ 'actions'|_ }} <span class="caret"></span></button>
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                    {% if can('transactions.update') %}
+                                        <li>
+                                            <a href="{{ route('transactions.edit', [group.id]) }}"><span class="fa fa-fw fa-pencil"></span> {{ 'edit'|_ }}</a>
+                                        </li>
+                                    {% endif %}
+                                    {% if can('transactions.delete') %}
+                                        <li><a href="{{ route('transactions.delete', [group.id]) }}"><span
+                                                    class="fa fa-fw fa-trash"></span> {{ 'delete'|_ }}</a></li>
+                                    {% endif %}       
+                                    {% if can('transactions.create') and can('transactions.read') %}      
+                                        <li><a href="#" data-id="{{ group.id }}" class="clone-transaction"><span
+                                                    class="fa fa-copy fa-fw"></span> {{ 'clone'|_ }}</a></li>
+                                    {% endif %}   
+                                    {% if can('transactions.read') and can('rules.create') %} 
+                                        <li>
+                                        <a href="{{ route('rules.create-from-journal', [transaction.transaction_journal_id]) }}"><span
+                                                    class="fa fa-fw fa-random"></span> {{ 'create_rule_from_transaction'|_ }}
+                                        </a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        {% endif %}
                     </td>
 
                 {% endif %}
@@ -281,23 +316,29 @@
     <tfoot>
     <tr>
         <td colspan="8">
-            <div class="pull-right">
-                <!-- Single button -->
-                <div class="btn-group action-menu btn-group-xs pull-right" style="display:none;">
-                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                        {{ 'actions'|_ }} <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu btn-group-xs dropdown-menu-right">
-                        <li><a href="#" class="mass-edit"><span class="fa fa-fw fa-pencil"></span>
-                                <span>{{ 'mass_edit'|_ }}</span></a></li>
-                        <li><a href="#" class="bulk-edit"><span class="fa fa-fw fa-pencil-square-o"></span>
-                                <span>{{ 'bulk_edit'|_ }}</span></a></li>
-                        <li><a href="#" class="mass-delete"><span class="fa fa-fw fa-trash"></span>
-                                <span>{{ 'mass_delete'|_ }}</span></a></li>
-                    </ul>
+            {% if can('transactions.update') or can('transactions.delete') %}
+                <div class="pull-right">
+                    <!-- Single button -->
+                    <div class="btn-group action-menu btn-group-xs pull-right" style="display:none;">
+                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            {{ 'actions'|_ }} <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu btn-group-xs dropdown-menu-right">
+                            {% if can('transactions.update') %}
+                                <li><a href="#" class="mass-edit"><span class="fa fa-fw fa-pencil"></span>
+                                    <span>{{ 'mass_edit'|_ }}</span></a></li>
+                                <li><a href="#" class="bulk-edit"><span class="fa fa-fw fa-pencil-square-o"></span>
+                                    <span>{{ 'bulk_edit'|_ }}</span></a></li>
+                            {% endif %}
+                            {% if can('transactions.delete') %}
+                                <li><a href="#" class="mass-delete"><span class="fa fa-fw fa-trash"></span>
+                                    <span>{{ 'mass_delete'|_ }}</span></a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
         </td>
     </tr>
     <tr>

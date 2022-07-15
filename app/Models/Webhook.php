@@ -98,7 +98,7 @@ class Webhook extends Model
             'response' => 'integer',
             'delivery' => 'integer',
         ];
-    protected $fillable = ['active', 'trigger', 'response', 'delivery', 'user_id', 'url', 'title', 'secret'];
+    protected $fillable = ['active', 'trigger', 'response', 'delivery', 'user_id', 'url', 'title', 'secret', 'user_group_id'];
 
     /**
      * Route binder. Converts the key in the URL to the specified object (or throw 404).

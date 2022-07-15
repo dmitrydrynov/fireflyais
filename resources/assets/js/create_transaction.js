@@ -75,6 +75,6 @@ const app = new Vue({
     i18n,
     el: "#create_transaction",
     render: (createElement) => {
-        return createElement(CreateTransaction, {props: props});
+        return createElement(CreateTransaction, { props: props });
     },
 });
