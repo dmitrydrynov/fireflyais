@@ -26,13 +26,11 @@ namespace FireflyIII\Models;
 
 use FireflyIII\User;
 use Eloquent;
-use FireflyIII\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Carbon;
 
 /**
@@ -139,7 +137,7 @@ class UserGroup extends Model
     public function transactions(): HasManyThrough | Builder
     {
         if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
-            return Transaction::query();
+            return Transaction::leftJoin('transaction_journals', 'transactions.transaction_journal_id', '=', 'transaction_journals.id');
         }
 
         return $this->hasManyThrough(Transaction::class, TransactionJournal::class);
