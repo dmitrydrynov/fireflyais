@@ -247,4 +247,5 @@ return [
     'submitted'                   => 'Submitted',
     'key'                         => 'Key',
     'value'                       => 'Content of record',
+    'companyName'                 => 'Company name'
 ];

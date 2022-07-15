@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace FireflyIII\Repositories\User;
 
+use Error;
 use Exception;
 use FireflyIII\Exceptions\FireflyException;
 use FireflyIII\Models\BudgetLimit;
@@ -171,7 +172,7 @@ class UserRepository implements UserRepositoryInterface
         $groups = UserGroup::get();
         /** @var UserGroup $group */
         foreach ($groups as $group) {
-            $count = $group->groupMemberships()->count();
+            $count = $group->members()->count();
             if (0 === $count) {
                 Log::info(sprintf('Deleted empty group #%d ("%s")', $group->id, $group->title));
                 $group->delete();
@@ -319,7 +320,7 @@ class UserRepository implements UserRepositoryInterface
      *
      * @return bool
      */
-    public function attachRole(User $user, string $role): bool
+    public function attachRole(User $user, mixed $role): bool
     {
         setPermissionsTeamId($user->user_group_id);
         $user->assignRole($role);

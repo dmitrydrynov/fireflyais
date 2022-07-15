@@ -419,7 +419,7 @@ class User extends Authenticatable
 
     public function getMembers()
     {
-        return User::where('user_group_id', $this->user_group_id)->where('id', '<>', $this->id);
+        return User::where('user_group_id', $this->user_group_id);
     }
 
     /**

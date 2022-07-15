@@ -7,7 +7,6 @@ namespace FireflyIII\Api\V1\Controllers;
 use FireflyIII\Api\V1\Controllers\Controller;
 use FireflyIII\Api\V1\Requests\Models\Budget\StoreRequest;
 use FireflyIII\Exceptions\FireflyException;
-use FireflyIII\Repositories\User\UserRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Throwable;
@@ -57,6 +56,7 @@ class MemberController extends Controller
 
             setPermissionsTeamId($request->user()->user_group_id);
             $member->givePermissionTo($permissions);
+            $member->assignRole('member');
 
             Mail::to($email)->send(new UserJoined($email, $_passwordRaw));
 

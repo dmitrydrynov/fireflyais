@@ -41,10 +41,10 @@
                                 <tr>
                                     <td class="hidden-xs" data-value="{{ member.id }}">
                                         <div class="btn-group btn-group-xs">
-                                            {% if can('members.update') and not member.hasRole('owner') %}
+                                            {% if can('members.update') and member.id is not same as(Auth.user.id) and not member.hasRole(['owner','superadmin']) %}
                                                 <a class="btn btn-default" href="{{ route('members.edit', member.id) }}"><span class="fa fa-pencil"></span></a>
                                             {% endif %}
-                                            {% if can('members.delete') and not member.hasRole('owner') %}
+                                            {% if can('members.delete') and member.id is not same as(Auth.user.id) and not member.hasRole(['owner','superadmin']) %}
                                                 <a class="btn btn-danger" href="{{ route('members.delete', member.id) }}"><span class="fa fa-trash"></span></a>
                                             {% endif %}
                                         </div>

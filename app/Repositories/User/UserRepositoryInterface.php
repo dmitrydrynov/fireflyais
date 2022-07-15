@@ -47,7 +47,7 @@ interface UserRepositoryInterface
      *
      * @return bool
      */
-    public function attachRole(User $user, string $role): bool;
+    public function attachRole(User $user, mixed $role): bool;
 
     /**
      * This updates the users email address and records some things so it can be confirmed or undone later.

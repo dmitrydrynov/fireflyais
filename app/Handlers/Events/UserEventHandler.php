@@ -1,4 +1,5 @@
 <?php
+
 /**
  * UserEventHandler.php
  * Copyright (c) 2019 james@firefly-iii.org
@@ -19,6 +20,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 /** @noinspection NullPointerExceptionInspection */
+
 declare(strict_types=1);
 
 namespace FireflyIII\Handlers\Events;
@@ -69,7 +71,7 @@ class UserEventHandler
         // first user ever?
         if (1 === $repository->count()) {
             Log::debug('User count is one, attach role.');
-            $repository->attachRole($event->user, 'superadmin');
+            $repository->attachRole($event->user, ['superadmin', 'owner']);
         }
 
         return true;
@@ -206,7 +208,6 @@ class UserEventHandler
             if (false === $entry['notified']) {
                 try {
                     Mail::to($email)->send(new NewIPAddressWarningMail($ipAddress));
-
                 } catch (Exception $e) { // @phpstan-ignore-line
                     Log::error($e->getMessage());
                 }
@@ -234,7 +235,6 @@ class UserEventHandler
         $url      = route('profile.confirm-email-change', [$token->data]);
         try {
             Mail::to($newEmail)->send(new ConfirmEmailChangeMail($newEmail, $oldEmail, $url));
-
         } catch (Exception $e) { // @phpstan-ignore-line
             Log::error($e->getMessage());
         }
@@ -260,7 +260,6 @@ class UserEventHandler
         $url      = route('profile.undo-email-change', [$token->data, $hashed]);
         try {
             Mail::to($oldEmail)->send(new UndoEmailChangeMail($newEmail, $oldEmail, $url));
-
         } catch (Exception $e) { // @phpstan-ignore-line
             Log::error($e->getMessage());
         }
@@ -286,7 +285,6 @@ class UserEventHandler
         // send email.
         try {
             Mail::to($email)->send(new RequestedNewPasswordMail($url, $ipAddress));
-
         } catch (Exception $e) { // @phpstan-ignore-line
             Log::error($e->getMessage());
         }
@@ -320,11 +318,9 @@ class UserEventHandler
             // send email.
             try {
                 Mail::to($email)->send(new RegisteredUserMail($url));
-
             } catch (Exception $e) { // @phpstan-ignore-line
                 Log::error($e->getMessage());
             }
-
         }
 
         return true;
@@ -340,7 +336,7 @@ class UserEventHandler
         $user = $event->user;
         /** @var array $preference */
 
-        if($user->hasRole('demo')) {
+        if ($user->hasRole('demo')) {
             Log::debug('Do not log demo user logins');
             return;
         }
@@ -385,6 +381,5 @@ class UserEventHandler
         if (false === $inArray && true === config('firefly.warn_new_ip')) {
             event(new DetectedNewIPAddress($user, $ip));
         }
-
     }
 }

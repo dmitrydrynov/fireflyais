@@ -79,7 +79,7 @@
                 {% if appData.companies %}
                     <div id="company_select"></div>
                 {% else %}
-                    {{ Auth.user.userGroup.title }}
+                    <div class="company-name">{{ Auth.user.userGroup.title }}</div>
                 {% endif %}
             </div>
 
@@ -103,7 +103,7 @@
                         <span class="hidden-xs">{{ Auth.user.email }}</span>
                     </span>
                     </li>
-                    {% if canAny(['transactions.create', 'accounts.create', 'budgets.create', 'categories.create', 'piggy-banks.create', 'bills.create', 'rules.create', 'recurring.create']) %}
+                    {% if activeUserGroup() is not same as('all') and canAny(['transactions.create', 'accounts.create', 'budgets.create', 'categories.create', 'piggy-banks.create', 'bills.create', 'rules.create', 'recurring.create']) %}
                         <li id="sidebar-toggle">
                             <a href="#" data-toggle="control-sidebar"><span class="fa fa-plus-circle"></span></a>
                         </li>

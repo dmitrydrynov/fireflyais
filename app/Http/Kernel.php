@@ -192,6 +192,7 @@ class Kernel extends HttpKernel
             EnsureFrontendRequestsAreStateful::class,
             'auth:api,sanctum',
             'bindings',
+            UserGroupsPermission::class,
         ],
         'apiY' => [
             'bindings',
@@ -226,10 +227,10 @@ class Kernel extends HttpKernel
         'can'        => Authorize::class,
         'guest'      => RedirectIfAuthenticated::class,
         'throttle'   => ThrottleRequests::class,
-        'permissions' => Permissions::class,
         'role' => RoleMiddleware::class,
         'permission' => PermissionMiddleware::class,
         'role_or_permission' => RoleOrPermissionMiddleware::class,
         'isSuperAdmin' => IsAdmin::class,
+        'userGroupIsReady' => UserGroupIsReady::class,
     ];
 }
