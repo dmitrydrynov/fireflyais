@@ -53,7 +53,7 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
      */
     public function destroyAll(): void
     {
-        $this->user->piggyBanks()->delete();
+        $this->user->userGroup->piggyBanks()->delete();
     }
 
     /**
@@ -94,7 +94,7 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
      */
     public function find(int $piggyBankId): ?PiggyBank
     {
-        return $this->user->piggyBanks()->find($piggyBankId);
+        return $this->user->userGroup->piggyBanks()->find($piggyBankId);
     }
 
     /**
@@ -106,7 +106,7 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
      */
     public function findByName(string $name): ?PiggyBank
     {
-        return $this->user->piggyBanks()->where('piggy_banks.name', $name)->first(['piggy_banks.*']);
+        return $this->user->userGroup->piggyBanks()->where('piggy_banks.name', $name)->first(['piggy_banks.*']);
     }
 
     /**
@@ -276,7 +276,7 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
      */
     public function getMaxOrder(): int
     {
-        return (int) $this->user->piggyBanks()->max('piggy_banks.order');
+        return (int) $this->user->userGroup->piggyBanks()->max('piggy_banks.order');
     }
 
     /**
@@ -323,6 +323,12 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
      */
     public function getPiggyBanks(): Collection
     {
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return PiggyBank::with(['account', 'objectGroups'])
+            ->orderBy('piggy_banks.order', 'ASC')
+            ->get(['piggy_banks.*']);
+        }
+        
         return PiggyBank::join('accounts', 'account_id', '=', 'accounts.id')
             ->where('accounts.user_group_id', $this->user->user_group_id)
             ->with(['account', 'objectGroups'])
@@ -397,7 +403,7 @@ class PiggyBankRepository implements PiggyBankRepositoryInterface
      */
     public function searchPiggyBank(string $query, int $limit): Collection
     {
-        $search = $this->user->piggyBanks();
+        $search = $this->user->userGroup->piggyBanks();
         if ('' !== $query) {
             $search->where('piggy_banks.name', 'LIKE', sprintf('%%%s%%', $query));
         }

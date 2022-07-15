@@ -71,7 +71,7 @@ class StandardMessageGenerator implements MessageGeneratorInterface
      */
     private function getWebhooks(): Collection
     {
-        return $this->user->webhooks()->where('active', true)->where('trigger', $this->trigger)->get(['webhooks.*']);
+        return $this->user->userGroup->webhooks()->where('active', true)->where('trigger', $this->trigger)->get(['webhooks.*']);
     }
 
     /**

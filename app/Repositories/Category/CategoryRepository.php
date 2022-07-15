@@ -51,7 +51,7 @@ class CategoryRepository implements CategoryRepositoryInterface
      */
     public function categoryEndsWith(string $query, int $limit): Collection
     {
-        $search = $this->user->categories();
+        $search = $this->user->userGroup->categories();
         if ('' !== $query) {
             $search->where('name', 'LIKE', sprintf('%%%s', $query));
         }
@@ -64,7 +64,7 @@ class CategoryRepository implements CategoryRepositoryInterface
      */
     public function categoryStartsWith(string $query, int $limit): Collection
     {
-        $search = $this->user->categories();
+        $search = $this->user->userGroup->categories();
         if ('' !== $query) {
             $search->where('name', 'LIKE', sprintf('%s%%', $query));
         }
@@ -111,7 +111,7 @@ class CategoryRepository implements CategoryRepositoryInterface
      */
     public function getCategories(): Collection
     {
-        return $this->user->categories()->with(['attachments'])->orderBy('name', 'ASC')->get();
+        return $this->user->userGroup->categories()->with(['attachments'])->orderBy('name', 'ASC')->get();
     }
 
     /**
@@ -151,7 +151,7 @@ class CategoryRepository implements CategoryRepositoryInterface
      */
     public function find(int $categoryId): ?Category
     {
-        return $this->user->categories()->find($categoryId);
+        return $this->user->userGroup->categories()->find($categoryId);
     }
 
     /**
@@ -163,7 +163,7 @@ class CategoryRepository implements CategoryRepositoryInterface
      */
     public function findByName(string $name): ?Category
     {
-        return $this->user->categories()->where('name', $name)->first(['categories.*']);
+        return $this->user->userGroup->categories()->where('name', $name)->first(['categories.*']);
     }
 
     /**
@@ -312,7 +312,7 @@ class CategoryRepository implements CategoryRepositoryInterface
      */
     public function getByIds(array $categoryIds): Collection
     {
-        return $this->user->categories()->whereIn('id', $categoryIds)->get();
+        return $this->user->userGroup->categories()->whereIn('id', $categoryIds)->get();
     }
 
     /**
@@ -415,7 +415,7 @@ class CategoryRepository implements CategoryRepositoryInterface
      */
     public function searchCategory(string $query, int $limit): Collection
     {
-        $search = $this->user->categories();
+        $search = $this->user->userGroup->categories();
         if ('' !== $query) {
             $search->where('name', 'LIKE', sprintf('%%%s%%', $query));
         }

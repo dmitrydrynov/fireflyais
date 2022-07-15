@@ -50,7 +50,7 @@ class TagRepository implements TagRepositoryInterface
      */
     public function count(): int
     {
-        return $this->user->tags()->count();
+        return $this->user->userGroup->tags()->count();
     }
 
     /**
@@ -86,7 +86,7 @@ class TagRepository implements TagRepositoryInterface
      */
     public function get(): Collection
     {
-        return $this->user->tags()->orderBy('tag', 'ASC')->get();
+        return $this->user->userGroup->tags()->orderBy('tag', 'ASC')->get();
     }
 
     /**
@@ -114,7 +114,7 @@ class TagRepository implements TagRepositoryInterface
      */
     public function find(int $tagId): ?Tag
     {
-        return $this->user->tags()->find($tagId);
+        return $this->user->userGroup->tags()->find($tagId);
     }
 
     /**
@@ -124,7 +124,7 @@ class TagRepository implements TagRepositoryInterface
      */
     public function findByTag(string $tag): ?Tag
     {
-        return $this->user->tags()->where('tag', $tag)->first();
+        return $this->user->userGroup->tags()->where('tag', $tag)->first();
     }
 
     /**
@@ -170,7 +170,7 @@ class TagRepository implements TagRepositoryInterface
     public function getTagsInYear(?int $year): array
     {
         // get all tags in the year (if present):
-        $tagQuery = $this->user->tags()->with(['locations', 'attachments'])->orderBy('tags.tag');
+        $tagQuery = $this->user->userGroup->tags()->with(['locations', 'attachments'])->orderBy('tags.tag');
 
         // add date range (or not):
         if (null === $year) {
@@ -239,7 +239,7 @@ class TagRepository implements TagRepositoryInterface
      */
     public function newestTag(): ?Tag
     {
-        return $this->user->tags()->whereNotNull('date')->orderBy('date', 'DESC')->first();
+        return $this->user->userGroup->tags()->whereNotNull('date')->orderBy('date', 'DESC')->first();
     }
 
     /**
@@ -247,7 +247,7 @@ class TagRepository implements TagRepositoryInterface
      */
     public function oldestTag(): ?Tag
     {
-        return $this->user->tags()->whereNotNull('date')->orderBy('date', 'ASC')->first();
+        return $this->user->userGroup->tags()->whereNotNull('date')->orderBy('date', 'ASC')->first();
     }
 
     /**
@@ -261,7 +261,7 @@ class TagRepository implements TagRepositoryInterface
     {
         $search = sprintf('%%%s%%', $query);
 
-        return $this->user->tags()->where('tag', 'LIKE', $search)->get(['tags.*']);
+        return $this->user->userGroup->tags()->where('tag', 'LIKE', $search)->get(['tags.*']);
     }
 
     /**
@@ -275,7 +275,7 @@ class TagRepository implements TagRepositoryInterface
     public function searchTags(string $query, int $limit): Collection
     {
         /** @var Collection $tags */
-        $tags = $this->user->tags()->orderBy('tag', 'ASC');
+        $tags = $this->user->userGroup->tags()->orderBy('tag', 'ASC');
         if ('' !== $query) {
             $search = sprintf('%%%s%%', $query);
             $tags->where('tag', 'LIKE', $search);

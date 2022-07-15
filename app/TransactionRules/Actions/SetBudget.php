@@ -53,7 +53,7 @@ class SetBudget implements ActionInterface
         $user   = User::find($journal['user_id']);
         $search = $this->action->action_value;
 
-        $budget = $user->budgets()->where('name', $search)->first();
+        $budget = $user->userGroup->budgets()->where('name', $search)->first();
         if (null === $budget) {
             Log::debug(
                 sprintf(

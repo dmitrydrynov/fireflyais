@@ -57,7 +57,7 @@ class ObjectGroupRepository implements ObjectGroupRepositoryInterface
      */
     public function get(): Collection
     {
-        return $this->user->objectGroups()
+        return $this->user->userGroup->objectGroups()
                           ->with(['piggyBanks', 'bills'])
                           ->orderBy('order', 'ASC')
                           ->orderBy('title', 'ASC')->get();
@@ -137,7 +137,7 @@ class ObjectGroupRepository implements ObjectGroupRepositoryInterface
      */
     public function search(string $query, int $limit): Collection
     {
-        $dbQuery = $this->user->objectGroups()->orderBy('order', 'ASC')->orderBy('title', 'ASC');
+        $dbQuery = $this->user->userGroup->objectGroups()->orderBy('order', 'ASC')->orderBy('title', 'ASC');
         if ('' !== $query) {
             // split query on spaces just in case:
             $parts = explode(' ', $query);
@@ -185,7 +185,7 @@ class ObjectGroupRepository implements ObjectGroupRepositoryInterface
         $oldOrder = (int) $objectGroup->order;
 
         if ($newOrder > $oldOrder) {
-            $this->user->objectGroups()->where('object_groups.order', '<=', $newOrder)->where('object_groups.order', '>', $oldOrder)
+            $this->user->userGroup->objectGroups()->where('object_groups.order', '<=', $newOrder)->where('object_groups.order', '>', $oldOrder)
                        ->where('object_groups.id', '!=', $objectGroup->id)
                        ->decrement('object_groups.order');
 
@@ -193,7 +193,7 @@ class ObjectGroupRepository implements ObjectGroupRepositoryInterface
             $objectGroup->save();
         }
         if ($newOrder < $oldOrder) {
-            $this->user->objectGroups()->where('object_groups.order', '>=', $newOrder)->where('object_groups.order', '<', $oldOrder)
+            $this->user->userGroup->objectGroups()->where('object_groups.order', '>=', $newOrder)->where('object_groups.order', '<', $oldOrder)
                        ->where('object_groups.id', '!=', $objectGroup->id)
                        ->increment('object_groups.order');
 

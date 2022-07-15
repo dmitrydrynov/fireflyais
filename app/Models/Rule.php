@@ -115,7 +115,7 @@ class Rule extends Model
             /** @var User $user */
             $user = auth()->user();
             /** @var Rule $rule */
-            $rule = $user->rules()->find($ruleId);
+            $rule = $user->userGroup->rules()->find($ruleId);
             if (null !== $rule) {
                 return $rule;
             }

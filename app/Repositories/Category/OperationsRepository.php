@@ -123,7 +123,7 @@ class OperationsRepository implements OperationsRepositoryInterface
      */
     private function getCategories(): Collection
     {
-        return $this->user->categories()->get();
+        return $this->user->userGroup->categories()->get();
     }
 
     /**

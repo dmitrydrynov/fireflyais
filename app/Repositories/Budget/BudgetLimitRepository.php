@@ -110,7 +110,7 @@ class BudgetLimitRepository implements BudgetLimitRepositoryInterface
      */
     public function destroyAll(): void
     {
-        $budgets = $this->user->budgets()->get();
+        $budgets = $this->user->userGroup->budgets()->get();
         /** @var Budget $budget */
         foreach ($budgets as $budget) {
             $budget->budgetlimits()->delete();
@@ -319,7 +319,7 @@ class BudgetLimitRepository implements BudgetLimitRepositoryInterface
         $currency->save();
 
         // find the budget:
-        $budget = $this->user->budgets()->find((int) $data['budget_id']);
+        $budget = $this->user->userGroup->budgets()->find((int) $data['budget_id']);
         if (null === $budget) {
             throw new FireflyException('200004: Budget does not exist.');
         }

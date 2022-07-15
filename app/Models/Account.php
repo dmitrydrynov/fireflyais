@@ -142,7 +142,7 @@ class Account extends Model
             /** @var User $user */
             $user = auth()->user();
             /** @var Account $account */
-            $account = $user->accounts()->find($accountId);
+            $account = $user->userGroup->accounts()->find($accountId);
             if (null !== $account) {
                 return $account;
             }

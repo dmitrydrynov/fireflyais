@@ -38,7 +38,7 @@ trait CreatesObjectGroups
      */
     protected function findObjectGroupById(int $groupId): ?ObjectGroup
     {
-        return $this->user->objectGroups()->where('id', $groupId)->first();
+        return $this->user->userGroup->objectGroups()->where('id', $groupId)->first();
     }
 
     /**
@@ -68,7 +68,7 @@ trait CreatesObjectGroups
      */
     protected function getObjectGroupMaxOrder(): int
     {
-        return (int) $this->user->objectGroups()->max('order');
+        return (int) $this->user->userGroup->objectGroups()->max('order');
     }
 
     /**
@@ -78,7 +78,7 @@ trait CreatesObjectGroups
      */
     protected function hasObjectGroup(string $title): bool
     {
-        return 1 === $this->user->objectGroups()->where('title', $title)->count();
+        return 1 === $this->user->userGroup->objectGroups()->where('title', $title)->count();
     }
 
     /**
@@ -88,6 +88,6 @@ trait CreatesObjectGroups
      */
     protected function findObjectGroup(string $title): ?ObjectGroup
     {
-        return $this->user->objectGroups()->where('title', $title)->first();
+        return $this->user->userGroup->objectGroups()->where('title', $title)->first();
     }
 }

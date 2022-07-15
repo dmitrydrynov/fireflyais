@@ -55,7 +55,7 @@ class BudgetRepository implements BudgetRepositoryInterface
      */
     public function budgetEndsWith(string $query, int $limit): Collection
     {
-        $search = $this->user->budgets();
+        $search = $this->user->userGroup->budgets();
         if ('' !== $query) {
             $search->where('name', 'LIKE', sprintf('%%%s', $query));
         }
@@ -70,7 +70,7 @@ class BudgetRepository implements BudgetRepositoryInterface
      */
     public function budgetStartsWith(string $query, int $limit): Collection
     {
-        $search = $this->user->budgets();
+        $search = $this->user->userGroup->budgets();
         if ('' !== $query) {
             $search->where('name', 'LIKE', sprintf('%s%%', $query));
         }
@@ -101,7 +101,7 @@ class BudgetRepository implements BudgetRepositoryInterface
             $budget->save();
         }
         // other budgets, set to 0.
-        $this->user->budgets()->where('active', 0)->update(['order' => 0]);
+        $this->user->userGroup->budgets()->where('active', 0)->update(['order' => 0]);
 
         return true;
     }
@@ -111,7 +111,7 @@ class BudgetRepository implements BudgetRepositoryInterface
      */
     public function getActiveBudgets(): Collection
     {
-        return $this->user->budgets()->where('active', true)
+        return $this->user->userGroup->budgets()->where('active', true)
                           ->orderBy('order', 'ASC')
                           ->orderBy('name', 'ASC')
                           ->get();
@@ -152,7 +152,7 @@ class BudgetRepository implements BudgetRepositoryInterface
      */
     public function getBudgets(): Collection
     {
-        return $this->user->budgets()->orderBy('order', 'ASC')
+        return $this->user->userGroup->budgets()->orderBy('order', 'ASC')
                           ->orderBy('name', 'ASC')->get();
     }
 
@@ -199,7 +199,7 @@ class BudgetRepository implements BudgetRepositoryInterface
      */
     public function find(int $budgetId = null): ?Budget
     {
-        return $this->user->budgets()->find($budgetId);
+        return $this->user->userGroup->budgets()->find($budgetId);
     }
 
     /**
@@ -216,7 +216,7 @@ class BudgetRepository implements BudgetRepositoryInterface
         }
         $query = sprintf('%%%s%%', $name);
 
-        return $this->user->budgets()->where('name', 'LIKE', $query)->first();
+        return $this->user->userGroup->budgets()->where('name', 'LIKE', $query)->first();
     }
 
     /**
@@ -267,7 +267,7 @@ class BudgetRepository implements BudgetRepositoryInterface
      */
     public function getByIds(array $budgetIds): Collection
     {
-        return $this->user->budgets()->whereIn('id', $budgetIds)->get();
+        return $this->user->userGroup->budgets()->whereIn('id', $budgetIds)->get();
     }
 
     /**
@@ -275,7 +275,7 @@ class BudgetRepository implements BudgetRepositoryInterface
      */
     public function getInactiveBudgets(): Collection
     {
-        return $this->user->budgets()
+        return $this->user->userGroup->budgets()
                           ->orderBy('order', 'ASC')
                           ->orderBy('name', 'ASC')->where('active', 0)->get();
     }
@@ -302,7 +302,7 @@ class BudgetRepository implements BudgetRepositoryInterface
     public function searchBudget(string $query, int $limit): Collection
     {
 
-        $search = $this->user->budgets();
+        $search = $this->user->userGroup->budgets();
         if ('' !== $query) {
             $search->where('name', 'LIKE', sprintf('%%%s%%', $query));
         }
@@ -421,7 +421,7 @@ class BudgetRepository implements BudgetRepositoryInterface
 
     public function getMaxOrder(): int
     {
-        return (int) $this->user->budgets()->max('order');
+        return (int) $this->user->userGroup->budgets()->max('order');
     }
 
     /**

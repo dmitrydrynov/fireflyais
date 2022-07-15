@@ -229,7 +229,7 @@ class GracefulNotFoundHandler extends ExceptionHandler
         if (TransactionJournal::class === $attachment->attachable_type) {
             // is linked to journal, get group of journal (if not also deleted)
             /** @var TransactionJournal $journal */
-            $journal = $user->transactionJournals()->withTrashed()->find($attachment->attachable_id);
+            $journal = $user->userGroup->transactionJournals()->withTrashed()->find($attachment->attachable_id);
             if (null !== $journal) {
                 return redirect(route('transactions.show', [$journal->transaction_group_id]));
             }
@@ -238,7 +238,7 @@ class GracefulNotFoundHandler extends ExceptionHandler
         if (Bill::class === $attachment->attachable_type) {
             // is linked to bill.
             /** @var Bill $bill */
-            $bill = $user->bills()->withTrashed()->find($attachment->attachable_id);
+            $bill = $user->userGroup->bills()->withTrashed()->find($attachment->attachable_id);
             if (null !== $bill) {
                 return redirect(route('bills.show', [$bill->id]));
             }

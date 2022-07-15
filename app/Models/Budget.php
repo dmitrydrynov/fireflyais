@@ -117,7 +117,7 @@ class Budget extends Model
             /** @var User $user */
             $user = auth()->user();
             /** @var Budget $budget */
-            $budget = $user->budgets()->find($budgetId);
+            $budget = $user->userGroup->budgets()->find($budgetId);
             if (null !== $budget) {
                 return $budget;
             }

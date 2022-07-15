@@ -74,7 +74,7 @@ class RecurringRepository implements RecurringRepositoryInterface
      */
     public function destroyAll(): void
     {
-        $this->user->recurrences()->delete();
+        $this->user->userGroup->recurrences()->delete();
     }
 
     /**
@@ -84,7 +84,7 @@ class RecurringRepository implements RecurringRepositoryInterface
      */
     public function get(): Collection
     {
-        return $this->user->recurrences()
+        return $this->user->userGroup->recurrences()
                           ->with(['TransactionCurrency', 'TransactionType', 'RecurrenceRepetitions', 'RecurrenceTransactions'])
                           ->orderBy('active', 'DESC')
                           ->orderBy('transaction_type_id', 'ASC')
@@ -511,7 +511,7 @@ class RecurringRepository implements RecurringRepositoryInterface
      */
     public function searchRecurrence(string $query, int $limit): Collection
     {
-        $search = $this->user->recurrences();
+        $search = $this->user->userGroup->recurrences();
         if ('' !== $query) {
             $search->where('recurrences.title', 'LIKE', sprintf('%%%s%%', $query));
         }
