@@ -29,7 +29,7 @@
                 </div>
             {% endif %}
         </td>
-        {% if can('transactions.edit') and activeUserGroup() is not same as('all') %}
+        {% if can('transactions.update') and activeUserGroup() is not same as('all') %}
             <td colspan="1" class="hidden-xs">
                 <div class="pull-right">
                     <input id="list_ALL" value="1" name="select-all" type="checkbox" class="select-all form-check-inline"/>
@@ -302,7 +302,7 @@
                         &nbsp;
                     </td>
                 {% endif %}
-                {% if can('transactions.edit') and activeUserGroup() is not same as('all') %}
+                {% if can('transactions.update') and activeUserGroup() is not same as('all') %}
                     <td style="{{ style|raw }}" class="hidden-xs">
                         <div class="pull-right">
                             <input id="list_{{ transaction.transaction_journal_id }}"
