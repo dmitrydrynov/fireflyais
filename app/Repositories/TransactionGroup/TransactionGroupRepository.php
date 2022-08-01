@@ -433,7 +433,7 @@ class TransactionGroupRepository implements TransactionGroupRepositoryInterface
         /** @var TransactionJournal $journal */
         $journal = $this->user->userGroup->transactionJournals()->find($journalId);
 
-        return $journal->tags()->get();
+        return $journal ? $journal->tags()->get() : new Collection();
     }
 
     /**
