@@ -15,7 +15,7 @@
                             balance: formatAmountBySymbol(balance, currency.symbol, currency.decimal_places, true),
                             name: account.name|escape, start: start.isoFormat(monthAndDayFormat), end: end.isoFormat(monthAndDayFormat) })|raw }}
                     </h3>
-                    {% if can('accounts.update') or can('accounts.delete') %}
+                    {% if (can('accounts.update') or can('accounts.delete')) and activeUserGroup() is not same as('all') %}
                         <div class="box-tools pull-right">
                             <div class="btn-group">
                                 <button class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown"><span class="fa fa-ellipsis-v"></span></button>

@@ -78,11 +78,11 @@ class ActionFactory
         }
 
         $class = $actionTypes[$actionType];
-        if (!class_exists($class)) {
+        if (!class_exists($class['action'])) {
             throw new FireflyException('Could not instantiate class for rule action type "' . e($actionType) . '" (' . e($class) . ').');
         }
 
-        return $class;
+        return $class['action'];
     }
 
     /**

@@ -52,7 +52,7 @@ class AttachmentFactory
         // get journal instead of transaction.
         if (Transaction::class === $model) {
             /** @var Transaction $transaction */
-            $transaction = $this->user->userGroups->transactions()->find((int) $data['attachable_id']);
+            $transaction = $this->user->userGroup->transactions()->find((int) $data['attachable_id']);
             if (null === $transaction) {
                 throw new FireflyException('Unexpectedly could not find transaction');
             }
