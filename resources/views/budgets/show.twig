@@ -16,7 +16,7 @@
                             {{ trans('firefly.chart_all_journals_for_budget', {name:budget.name}) }}
                         {% endif %}
                     </h3>
-                    {% if can('budgets.update') or can('budgets.delete') %}
+                    {% if (can('budgets.update') or can('budgets.delete')) and activeUserGroup() is not same as('all') %}
                     <div class="box-tools pull-right">
                         <div class="btn-group">
                             <button class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown"><span class="fa fa-ellipsis-v"></span></button>

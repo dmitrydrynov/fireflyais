@@ -173,7 +173,7 @@
                       )
                     }}
                   </span>
-                  {% if can('budgets.update') %}
+                  {% if can('budgets.update') and activeUserGroup() is not same as('all') %}
                     <a href="#"
                       data-id="0"
                       class="update_ab btn btn-default btn-xs">
@@ -209,7 +209,7 @@
             </div>
           </div>
         </div>
-        {% if enableAddButton and can('budgets.update') %}
+        {% if enableAddButton and can('budgets.update') and activeUserGroup() is not same as('all') %}
           <div class="col-lg-12">
             <p class="pull-right">
               <a href="#" class="btn btn-light btn-xs create_ab_alt">
@@ -302,7 +302,7 @@
                         )
                       }}
                     </span>
-                    {% if can('budgets.update') %}
+                    {% if can('budgets.update') and activeUserGroup() is not same as('all') %}
                       <a href="#"
                         data-id="{{ budget.id }}"
                         class="update_ab btn btn-default btn-xs">
@@ -411,7 +411,7 @@
           </div>
         </div>
       {% endfor %}
-      {% if enableAddButton %}
+      {% if enableAddButton and can('budgets.update') and activeUserGroup() is not same as('all') %}
         <div class="col-lg-12">
           <p class="pull-right">
             <a href="#" class="btn btn-light btn-xs create_ab_alt">
@@ -441,7 +441,7 @@
             </h3>
           </div>
           <div class="box-body no-padding">
-            {% if can('budgets.create') %}
+            {% if can('budgets.create') and activeUserGroup() is not same as('all') %}
               <div style="padding:8px;">
                 <a href="{{ route('budgets.create') }}" class="btn btn-success">
                   <span class="fa fa-plus fa-fw"></span>
@@ -476,24 +476,26 @@
                 {% for budget in budgets %}
                   <tr data-id="{{ budget.id }}">
                     <td class="hidden-sm hidden-xs">
-                      <div class="btn-group btn-group-xs">
-                        <a href="#"
-                          class="handle object-handle btn btn-default">
-                          <span class="fa fa-fw fa-bars"></span>
-                        </a>
-                        {% if can('budgets.update') %}
-                          <a href="{{ route('budgets.edit', budget.id) }}"
-                            class="btn btn-xs btn-default">
-                            <span class="fa fa-fw fa-pencil"></span>
+                      {% if (can('budgets.update') or can('budgets.delete')) and activeUserGroup() is not same as('all') %}
+                        <div class="btn-group btn-group-xs">
+                          <a href="#"
+                            class="handle object-handle btn btn-default">
+                            <span class="fa fa-fw fa-bars"></span>
                           </a>
-                        {% endif %}
-                        {% if can('budgets.create') %}
-                          <a href="{{ route('budgets.delete', budget.id) }}"
-                            class="btn btn-xs btn-danger">
-                            <span class="fa fa-fw fa-trash-o"></span>
-                          </a>
-                        {% endif %}
-                      </div>
+                          {% if can('budgets.update') %}
+                            <a href="{{ route('budgets.edit', budget.id) }}"
+                              class="btn btn-xs btn-default">
+                              <span class="fa fa-fw fa-pencil"></span>
+                            </a>
+                          {% endif %}
+                          {% if can('budgets.delete') %}
+                            <a href="{{ route('budgets.delete', budget.id) }}"
+                              class="btn btn-xs btn-danger">
+                              <span class="fa fa-fw fa-trash-o"></span>
+                            </a>
+                          {% endif %}
+                        </div>
+                      {% endif %}
                     </td>
                     <td>
                       {% if 0 == (budget.budgeted|length) %}
@@ -551,7 +553,7 @@
                     </td>
                     <td>
                       {% if 0 == (budget.budgeted|length) %}
-                        {% if can('budgets.update') %}
+                        {% if can('budgets.update') and activeUserGroup() is not same as('all') %}
                           <div class="input-group">
                             <div class="input-group-addon">
                               {{ defaultCurrency.symbol }}
@@ -596,7 +598,7 @@
                               }}
                             </small><br />
                           {% endif %}
-                          {% if can('budgets.update') %}
+                          {% if can('budgets.update') and activeUserGroup() is not same as('all') %}
                             <div class="input-group bl_entry"
                               data-budget-limit-id="{{ budgetLimit.id }}">
                               <div class="input-group-addon">
@@ -651,7 +653,7 @@
                           {% endif %}
                         {% endfor %}
                       {% endif %}
-                      {% if (budget.budgeted|length) < currencies.count() %}
+                      {% if (budget.budgeted|length) < currencies.count() and can('budgets.update') and activeUserGroup() is not same as('all') %}
                         <a href="#"
                           class="btn btn-light btn-xs create_bl"
                           data-id="{{ budget.id }}">
@@ -852,7 +854,7 @@
             </table>
           </div>
           <div class="box-footer">
-            {% if can('budgets.create') %}
+            {% if can('budgets.create') and activeUserGroup() is not same as('all') %}
               <a href="{{ route('budgets.create') }}" class="btn btn-success">
                 <span class="fa fa-plus fa-fw"></span>
                 {{ 'createBudget'|_ }}
