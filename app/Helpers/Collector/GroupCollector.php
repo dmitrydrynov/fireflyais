@@ -760,7 +760,7 @@ class GroupCollector implements GroupCollectorInterface
     private function startQuery(): void
     {
         //app('log')->debug('GroupCollector::startQuery');
-        $this->query = $this->user
+        $this->query = $this->user->userGroup
             //->transactionGroups()
             //->leftJoin('transaction_journals', 'transaction_journals.transaction_group_id', 'transaction_groups.id')
             ->transactionJournals()

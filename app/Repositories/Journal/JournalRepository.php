@@ -86,7 +86,7 @@ class JournalRepository implements JournalRepositoryInterface
      */
     public function findByType(array $types): Collection
     {
-        return $this->user
+        return $this->user->userGroup
             ->transactionJournals()
             ->leftJoin('transaction_types', 'transaction_types.id', '=', 'transaction_journals.transaction_type_id')
             ->whereIn('transaction_types.type', $types)

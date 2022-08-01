@@ -44,7 +44,7 @@ class RuleGroupRepository implements RuleGroupRepositoryInterface
      */
     public function correctRuleGroupOrder(): void
     {
-        $set   = $this->user
+        $set   = $this->user->userGroup
             ->ruleGroups()
             ->orderBy('order', 'ASC')
             ->orderBy('active', 'DESC')
@@ -104,7 +104,7 @@ class RuleGroupRepository implements RuleGroupRepositoryInterface
      */
     public function resetOrder(): bool
     {
-        $set   = $this->user
+        $set   = $this->user->userGroup
             ->ruleGroups()
             ->whereNull('deleted_at')
             ->orderBy('order', 'ASC')

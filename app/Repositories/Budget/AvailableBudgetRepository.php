@@ -190,7 +190,7 @@ class AvailableBudgetRepository implements AvailableBudgetRepositoryInterface
      */
     public function getByCurrencyDate(Carbon $start, Carbon $end, TransactionCurrency $currency): ?AvailableBudget
     {
-        return $this->user
+        return $this->user->userGroup
             ->availableBudgets()
             ->where('transaction_currency_id', $currency->id)
             ->where('start_date', $start->format('Y-m-d'))
