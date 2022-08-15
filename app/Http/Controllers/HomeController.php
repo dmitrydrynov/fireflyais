@@ -117,16 +117,24 @@ class HomeController extends Controller
         }
         $subTitle     = (string) trans('firefly.welcome_back');
         $transactions = [];
-        $frontPage    = app('preferences')->getFresh('frontPageAccounts', $repository->getAccountsByType([AccountType::ASSET])->pluck('id')->toArray());
+        $frontPage = [];
+
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            $frontPage = $repository->getAccountsByType([AccountType::ASSET])->pluck('id')->toArray();
+        } else {
+            $frontPageAccounts = app('preferences')->getFresh('frontPageAccounts', $repository->getAccountsByType([AccountType::ASSET])->pluck('id')->toArray());
+            $frontPage = $frontPageAccounts->data;
+        }        
+        
         /** @var Carbon $start */
         $start = session('start', Carbon::now()->startOfMonth());
         /** @var Carbon $end */
         $end = session('end', Carbon::now()->endOfMonth());
         /** @noinspection NullPointerExceptionInspection */
-        $accounts = $repository->getAccountsById($frontPage->data);
+        $accounts = $repository->getAccountsById($frontPage);
         $today    = today(config('app.timezone'));
 
-        Log::debug('Frontpage accounts are ', $frontPage->data);
+        Log::debug('Frontpage accounts are ', $frontPage);
 
         /** @var BillRepositoryInterface $billRepository */
         $billRepository = app(BillRepositoryInterface::class);

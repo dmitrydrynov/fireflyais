@@ -123,7 +123,8 @@
       "FireflyIII\\": "app/",
       "Domain\\": "domain/",
       "Database\\Factories\\": "database/factories/",
-      "Database\\Seeders\\": "database/seeders/"
+      "Database\\Seeders\\": "database/seeders/",
+      "Database\\Seeders\\Local\\": "database/seeders/local"
     }
   },
   "autoload-dev": {

@@ -133,7 +133,7 @@ class UserController extends Controller
     }
 
     /**
-     * Store new currency.
+     * Store new user.
      *
      * @param UserStoreRequest $request
      *
