@@ -23,6 +23,10 @@ class FakeUserGroupsSeeder extends Seeder
 
     UserGroup::where('title', 'like', '%Fake%')->forceDelete();
 
+    $jsonData = file_get_contents(__DIR__ . '/data/user_groups.json');
+    $defaultUserGroups = json_decode($jsonData, true);
+    UserGroup::insert($defaultUserGroups);
+
     for ($i = 0; $i < 10; $i++) {
       $createdAt = $faker->dateTime();
       $updatedAt = $faker->dateTimeInInterval($createdAt, '-5 years');

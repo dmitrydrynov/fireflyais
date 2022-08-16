@@ -162,7 +162,6 @@ class PermissionsSeeder extends Seeder
                 Permission::create($permission);
             } catch (\Throwable $e) {
                 // @ignoreException
-                Log::error($e->getMessage());
             }
         }
 
@@ -174,7 +173,6 @@ class PermissionsSeeder extends Seeder
                 }
             } catch (\Throwable $e) {
                 // @ignoreException
-                Log::error($e->getMessage());
             }
         }
     }

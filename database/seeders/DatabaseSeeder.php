@@ -26,6 +26,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Database\Seeders\Local\FakeUserGroupsSeeder;
+use Database\Seeders\Local\FakeUsersSeeder;
 
 /**
  * Class DatabaseSeeder.
@@ -48,6 +49,7 @@ class DatabaseSeeder extends Seeder
 
         if (env('APP_ENV') == 'local') {
             $this->call(FakeUserGroupsSeeder::class);
+            $this->call(FakeUsersSeeder::class);
         }
     }
 }

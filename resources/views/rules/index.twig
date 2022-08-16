@@ -4,7 +4,7 @@
 {% endblock %}
 {% block content %}
 
-    {% if can('rules.create') %}
+    {% if can('rules.create') and activeUserGroup() is not same as('all') %}
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
                 <p>
@@ -38,31 +38,33 @@
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><span class="fa fa-minus"></span>
                                     </button>
-                                    {% if can('rules.create') or can('rules.delete') or can('rules.execute') %}
-                                        <button class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown"><span
-                                                    class="fa fa-ellipsis-v"></span></button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            {% if can('rules.update') %}
-                                                <li><a href="{{ route('rule-groups.edit',ruleGroup.id) }}"><span class="fa fa-fw fa-pencil"></span> {{ 'edit'|_ }}</a></li>
-                                            {% endif %}
-                                            {% if can('rules.delete') %}
-                                                <li><a href="{{ route('rule-groups.delete',ruleGroup.id) }}"><span class="fa fa-fw fa-trash"></span> {{ 'delete'|_ }}</a></li>
-                                            {% endif %}
-                                            {% if can('rules.execute') %}
-                                                <li><a href="{{ route('rule-groups.select-transactions',ruleGroup.id) }}"><span
-                                                                class="fa fa-fw fa-power-off"></span> {{ trans('firefly.apply_rule_group_selection', {title: ruleGroup.title}) }}
-                                                    </a></li>
-                                            {% endif %}
-                                            {% if ruleGroup.order > 1 and can('rules.update') %}
-                                                <li><a href="#" class="move-group" data-direction="up" data-id="{{ ruleGroup.id }}"><span
-                                                                class="fa fa-fw fa-arrow-up"></span> {{ 'move_rule_group_up'|_ }}</a></li>
-                                            {% endif %}
-                                            {% if ruleGroup.order < ruleGroups|length and can('rules.update') %}
-                                                <li><a href="#" class="move-group" data-direction="down" data-id="{{ ruleGroup.id }}"><span
-                                                                class="fa fa-fw fa-arrow-down"></span> {{ 'move_rule_group_down'|_ }}
-                                                    </a></li>
-                                            {% endif %}
-                                        </ul>
+                                    {% if activeUserGroup() is not same as('all') %}
+                                        {% if can('rules.create') or can('rules.delete') or can('rules.execute') %}
+                                            <button class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown"><span
+                                                        class="fa fa-ellipsis-v"></span></button>
+                                            <ul class="dropdown-menu" role="menu">
+                                                {% if can('rules.update') %}
+                                                    <li><a href="{{ route('rule-groups.edit',ruleGroup.id) }}"><span class="fa fa-fw fa-pencil"></span> {{ 'edit'|_ }}</a></li>
+                                                {% endif %}
+                                                {% if can('rules.delete') %}
+                                                    <li><a href="{{ route('rule-groups.delete',ruleGroup.id) }}"><span class="fa fa-fw fa-trash"></span> {{ 'delete'|_ }}</a></li>
+                                                {% endif %}
+                                                {% if can('rules.execute') %}
+                                                    <li><a href="{{ route('rule-groups.select-transactions',ruleGroup.id) }}"><span
+                                                                    class="fa fa-fw fa-power-off"></span> {{ trans('firefly.apply_rule_group_selection', {title: ruleGroup.title}) }}
+                                                        </a></li>
+                                                {% endif %}
+                                                {% if ruleGroup.order > 1 and can('rules.update') %}
+                                                    <li><a href="#" class="move-group" data-direction="up" data-id="{{ ruleGroup.id }}"><span
+                                                                    class="fa fa-fw fa-arrow-up"></span> {{ 'move_rule_group_up'|_ }}</a></li>
+                                                {% endif %}
+                                                {% if ruleGroup.order < ruleGroups|length and can('rules.update') %}
+                                                    <li><a href="#" class="move-group" data-direction="down" data-id="{{ ruleGroup.id }}"><span
+                                                                    class="fa fa-fw fa-arrow-down"></span> {{ 'move_rule_group_down'|_ }}
+                                                        </a></li>
+                                                {% endif %}
+                                            </ul>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                             </div>
@@ -78,11 +80,13 @@
                             <table class="table table-hover table-striped group-rules">
                                 <thead>
                                 <tr>
-                                    {% if can('rules.update') %}
-                                        <th style="width:5%;">&nbsp;</th>
-                                    {% endif %}
-                                    {% if can('rules.update') or can('rules.delete') %}
-                                        <th style="width:10%;">&nbsp;</th>
+                                    {% if activeUserGroup() is not same as('all') %}
+                                        {% if can('rules.update') %}
+                                            <th style="width:5%;">&nbsp;</th>
+                                        {% endif %}
+                                        {% if can('rules.update') or can('rules.delete') %}
+                                            <th style="width:10%;">&nbsp;</th>
+                                        {% endif %}
                                     {% endif %}
                                     <th style="width:10%;">&nbsp;</th>
                                     <th style="width:25%;">{{ 'rule_name'|_ }}</th>
@@ -93,29 +97,31 @@
                                 <tbody class="rule-connected-list">
                                 {% for rule in ruleGroup.rules %}
                                     <tr class="single-rule" data-order="{{ rule.order }}"  data-id="{{ rule.id }}" data-group-id="{{ ruleGroup.id }}" data-position="{{ loop.index0 }}">
-                                        {% if can('rules.update') %}
-                                            <td>
-                                                <div class="btn-group btn-group-xs prio_buttons">
-                                                    <span class="fa fa-fw fa-bars rule-handle"></span>
-                                                </div>
-                                            </td>
-                                        {% endif %}
-                                        {% if can('rules.update') or can('rules.delete') %}
-                                            <td>
-                                                <div class="btn-group btn-group-xs edit_buttons">
-                                                    {% if can('rules.update') %}
-                                                        <a title="{{ 'edit'|_ }}" href="{{ route('rules.edit', rule.id) }}"
-                                                        class="btn btn-default"><span
-                                                                    class="fa fa-fw fa-pencil"></span></a>
-                                                    {% endif %}
-                                                    {% if can('rules.delete') %}
-                                                        <a title="{{ 'delete'|_ }}"
-                                                        href="{{ route('rules.delete', rule.id) }}"
-                                                        class="btn btn-danger"><span
-                                                                    class="fa fa-fw fa-trash"></span></a>
-                                                    {% endif %}
-                                                </div>
-                                            </td>
+                                        {% if activeUserGroup() is not same as('all') %}
+                                            {% if can('rules.update') %}
+                                                <td>
+                                                    <div class="btn-group btn-group-xs prio_buttons">
+                                                        <span class="fa fa-fw fa-bars rule-handle"></span>
+                                                    </div>
+                                                </td>
+                                            {% endif %}
+                                            {% if can('rules.update') or can('rules.delete') %}
+                                                <td>
+                                                    <div class="btn-group btn-group-xs edit_buttons">
+                                                        {% if can('rules.update') %}
+                                                            <a title="{{ 'edit'|_ }}" href="{{ route('rules.edit', rule.id) }}"
+                                                            class="btn btn-default"><span
+                                                                        class="fa fa-fw fa-pencil"></span></a>
+                                                        {% endif %}
+                                                        {% if can('rules.delete') %}
+                                                            <a title="{{ 'delete'|_ }}"
+                                                            href="{{ route('rules.delete', rule.id) }}"
+                                                            class="btn btn-danger"><span
+                                                                        class="fa fa-fw fa-trash"></span></a>
+                                                        {% endif %}
+                                                    </div>
+                                                </td>
+                                            {% endif %}
                                         {% endif %}
                                         
                                         <td>
@@ -126,13 +132,13 @@
                                                         <a href="{{ route('rules.search',rule.id) }}" class="btn btn-default {% if false == rule.strict %}test_rule_triggers{% endif %}" data-id="{{ rule.id }}" title="{{ 'test_rule_triggers'|_ }}"><span data-id="{{ rule.id }}" class="fa fa-fw fa-flask"></span></a>
                                                     {% endif %}
                                                     {# actually execute rule #}
-                                                    {% if can('rules.execute') %}
+                                                    {% if can('rules.execute') and activeUserGroup() is not same as('all') %}
                                                         <a href="{{ route('rules.select-transactions',rule.id) }}" class="btn btn-default" title=" {{ trans('firefly.apply_rule_selection', {title: rule.title}) }}"><span class="fa fa-fw fa-power-off "></span></a>
                                                     {% endif %}
                                                 {% endif %}
 
                                                 {# duplicate rule #}
-                                                {% if can('rules.create') and can('rules.read') %}
+                                                {% if can('rules.create') and can('rules.read') and activeUserGroup() is not same as('all') %}
                                                     <a href="#" class="btn btn-default duplicate-rule" data-id="{{ rule.id }}" title=" {{ trans('firefly.duplicate_rule', {title: rule.title}) }}"><span class="fa fa-fw fa-copy"></span></a>
                                                 {% endif %}
                                             </div>
@@ -203,7 +209,7 @@
                                 <em>{{ 'no_rules_in_group'|_ }}</em>
                             </p>
                         {% endif %}
-                        {% if can('rules.create') %}
+                        {% if can('rules.create') and activeUserGroup() is not same as('all') %}
                             <p>
                                 <br/>
                                 <a href="{{ route('rules.create', ruleGroup.id) }}"
@@ -218,7 +224,7 @@
 
     {% include 'rules.partials.test-trigger-modal' %}
 
-    {% if can('rules.create') %}
+    {% if can('rules.create') and activeUserGroup() is not same as('all') %}
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
                 <a href="{{ route('rule-groups.create') }}" class="btn btn-success">{{ 'new_rule_group'|_ }}</a>

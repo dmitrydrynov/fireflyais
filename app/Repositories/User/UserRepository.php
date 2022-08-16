@@ -271,7 +271,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function hasRole(User $user, string $role): bool
     {
-        setPermissionsTeamId($user->user_group_id);
+        // setPermissionsTeamId($user->user_group_id);
 
         return $user->hasRole($role);
     }
@@ -322,7 +322,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function attachRole(User $user, mixed $role): bool
     {
-        setPermissionsTeamId($user->user_group_id);
+        // setPermissionsTeamId($user->user_group_id);
         $user->assignRole($role);
 
         return true;

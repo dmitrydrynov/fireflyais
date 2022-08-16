@@ -37,10 +37,10 @@
             </div>
             <div class="box-footer">
                 <div class="btn-group">
-                    {% if can('recurring.update') %}
+                    {% if can('recurring.update') and activeUserGroup() is not same as('all') %}
                         <a href="{{ route('recurring.edit', [array.id]) }}" class="btn btn-sm btn-default"><span class="fa fa-pencil"></span> {{ 'edit'|_ }}</a>
                     {% endif %}
-                    {% if can('recurring.delete') %}
+                    {% if can('recurring.delete') and activeUserGroup() is not same as('all') %}
                         <a href="{{ route('recurring.delete', [array.id]) }}" class="btn btn-sm btn-danger">{{ 'delete'|_ }} <span class="fa fa-trash"></span></a>
                     {% endif %}
                 </div>
@@ -117,14 +117,14 @@
                                 {{ transaction.description }}
                             </td>
                             <td data-value="{{ transaction.source_name }}">
-                                {% if can('accounts.read') %}
+                                {% if can('accounts.read') and activeUserGroup() is not same as('all') %}
                                     <a href="{{ route('accounts.show', [transaction.source_id]) }}">{{ transaction.source_name }}</a>
                                 {% else %}
                                     {{ transaction.source_name }}
                                 {% endif %}
                             </td>
                             <td data-value="{{ transaction.destination_name }}">
-                                {% if can('accounts.read') %}
+                                {% if can('accounts.read') and activeUserGroup() is not same as('all') %}
                                     <a href="{{ route('accounts.show', [transaction.destination_id]) }}">{{ transaction.destination_name }}</a>
                                 {% else %}
                                     {{ transaction.destination_name }}

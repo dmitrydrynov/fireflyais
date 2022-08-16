@@ -85,7 +85,6 @@ class RoleSeeder extends Seeder
                 }
             } catch (\Throwable $e) {
                 // @ignoreException
-                Log::error($e->getMessage());
             }
         }
     }

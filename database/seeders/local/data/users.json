@@ -1,0 +1,87 @@
+{
+  "owners": [
+    {
+      "id": 2,
+      "email": "o1@mail.loc",
+      "password": "o1@mail.loc",
+      "user_group_id": 2
+    },
+    {
+      "id": 3,
+      "email": "o2@mail.loc",
+      "password": "o2@mail.loc",
+      "user_group_id": 3
+    },
+    {
+      "id": 4,
+      "email": "o3@mail.loc",
+      "password": "o3@mail.loc",
+      "user_group_id": 4
+    }
+  ],
+  "members": [
+    {
+      "id": 5,
+      "email": "c1m1@mail.loc",
+      "password": "c1m1@mail.loc",
+      "user_group_id": 2,
+      "permissions": ["accounts", "transactions"]
+    },
+    {
+      "id": 6,
+      "email": "c1m2@mail.loc",
+      "password": "c1m2@mail.loc",
+      "user_group_id": 2,
+      "permissions": ["accounts", "transactions", "rules"]
+    },
+    {
+      "id": 7,
+      "email": "c1m3@mail.loc",
+      "password": "c1m3@mail.loc",
+      "user_group_id": 2,
+      "permissions": ["accounts.read", "transactions.read", "export-data"]
+    },
+    {
+      "id": 8,
+      "email": "c2m1@mail.loc",
+      "password": "c2m1@mail.loc",
+      "user_group_id": 3,
+      "permissions": ["accounts", "transactions"]
+    },
+    {
+      "id": 9,
+      "email": "c2m2@mail.loc",
+      "password": "c2m2@mail.loc",
+      "user_group_id": 3,
+      "permissions": ["accounts", "transactions", "rules"]
+    },
+    {
+      "id": 10,
+      "email": "c2m3@mail.loc",
+      "password": "c2m3@mail.loc",
+      "user_group_id": 3,
+      "permissions": ["accounts.read", "transactions.read", "export-data"]
+    },
+    {
+      "id": 11,
+      "email": "c3m1@mail.loc",
+      "password": "c3m1@mail.loc",
+      "user_group_id": 4,
+      "permissions": ["accounts", "transactions"]
+    },
+    {
+      "id": 12,
+      "email": "c3m2@mail.loc",
+      "password": "c3m2@mail.loc",
+      "user_group_id": 4,
+      "permissions": ["accounts", "transactions", "rules"]
+    },
+    {
+      "id": 13,
+      "email": "c3m3@mail.loc",
+      "password": "c3m3@mail.loc",
+      "user_group_id": 4,
+      "permissions": ["accounts.read", "transactions.read", "export-data"]
+    }
+  ]
+}

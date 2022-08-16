@@ -14,7 +14,7 @@
                         <h3 class="box-title">
                             {{ 'recurrences'|_ }}
                         </h3>
-                        {% if can('recurring.create') %}
+                        {% if can('recurring.create') and activeUserGroup() is not same as('all') %}
                             <div class="box-tools pull-right">
                                 <div class="btn-group">
                                     <button class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown"><span class="fa fa-ellipsis-v"></span></button>
@@ -27,7 +27,7 @@
                     </div>
 
                     <div class="box-body no-padding">
-                        {% if can('recurring.create') %}
+                        {% if can('recurring.create') and activeUserGroup() is not same as('all') %}
                             <div style="padding:8px;">
                                 <a href="{{ route('recurring.create') }}" class="btn btn-success"><span class="fa fa-plus fa-fw"></span> {{ ('make_new_recurring')|_ }}
                                 </a>
@@ -53,11 +53,11 @@
                                 <tr>
                                     <td class="hidden-sm hidden-xs">
                                         <div class="btn-group btn-group-xs edit_tr_buttons">
-                                            {% if can('recurring.update') %}
+                                            {% if can('recurring.update') and activeUserGroup() is not same as('all') %}
                                                 <a class="btn btn-default btn-xs" title="{{ 'edit'|_ }}" href="{{ route('recurring.edit',rt.id) }}"><span
                                                         class="fa fa-fw fa-pencil"></span></a>
                                             {% endif %}
-                                            {% if can('recurring.delete') %}
+                                            {% if can('recurring.delete') and activeUserGroup() is not same as('all') %}
                                                 <a class="btn btn-danger btn-xs" title="{{ 'delete'|_ }}"
                                                                                         href="{{ route('recurring.delete',rt.id) }}"><span
                                                 class="fa fa-fw fa-trash-o"></span></a>
@@ -162,7 +162,7 @@
                             {{ paginator.links('pagination.bootstrap-4')|raw }}
                         </div>
                     </div>
-                    {% if can('recurring.create') %}
+                    {% if can('recurring.create') and activeUserGroup() is not same as('all') %}
                         <div class="box-footer">
                             <a href="{{ route('recurring.create') }}" class="btn btn-success"><span class="fa fa-plus fa-fw"></span> {{ ('make_new_recurring')|_ }}</a>
                         </div>

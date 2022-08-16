@@ -27,11 +27,13 @@
                         <div class="form-group">
                             <div class="col-sm-offset-1 col-sm-10">
                                 <button type="submit" class="btn btn-info"><span class="fa fa-search"></span> {{ 'search'|_ }}</button>
-                                {% if ruleId > 0 and ruleChanged %}
+                                {% if ruleId > 0 and ruleChanged and can('rules.update') and activeUserGroup() is not same as('all') %}
                                     <a href="{{ route('rules.edit', [ruleId]) }}?from_query={{ fullQuery }}"
                                        class="btn btn-default">{{ trans('firefly.update_rule_from_query', {rule: rule.title}) }}</a>
                                 {% endif %}
-                                <a href="{{ route('rules.create') }}?from_query={{ fullQuery }}" class="btn btn-default">{{ 'create_rule_from_query'|_ }}</a>
+                                {% if can('rules.create') and activeUserGroup() is not same as('all') %}
+                                    <a href="{{ route('rules.create') }}?from_query={{ fullQuery }}" class="btn btn-default">{{ 'create_rule_from_query'|_ }}</a>
+                                {% endif %}
                             </div>
                         </div>
                         {% if 0 != ruleId %}

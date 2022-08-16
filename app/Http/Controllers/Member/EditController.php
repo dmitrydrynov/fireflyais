@@ -30,7 +30,7 @@ class EditController extends Controller
 
         $permissions = Permission::all(['name', 'id']);
 
-        setPermissionsTeamId($request->user()->user_group_id);
+        // setPermissionsTeamId($request->user()->user_group_id);
         $userPermissions = $member->getPermissionNames();
 
         return view('members.edit', compact('member', 'userPermissions', 'permissions', 'subTitle', 'subTitleIcon', 'previousUrl'));
