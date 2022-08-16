@@ -78,7 +78,7 @@ class JournalRepository implements JournalRepositoryInterface
      */
     public function find(int $journalId): ?TransactionJournal
     {
-        return $this->user->transactionJournals()->find($journalId);
+        return $this->user->userGroup->transactionJournals()->find($journalId);
     }
 
     /**
@@ -86,7 +86,7 @@ class JournalRepository implements JournalRepositoryInterface
      */
     public function findByType(array $types): Collection
     {
-        return $this->user
+        return $this->user->userGroup
             ->transactionJournals()
             ->leftJoin('transaction_types', 'transaction_types.id', '=', 'transaction_journals.transaction_type_id')
             ->whereIn('transaction_types.type', $types)
@@ -101,7 +101,7 @@ class JournalRepository implements JournalRepositoryInterface
     public function firstNull(): ?TransactionJournal
     {
         /** @var TransactionJournal $entry */
-        $entry  = $this->user->transactionJournals()->orderBy('date', 'ASC')->first(['transaction_journals.*']);
+        $entry  = $this->user->userGroup->transactionJournals()->orderBy('date', 'ASC')->first(['transaction_journals.*']);
         $result = null;
         if (null !== $entry) {
             $result = $entry;
@@ -154,7 +154,7 @@ class JournalRepository implements JournalRepositoryInterface
     public function getLast(): ?TransactionJournal
     {
         /** @var TransactionJournal $entry */
-        $entry  = $this->user->transactionJournals()->orderBy('date', 'DESC')->first(['transaction_journals.*']);
+        $entry  = $this->user->userGroup->transactionJournals()->orderBy('date', 'DESC')->first(['transaction_journals.*']);
         $result = null;
         if (null !== $entry) {
             $result = $entry;
@@ -228,7 +228,7 @@ class JournalRepository implements JournalRepositoryInterface
     public function reconcileById(int $journalId): void
     {
         /** @var TransactionJournal $journal */
-        $journal = $this->user->transactionJournals()->find($journalId);
+        $journal = $this->user->userGroup->transactionJournals()->find($journalId);
         $journal?->transactions()->update(['reconciled' => true]);
     }
 
@@ -242,7 +242,7 @@ class JournalRepository implements JournalRepositoryInterface
      */
     public function searchJournalDescriptions(string $search, int $limit): Collection
     {
-        $query = $this->user->transactionJournals()
+        $query = $this->user->userGroup->transactionJournals()
                             ->orderBy('date', 'DESC');
         if ('' !== $query) {
             $query->where('description', 'LIKE', sprintf('%%%s%%', $search));

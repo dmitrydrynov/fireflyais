@@ -121,7 +121,7 @@ class BillFactory
         // first find by ID:
         if ($billId > 0) {
             /** @var Bill $bill */
-            $bill = $this->user->bills()->find($billId);
+            $bill = $this->user->userGroup->bills()->find($billId);
         }
 
         // then find by name:
@@ -140,7 +140,7 @@ class BillFactory
      */
     public function findByName(string $name): ?Bill
     {
-        return $this->user->bills()->where('name', 'LIKE', sprintf('%%%s%%', $name))->first();
+        return $this->user->userGroup->bills()->where('name', 'LIKE', sprintf('%%%s%%', $name))->first();
     }
 
     /**

@@ -19,7 +19,7 @@
             <h3 class="box-title">
               {{ title }}
             </h3>
-            {% if can('bills.create') %}
+            {% if can('bills.create') and activeUserGroup() is not same as('all') %}
               <div class="box-tools pull-right">
                 <div class="btn-group">
                   <button class="btn btn-box-tool dropdown-toggle"
@@ -39,7 +39,7 @@
             {% endif %}
           </div>
           <div class="box-body no-padding">
-            {% if can('bills.create') %}
+            {% if can('bills.create') and activeUserGroup() is not same as('all') %}
               <div style="padding:8px;">
                 <a class="btn btn-success" href="{{ route('bills.create') }}">
                   <span class="fa fa-plus fa-fw"></span>
@@ -50,7 +50,7 @@
             {% include 'list/bills' %}
           </div>
           <div class="box-footer">
-            {% if can('bills.create') %}
+            {% if can('bills.create') and activeUserGroup() is not same as('all') %}
               <a class="btn btn-success" href="{{ route('bills.create') }}">
                 <span class="fa fa-plus fa-fw"></span> {{ 'create_new_bill'|_ }}
               </a>

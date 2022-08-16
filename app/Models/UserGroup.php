@@ -27,11 +27,10 @@ namespace FireflyIII\Models;
 use FireflyIII\User;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Carbon;
 
 /**
@@ -62,53 +61,139 @@ class UserGroup extends Model
      *
      * @return HasMany
      */
-    public function members(): HasMany
+    public function members(): HasMany | Builder
     {
-        return $this->hasMany(User::class );
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return User::query();
+        }
+
+        return $this->hasMany(User::class);
     }
 
-    public function accounts(): HasMany
+    public function accounts(): HasMany | Builder
     {
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Account::query();
+        }
+
         return $this->hasMany(Account::class);
     }
 
-    public function budgets(): HasMany
+    public function budgets(): HasMany | Builder
     {
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Budget::query();
+        }
+
         return $this->hasMany(Budget::class);
     }
 
-    public function bills(): HasMany
+    public function bills(): HasMany | Builder
     {
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Bill::query();
+        }
+
         return $this->hasMany(Bill::class);
     }
 
-    public function availableBudgets(): HasMany
+    public function availableBudgets(): HasMany | Builder
     {
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return AvailableBudget::query();
+        }
+
         return $this->hasMany(AvailableBudget::class);
     }
 
-    public function categories(): HasMany
+    public function categories(): HasMany | Builder
     {
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Category::query();
+        }
+
         return $this->hasMany(Category::class);
     }
 
-    public function rules(): HasMany
+    public function rules(): HasMany | Builder
     {
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Rule::query();
+        }
+
         return $this->hasMany(Rule::class);
     }
 
-    public function tags(): HasMany
+    public function tags(): HasMany | Builder
     {
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Tag::query();
+        }
+
         return $this->hasMany(Tag::class);
     }
 
-    public function transactions(): HasManyThrough
+
+    public function transactions(): HasManyThrough | Builder
     {
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Transaction::leftJoin('transaction_journals', 'transactions.transaction_journal_id', '=', 'transaction_journals.id');
+        }
+
         return $this->hasManyThrough(Transaction::class, TransactionJournal::class);
     }
 
-    public function transactionJournals(): HasMany
+    public function transactionJournals(): HasMany | Builder
     {
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return TransactionJournal::query();
+        }
+
         return $this->hasMany(TransactionJournal::class);
+    }
+
+    public function piggyBanks(): HasManyThrough | Builder
+    {        
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return PiggyBank::query();
+        }
+
+        return $this->hasManyThrough(PiggyBank::class, Account::class);
+    }
+
+    public function ruleGroups(): HasMany | Builder
+    {
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return RuleGroup::query();
+        }
+
+        return $this->hasMany(RuleGroup::class);
+    }
+
+    public function webhooks(): HasMany | Builder
+    {
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Webhook::query();
+        }
+
+        return $this->hasMany(Webhook::class);
+    }
+
+    public function objectGroups(): HasMany | Builder
+    {
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return ObjectGroup::query();
+        }
+
+        return $this->hasMany(ObjectGroup::class);
+    }
+
+    public function recurrences(): HasMany | Builder
+    {
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            return Recurrence::query();
+        }
+
+        return $this->hasMany(Recurrence::class);
     }
 }

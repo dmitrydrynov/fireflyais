@@ -121,7 +121,7 @@ class BelongsUser implements Rule
     {
         $count = PiggyBank::leftJoin('accounts', 'accounts.id', '=', 'piggy_banks.account_id')
                           ->where('piggy_banks.id', '=', $value)
-                          ->where('accounts.user_id', '=', auth()->user()->id)->count();
+                          ->where('accounts.user_group_id', '=', auth()->user()->user_group_id)->count();
 
         return 1 === $count;
     }

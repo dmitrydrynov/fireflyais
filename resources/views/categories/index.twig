@@ -11,7 +11,7 @@
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">{{ 'categories'|_ }}</h3>
-                {% if can('categories.create') %}
+                {% if can('categories.create') and activeUserGroup() is not same as('all') %}
                     <div class="box-tools pull-right">
                         <div class="btn-group">
                             <button class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown"><span class="fa fa-ellipsis-v"></span></button>
@@ -24,14 +24,14 @@
 
             </div>
             <div class="box-body no-padding">
-                {% if can('categories.create') %}
+                {% if can('categories.create') and activeUserGroup() is not same as('all') %}
                     <div style="padding:8px;">
                         <a class="btn btn-success" href="{{ route('categories.create') }}"><span class="fa fa-plus fa-fw"></span> {{ 'new_category'|_ }}</a>
                     </div>
                 {% endif %}
                 {% include 'list/categories' %}
             </div>
-            {% if can('categories.create') %}
+            {% if can('categories.create') and activeUserGroup() is not same as('all') %}
                 <div class="box-footer">
                     <a class="btn btn-success" href="{{ route('categories.create') }}"><span class="fa fa-plus fa-fw"></span> {{ 'new_category'|_ }}</a>
                 </div>

@@ -42,7 +42,7 @@ class WebhookRepository implements WebhookRepositoryInterface
      */
     public function all(): Collection
     {
-        return $this->user->webhooks()->get();
+        return $this->user->userGroup->webhooks()->get();
     }
 
     /**

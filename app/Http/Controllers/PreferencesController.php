@@ -96,7 +96,6 @@ class PreferencesController extends Controller
         $viewRangePref = app('preferences')->get('viewRange', '1M');
 
         $viewRange          = $viewRangePref->data;
-        $frontPageAccounts  = app('preferences')->get('frontPageAccounts', $accountIds);
         $language           = app('steam')->getLanguage();
         $languages          = config('firefly.languages');
         $locale             = app('preferences')->get('locale', config('firefly.default_locale', 'equal'))->data;
@@ -105,6 +104,14 @@ class PreferencesController extends Controller
         $fiscalYearStartStr = app('preferences')->get('fiscalYearStart', '01-01')->data;
         $fiscalYearStart    = date('Y') . '-' . $fiscalYearStartStr;
         $tjOptionalFields   = app('preferences')->get('transaction_journal_optional_fields', [])->data;
+
+        $frontPageAccounts = [];
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            $frontPageAccounts = $accountIds;
+        } else {
+            $frontPagePreference = app('preferences')->get('frontPageAccounts', $accountIds);
+            $frontPageAccounts = $frontPagePreference->data;
+        }
 
         ksort($languages);
 
@@ -119,7 +126,7 @@ class PreferencesController extends Controller
         $locales = ['equal' => (string) trans('firefly.equal_to_language')] + $locales;
         // an important fallback is that the frontPageAccount array gets refilled automatically
         // when it turns up empty.
-        if (empty($frontPageAccounts->data)) {
+        if (isset($frontPagePreference) && empty($frontPagePreference->data)) {
             $frontPageAccounts = $accountIds;
         }
 

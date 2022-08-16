@@ -100,7 +100,7 @@ class AvailableBudget extends Model
             /** @var User $user */
             $user = auth()->user();
             /** @var AvailableBudget $availableBudget */
-            $availableBudget = $user->availableBudgets()->find($availableBudgetId);
+            $availableBudget = $user->userGroup->availableBudgets()->find($availableBudgetId);
             if (null !== $availableBudget) {
                 return $availableBudget;
             }

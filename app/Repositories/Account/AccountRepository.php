@@ -62,7 +62,7 @@ class AccountRepository implements AccountRepositoryInterface
      */
     public function count(array $types): int
     {
-        return $this->user->accounts()->accountTypeIn($types)->count();
+        return $this->user->userGroup->accounts()->accountTypeIn($types)->count();
     }
 
     /**
@@ -96,14 +96,14 @@ class AccountRepository implements AccountRepositoryInterface
         $result = new Collection;
         /** @var Account $account */
         foreach ($accounts as $account) {
-            $byName = $this->user->accounts()->where('name', $account->name)->where('id', '!=', $account->id)->first();
+            $byName = $this->user->userGroup->accounts()->where('name', $account->name)->where('id', '!=', $account->id)->first();
             if (null !== $byName) {
                 $result->push($account);
                 $result->push($byName);
                 continue;
             }
             if (null !== $account->iban) {
-                $byIban = $this->user->accounts()->where('iban', $account->iban)->where('id', '!=', $account->id)->first();
+                $byIban = $this->user->userGroup->accounts()->where('iban', $account->iban)->where('id', '!=', $account->id)->first();
                 if (null !== $byIban) {
                     $result->push($account);
                     $result->push($byIban);
@@ -123,7 +123,7 @@ class AccountRepository implements AccountRepositoryInterface
      */
     public function find(int $accountId): ?Account
     {
-        return $this->user->accounts()->find($accountId);
+        return $this->user->userGroup->accounts()->find($accountId);
     }
 
     /**
@@ -131,7 +131,7 @@ class AccountRepository implements AccountRepositoryInterface
      */
     public function findByAccountNumber(string $number, array $types): ?Account
     {
-        $dbQuery = $this->user->accounts()
+        $dbQuery = $this->user->userGroup->accounts()
             ->leftJoin('account_meta', 'accounts.id', '=', 'account_meta.account_id')
             ->where('accounts.active', true)
             ->where(
@@ -158,7 +158,7 @@ class AccountRepository implements AccountRepositoryInterface
      */
     public function findByIbanNull(string $iban, array $types): ?Account
     {
-        $query = $this->user->accounts();
+        $query = $this->user->userGroup->accounts();
         $query->where('iban', '!=', '')->whereNotNull('iban');
 
         if (!empty($types)) {
@@ -177,7 +177,7 @@ class AccountRepository implements AccountRepositoryInterface
      */
     public function findByName(string $name, array $types): ?Account
     {
-        $query = $this->user->accounts();
+        $query = $this->user->userGroup->accounts();
 
         if (!empty($types)) {
             $query->leftJoin('account_types', 'accounts.account_type_id', '=', 'account_types.id');
@@ -217,7 +217,7 @@ class AccountRepository implements AccountRepositoryInterface
      */
     public function getAccountsById(array $accountIds): Collection
     {
-        $query = $this->user->accounts();
+        $query = $this->user->userGroup->accounts();
 
         if (!empty($accountIds)) {
             $query->whereIn('accounts.id', $accountIds);
@@ -236,7 +236,7 @@ class AccountRepository implements AccountRepositoryInterface
      */
     public function getActiveAccountsByType(array $types): Collection
     {
-        $query = $this->user->accounts();
+        $query = $this->user->userGroup->accounts();
         $query->with(
             ['accountmeta' => function (HasMany $query) {
                 $query->where('name', 'account_role');
@@ -314,7 +314,7 @@ class AccountRepository implements AccountRepositoryInterface
      */
     public function getInactiveAccountsByType(array $types): Collection
     {
-        $query = $this->user->accounts();
+        $query = $this->user->userGroup->accounts();
         $query->with(
             ['accountmeta' => function (HasMany $query) {
                 $query->where('name', 'account_role');
@@ -458,7 +458,7 @@ class AccountRepository implements AccountRepositoryInterface
         /** @var AccountType $type */
         $type    = AccountType::where('type', AccountType::RECONCILIATION)->first();
 
-        $current = $this->user->accounts();
+        $current = $this->user->userGroup->accounts();
         $current->where('account_type_id', $type->id)
             ->where('name', $name)
             ->first();
@@ -586,7 +586,7 @@ class AccountRepository implements AccountRepositoryInterface
     public function getAccountsByType(array $types, ?array $sort = []): Collection
     {
         $res   = array_intersect([AccountType::ASSET, AccountType::MORTGAGE, AccountType::LOAN, AccountType::DEBT], $types);
-        $query = $this->user->accounts();
+        $query = $this->user->userGroup->accounts();
         if (!empty($types)) {
             $query->accountTypeIn($types);
         }
@@ -686,7 +686,7 @@ class AccountRepository implements AccountRepositoryInterface
      */
     public function searchAccount(string $query, array $types, int $limit): Collection
     {
-        $dbQuery = $this->user->accounts();
+        $dbQuery = $this->user->userGroup->accounts();
         $dbQuery
             ->where('active', true)
             ->orderBy('accounts.order', 'ASC')
@@ -714,7 +714,7 @@ class AccountRepository implements AccountRepositoryInterface
      */
     public function searchAccountNr(string $query, array $types, int $limit): Collection
     {
-        $dbQuery = $this->user->accounts();
+        $dbQuery = $this->user->userGroup->accounts();
         $dbQuery
             ->distinct()
             ->leftJoin('account_meta', 'accounts.id', '=', 'account_meta.account_id')

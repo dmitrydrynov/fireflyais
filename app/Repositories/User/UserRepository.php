@@ -242,23 +242,23 @@ class UserRepository implements UserRepositoryInterface
         $return['is_admin']            = $this->hasRole($user, 'owner');
         $return['blocked']             = 1 === (int) $user->blocked;
         $return['blocked_code']        = $user->blocked_code;
-        $return['accounts']            = $user->accounts()->count();
-        $return['journals']            = $user->transactionJournals()->count();
-        $return['transactions']        = $user->transactions()->count();
-        $return['attachments']         = $user->attachments()->count();
-        $return['attachments_size']    = $user->attachments()->sum('size');
-        $return['bills']               = $user->bills()->count();
-        $return['categories']          = $user->categories()->count();
-        $return['budgets']             = $user->budgets()->count();
+        $return['accounts']            = $user->userGroup->accounts()->count();
+        $return['journals']            = $user->userGroup->transactionJournals()->count();
+        $return['transactions']        = $user->userGroup->transactions()->count();
+        $return['attachments']         = $user->userGroup->attachments()->count();
+        $return['attachments_size']    = $user->userGroup->attachments()->sum('size');
+        $return['bills']               = $user->userGroup->bills()->count();
+        $return['categories']          = $user->userGroup->categories()->count();
+        $return['budgets']             = $user->userGroup->budgets()->count();
         $return['budgets_with_limits'] = BudgetLimit::distinct()
             ->leftJoin('budgets', 'budgets.id', '=', 'budget_limits.budget_id')
             ->where('amount', '>', 0)
             ->whereNull('budgets.deleted_at')
             ->where('budgets.user_id', $user->id)
             ->count('budget_limits.budget_id');
-        $return['rule_groups']         = $user->ruleGroups()->count();
-        $return['rules']               = $user->rules()->count();
-        $return['tags']                = $user->tags()->count();
+        $return['rule_groups']         = $user->userGroup->ruleGroups()->count();
+        $return['rules']               = $user->userGroup->rules()->count();
+        $return['tags']                = $user->userGroup->tags()->count();
 
         return $return;
     }
@@ -271,7 +271,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function hasRole(User $user, string $role): bool
     {
-        setPermissionsTeamId($user->user_group_id);
+        // setPermissionsTeamId($user->user_group_id);
 
         return $user->hasRole($role);
     }
@@ -322,7 +322,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function attachRole(User $user, mixed $role): bool
     {
-        setPermissionsTeamId($user->user_group_id);
+        // setPermissionsTeamId($user->user_group_id);
         $user->assignRole($role);
 
         return true;

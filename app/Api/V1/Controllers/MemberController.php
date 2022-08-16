@@ -54,7 +54,7 @@ class MemberController extends Controller
             $member->user_group_id = $request->user()->user_group_id;
             $member->save();
 
-            setPermissionsTeamId($request->user()->user_group_id);
+            // setPermissionsTeamId($request->user()->user_group_id);
             $member->givePermissionTo($permissions);
             $member->assignRole('member');
 
@@ -79,7 +79,7 @@ class MemberController extends Controller
 
             $member = User::find($id);
 
-            setPermissionsTeamId($request->user()->user_group_id);
+            // setPermissionsTeamId($request->user()->user_group_id);
             $member->syncPermissions($permissions);
 
             return response()->json(['success' => true]);

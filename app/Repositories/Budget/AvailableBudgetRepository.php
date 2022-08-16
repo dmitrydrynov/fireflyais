@@ -44,7 +44,7 @@ class AvailableBudgetRepository implements AvailableBudgetRepositoryInterface
      */
     public function destroyAll(): void
     {
-        $this->user->availableBudgets()->delete();
+        $this->user->userGroup->availableBudgets()->delete();
     }
 
     /**
@@ -70,7 +70,7 @@ class AvailableBudgetRepository implements AvailableBudgetRepositoryInterface
      */
     public function find(TransactionCurrency $currency, Carbon $start, Carbon $end): ?AvailableBudget
     {
-        return $this->user->availableBudgets()
+        return $this->user->userGroup->availableBudgets()
                           ->where('transaction_currency_id', $currency->id)
                           ->where('start_date', $start->format('Y-m-d'))
                           ->where('end_date', $end->format('Y-m-d'))
@@ -83,7 +83,7 @@ class AvailableBudgetRepository implements AvailableBudgetRepositoryInterface
      */
     public function findById(int $id): ?AvailableBudget
     {
-        return $this->user->availableBudgets->find($id);
+        return $this->user->userGroup->availableBudgets->find($id);
     }
 
     /**
@@ -96,7 +96,7 @@ class AvailableBudgetRepository implements AvailableBudgetRepositoryInterface
      */
     public function get(?Carbon $start = null, ?Carbon $end = null): Collection
     {
-        $query = $this->user->availableBudgets()->with(['transactionCurrency']);
+        $query = $this->user->userGroup->availableBudgets()->with(['transactionCurrency']);
         if (null !== $start && null !== $end) {
             $query->where(
                 static function (Builder $q1) use ($start, $end) {
@@ -119,7 +119,7 @@ class AvailableBudgetRepository implements AvailableBudgetRepositoryInterface
     public function getAvailableBudget(TransactionCurrency $currency, Carbon $start, Carbon $end): string
     {
         $amount          = '0';
-        $availableBudget = $this->user->availableBudgets()
+        $availableBudget = $this->user->userGroup->availableBudgets()
                                       ->where('transaction_currency_id', $currency->id)
                                       ->where('start_date', $start->format('Y-m-d'))
                                       ->where('end_date', $end->format('Y-m-d'))->first();
@@ -139,7 +139,7 @@ class AvailableBudgetRepository implements AvailableBudgetRepositoryInterface
     public function getAvailableBudgetWithCurrency(Carbon $start, Carbon $end): array
     {
         $return           = [];
-        $availableBudgets = $this->user->availableBudgets()
+        $availableBudgets = $this->user->userGroup->availableBudgets()
                                        ->where('start_date', $start->format('Y-m-d'))
                                        ->where('end_date', $end->format('Y-m-d'))->get();
         /** @var AvailableBudget $availableBudget */
@@ -159,7 +159,7 @@ class AvailableBudgetRepository implements AvailableBudgetRepositoryInterface
      */
     public function getAvailableBudgetsByCurrency(TransactionCurrency $currency): Collection
     {
-        return $this->user->availableBudgets()->where('transaction_currency_id', $currency->id)->get();
+        return $this->user->userGroup->availableBudgets()->where('transaction_currency_id', $currency->id)->get();
     }
 
     /**
@@ -173,7 +173,7 @@ class AvailableBudgetRepository implements AvailableBudgetRepositoryInterface
      */
     public function getAvailableBudgetsByDate(?Carbon $start, ?Carbon $end): Collection
     {
-        $query = $this->user->availableBudgets();
+        $query = $this->user->userGroup->availableBudgets();
 
         if (null !== $start) {
             $query->where('start_date', '>=', $start->format('Y-m-d'));
@@ -190,7 +190,7 @@ class AvailableBudgetRepository implements AvailableBudgetRepositoryInterface
      */
     public function getByCurrencyDate(Carbon $start, Carbon $end, TransactionCurrency $currency): ?AvailableBudget
     {
-        return $this->user
+        return $this->user->userGroup
             ->availableBudgets()
             ->where('transaction_currency_id', $currency->id)
             ->where('start_date', $start->format('Y-m-d'))
@@ -208,7 +208,7 @@ class AvailableBudgetRepository implements AvailableBudgetRepositoryInterface
      */
     public function setAvailableBudget(TransactionCurrency $currency, Carbon $start, Carbon $end, string $amount): AvailableBudget
     {
-        $availableBudget = $this->user->availableBudgets()
+        $availableBudget = $this->user->userGroup->availableBudgets()
                                       ->where('transaction_currency_id', $currency->id)
                                       ->where('start_date', $start->format('Y-m-d'))
                                       ->where('end_date', $end->format('Y-m-d'))->first();

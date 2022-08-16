@@ -38,7 +38,11 @@
                             <tbody>
                             {% for objectGroup in objectGroups %}
                                 <tr class="group-sortable" data-id="{{ objectGroup.id }}" data-name="{{ objectGroup.title|escape('html') }}" data-order="{{ objectGroup.order }}">
-                                    <td><span class="fa fa-fw fa-bars group-handle"></span></td>
+                                    <td>
+                                        {% if can('object-groups.update') and activeUserGroup() is not same as('all') %}
+                                            <span class="fa fa-fw fa-bars group-handle"></span>
+                                        {% endif %}
+                                    </td>
                                     <td>
                                         <strong>{{ objectGroup.title }}</strong><br />
 
@@ -50,14 +54,20 @@
                                         {% endfor %}
                                     </td>
                                     <td>
+                                        {% if activeUserGroup() is not same as('all') %}
                                         <div class="btn-group btn-group-sm">
-                                            <a class="btn btn-default" href="{{ route('object-groups.edit', [objectGroup.id]) }}">
-                                                <span class="fa fa-pencil"></span>
-                                            </a>
-                                            <a class="btn btn-danger" href="{{ route('object-groups.delete', [objectGroup.id]) }}">
-                                                <span class="fa fa-trash"></span>
-                                            </a>
+                                            {% if can('object-groups.update') %}
+                                                <a class="btn btn-default" href="{{ route('object-groups.edit', [objectGroup.id]) }}">
+                                                    <span class="fa fa-pencil"></span>
+                                                </a>
+                                            {% endif %}
+                                            {% if can('object-groups.delete') %}
+                                                <a class="btn btn-danger" href="{{ route('object-groups.delete', [objectGroup.id]) }}">
+                                                    <span class="fa fa-trash"></span>
+                                                </a>
+                                            {% endif %}
                                         </div>
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}

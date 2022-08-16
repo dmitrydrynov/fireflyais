@@ -37,13 +37,13 @@
       <tr>
         <td>
           <div class="btn-group btn-group-xs">
-            {% if can('categories.update') %}
+            {% if can('categories.update') and activeUserGroup() is not same as('all') %}
               <a href="{{ route('categories.edit', category.id) }}"
                 class="btn btn-default btn-xs">
                 <span class="fa fa-fw fa-pencil"></span>
               </a>
             {% endif %}
-            {% if can('categories.delete') %}
+            {% if can('categories.delete') and activeUserGroup() is not same as('all') %}
               <a href="{{ route('categories.delete', category.id) }}"
                 class="btn btn-danger btn-xs">
                 <span class="fa fa-fw fa-trash-o"></span>

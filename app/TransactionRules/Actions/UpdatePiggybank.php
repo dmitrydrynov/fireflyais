@@ -60,7 +60,7 @@ class UpdatePiggybank implements ActionInterface
 
         // refresh the transaction type.
         $user                             = User::find($journal['user_id']);
-        $journalObj                       = $user->transactionJournals()->find($journal['transaction_journal_id']);
+        $journalObj                       = $user->userGroup->transactionJournals()->find($journal['transaction_journal_id']);
         $type                             = TransactionType::find((int) $journalObj->transaction_type_id);
         $journal['transaction_type_type'] = $type->type;
 
@@ -114,7 +114,7 @@ class UpdatePiggybank implements ActionInterface
      */
     private function findPiggybank(User $user): ?PiggyBank
     {
-        return $user->piggyBanks()->where('piggy_banks.name', $this->action->action_value)->first();
+        return $user->userGroup->piggyBanks()->where('piggy_banks.name', $this->action->action_value)->first();
     }
 
     /**
@@ -125,7 +125,7 @@ class UpdatePiggybank implements ActionInterface
     private function removeAmount(array $journalArray, PiggyBank $piggyBank, string $amount): void
     {
         $user       = User::find($journalArray['user_id']);
-        $journal    = $user->transactionJournals()->find($journalArray['transaction_journal_id']);
+        $journal    = $user->userGroup->transactionJournals()->find($journalArray['transaction_journal_id']);
         $repository = app(PiggyBankRepositoryInterface::class);
         $repository->setUser($journal->user);
 
@@ -163,7 +163,7 @@ class UpdatePiggybank implements ActionInterface
     private function addAmount(array $journalArray, PiggyBank $piggyBank, string $amount): void
     {
         $user       = User::find($journalArray['user_id']);
-        $journal    = $user->transactionJournals()->find($journalArray['transaction_journal_id']);
+        $journal    = $user->userGroup->transactionJournals()->find($journalArray['transaction_journal_id']);
         $repository = app(PiggyBankRepositoryInterface::class);
         $repository->setUser($journal->user);
 

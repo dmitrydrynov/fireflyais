@@ -333,13 +333,22 @@ class AccountController extends Controller
         $end        = clone session('end', Carbon::now()->endOfMonth());
         $defaultSet = $repository->getAccountsByType([AccountType::DEFAULT, AccountType::ASSET])->pluck('id')->toArray();
         Log::debug('Default set is ', $defaultSet);
-        $frontPage = app('preferences')->get('frontPageAccounts', $defaultSet);
-        Log::debug('Frontpage preference set is ', $frontPage->data);
-        if (empty($frontPage->data)) {
+        
+        $frontPage = [];
+
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            $frontPage = $defaultSet;
+        } else {
+            $frontPageAccounts = app('preferences')->get('frontPageAccounts', $defaultSet);
+            $frontPage = $frontPageAccounts->data;
+        }
+
+        Log::debug('Frontpage preference set is ', $frontPage);
+        if (empty($frontPage)) {
             app('preferences')->set('frontPageAccounts', $defaultSet);
             Log::debug('frontpage set is empty!');
         }
-        $accounts = $repository->getAccountsById($frontPage->data);
+        $accounts = $repository->getAccountsById($frontPage);
 
         return response()->json($this->accountBalanceChart($accounts, $start, $end));
     }

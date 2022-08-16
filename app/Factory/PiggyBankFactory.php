@@ -49,7 +49,7 @@ class PiggyBankFactory
         // first find by ID:
         if ($piggyBankId > 0) {
             /** @var PiggyBank $piggyBank */
-            $piggyBank = $this->user->piggyBanks()->find($piggyBankId);
+            $piggyBank = $this->user->userGroup->piggyBanks()->find($piggyBankId);
             if (null !== $piggyBank) {
                 return $piggyBank;
             }
@@ -75,7 +75,7 @@ class PiggyBankFactory
      */
     public function findByName(string $name): ?PiggyBank
     {
-        return $this->user->piggyBanks()->where('piggy_banks.name', $name)->first();
+        return $this->user->userGroup->piggyBanks()->where('piggy_banks.name', $name)->first();
     }
 
     /**

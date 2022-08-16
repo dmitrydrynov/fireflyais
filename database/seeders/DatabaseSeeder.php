@@ -1,4 +1,5 @@
 <?php
+
 /**
  * DatabaseSeeder.php
  * Copyright (c) 2019 james@firefly-iii.org.
@@ -18,11 +19,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 declare(strict_types=1);
 
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Database\Seeders\Local\FakeUserGroupsSeeder;
+use Database\Seeders\Local\FakeUsersSeeder;
 
 /**
  * Class DatabaseSeeder.
@@ -38,9 +42,14 @@ class DatabaseSeeder extends Seeder
         $this->call(TransactionCurrencySeeder::class);
         $this->call(TransactionTypeSeeder::class);
         $this->call(PermissionsSeeder::class);
-        $this->call(RoleSeeder::class);        
+        $this->call(RoleSeeder::class);
         $this->call(LinkTypeSeeder::class);
         $this->call(ConfigSeeder::class);
         $this->call(UserRoleSeeder::class);
+
+        if (env('APP_ENV') == 'local') {
+            $this->call(FakeUserGroupsSeeder::class);
+            $this->call(FakeUsersSeeder::class);
+        }
     }
 }

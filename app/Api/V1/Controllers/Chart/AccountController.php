@@ -95,17 +95,25 @@ class AccountController extends Controller
 
         // user's preferences
         $defaultSet = $this->repository->getAccountsByType([AccountType::ASSET])->pluck('id')->toArray();
-        $frontPage  = app('preferences')->get('frontPageAccounts', $defaultSet);
+        $frontPageData = [];
+
+        if (auth()->user()->isSuperAdmin() && session()->get('active_user_group') === 'all') {
+            $frontPageData = $defaultSet;
+        } else {
+            $frontPageAccounts = app('preferences')->get('frontPageAccounts', $defaultSet);
+            $frontPageData = $frontPageAccounts->data;
+        }
+
         $default    = app('amount')->getDefaultCurrency();
 
-        if (empty($frontPage->data)) {
-            $frontPage->data = $defaultSet;
-            $frontPage->save();
+        if (isset($frontPageAccounts) && empty($frontPageData)) {
+            $frontPageAccounts->data = $defaultSet;
+            $frontPageAccounts->save();
         }
 
 
         // get accounts:
-        $accounts  = $this->repository->getAccountsById($frontPage->data);
+        $accounts  = $this->repository->getAccountsById($frontPageData);
         $chartData = [];
         /** @var Account $account */
         foreach ($accounts as $account) {

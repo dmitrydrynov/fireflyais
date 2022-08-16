@@ -8,32 +8,36 @@
         {% endif %}
         <td colspan="1" class="hidden-xs">
             <!-- Single button -->
-            {% if can('transactions.update') or can('transactions.delete') %}
-                <div class="btn-group btn-group-xs action-menu pull-right" style="display: none;">
-                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                        {{ 'actions'|_ }} <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-right">
-                        {% if can('transactions.update') %}
-                            <li><a href="#" class="mass-edit"><span class="fa fa-fw fa-pencil"></span>
-                                <span>{{ 'mass_edit'|_ }}</span></a></li>
-                            <li><a href="#" class="bulk-edit"><span class="fa fa-fw fa-pencil-square-o"></span>
-                                <span>{{ 'bulk_edit'|_ }}</span></a></li>
-                        {% endif %}
-                        {% if can('transactions.delete') %}
-                            <li><a href="#" class="mass-delete"><span class="fa fa-fw fa-trash"></span>
-                                <span>{{ 'mass_delete'|_ }}</span></a></li>
-                        {% endif %}
-                    </ul>
-                </div>
+            {% if activeUserGroup() is not same as('all') %}
+                {% if can('transactions.update') or can('transactions.delete') %}
+                    <div class="btn-group btn-group-xs action-menu pull-right" style="display: none;">
+                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            {{ 'actions'|_ }} <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            {% if can('transactions.update') %}
+                                <li><a href="#" class="mass-edit"><span class="fa fa-fw fa-pencil"></span>
+                                    <span>{{ 'mass_edit'|_ }}</span></a></li>
+                                <li><a href="#" class="bulk-edit"><span class="fa fa-fw fa-pencil-square-o"></span>
+                                    <span>{{ 'bulk_edit'|_ }}</span></a></li>
+                            {% endif %}
+                            {% if can('transactions.delete') %}
+                                <li><a href="#" class="mass-delete"><span class="fa fa-fw fa-trash"></span>
+                                    <span>{{ 'mass_delete'|_ }}</span></a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
             {% endif %}
         </td>
-        <td colspan="1" class="hidden-xs">
-            <div class="pull-right">
-                <input id="list_ALL" value="1" name="select-all" type="checkbox" class="select-all form-check-inline"/>
-            </div>
-        </td>
+        {% if can('transactions.update') and activeUserGroup() is not same as('all') %}
+            <td colspan="1" class="hidden-xs">
+                <div class="pull-right">
+                    <input id="list_ALL" value="1" name="select-all" type="checkbox" class="select-all form-check-inline"/>
+                </div>
+            </td>
+        {% endif %}
     </tr>
     <tr>
         <th class="hidden-xs">&nbsp;</th>
@@ -82,26 +86,28 @@
                     <td style="border-top:1px #aaa solid;" colspan="2">&nbsp;</td>
                 {% endif %}
                 <td style="border-top:1px #aaa solid;" class="hidden-xs">
-                    {% if can('transactions.update') or can('transactions.delete') or can('transactions.create') %}
-                        <div class="btn-group btn-group-xs pull-right">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
-                                {{ 'actions'|_ }} <span class="caret"></span></button>
-                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                {% if can('transactions.update') %}
-                                    <li><a href="{{ route('transactions.edit', [group.id]) }}"><span
-                                                class="fa fa-fw fa-pencil"></span> {{ 'edit'|_ }}</a></li>
-                                {% endif %}
-                                {% if can('transactions.delete') %}
-                                    <li><a href="{{ route('transactions.delete', [group.id]) }}"><span
-                                                class="fa fa-fw fa-trash"></span> {{ 'delete'|_ }}</a></li>
-                                {% endif %}
-                                {% if can('transactions.update') and can('transactions.create') %}
-                                    <li><a href="#" data-id="{{ group.id }}" class="clone-transaction"><span
-                                                class="fa fa-copy fa-fw"></span> {{ 'clone'|_ }}</a></li>
-                                {% endif %}
-                            </ul>
-                        </div>
+                    {% if activeUserGroup() is not same as('all') %}
+                        {% if can('transactions.update') or can('transactions.delete') or can('transactions.create') %}
+                            <div class="btn-group btn-group-xs pull-right">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">
+                                    {{ 'actions'|_ }} <span class="caret"></span></button>
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                    {% if can('transactions.update') %}
+                                        <li><a href="{{ route('transactions.edit', [group.id]) }}"><span
+                                                    class="fa fa-fw fa-pencil"></span> {{ 'edit'|_ }}</a></li>
+                                    {% endif %}
+                                    {% if can('transactions.delete') %}
+                                        <li><a href="{{ route('transactions.delete', [group.id]) }}"><span
+                                                    class="fa fa-fw fa-trash"></span> {{ 'delete'|_ }}</a></li>
+                                    {% endif %}
+                                    {% if can('transactions.update') and can('transactions.create') %}
+                                        <li><a href="#" data-id="{{ group.id }}" class="clone-transaction"><span
+                                                    class="fa fa-copy fa-fw"></span> {{ 'clone'|_ }}</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        {% endif %}
                     {% endif %}
                 </td>
                 <td style="border-top:1px #aaa solid;" class="hidden-xs">&nbsp;</td>
@@ -264,7 +270,7 @@
 
                 {% if group.count == 1 %}
                     <td style=" {{ style|raw }};" class="hidden-xs">
-                        {% if can('transactions.update') or can('transactions.delete') or can('transactions.create') or can('transactions.read') %}
+                        {% if (can('transactions.update') or can('transactions.delete') or can('transactions.create') or can('transactions.read')) and activeUserGroup() is not same as('all')%}
                             <div class="btn-group btn-group-xs pull-right">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                         aria-haspopup="true" aria-expanded="false">
@@ -300,15 +306,17 @@
                         &nbsp;
                     </td>
                 {% endif %}
-                <td style="{{ style|raw }}" class="hidden-xs">
-                    <div class="pull-right">
-                        <input id="list_{{ transaction.transaction_journal_id }}"
-                               value="{{ transaction.transaction_journal_id }}"
-                               name="journals[{{ transaction.transaction_journal_id }}]"
-                               type="checkbox" class="mass-select form-check-inline"
-                               data-value="{{ transaction.transaction_journal_id }}"/>
-                    </div>
-                </td>
+                {% if can('transactions.update') and activeUserGroup() is not same as('all') %}
+                    <td style="{{ style|raw }}" class="hidden-xs">
+                        <div class="pull-right">
+                            <input id="list_{{ transaction.transaction_journal_id }}"
+                                value="{{ transaction.transaction_journal_id }}"
+                                name="journals[{{ transaction.transaction_journal_id }}]"
+                                type="checkbox" class="mass-select form-check-inline"
+                                data-value="{{ transaction.transaction_journal_id }}"/>
+                        </div>
+                    </td>
+                {% endif %}
             </tr>
         {% endfor %}
     {% endfor %}

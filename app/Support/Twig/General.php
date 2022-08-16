@@ -438,7 +438,7 @@ class General extends AbstractExtension
         return new TwigFunction(
             'hasRole',
             static function (string $role): bool {
-                setPermissionsTeamId(auth()->user()->user_group_id);
+                // setPermissionsTeamId(auth()->user()->user_group_id);
                 return auth()->user()->hasRole($role);
             }
         );
@@ -449,7 +449,7 @@ class General extends AbstractExtension
         return new TwigFunction(
             'hasAnyRole',
             static function (...$roles): bool {
-                setPermissionsTeamId(auth()->user()->user_group_id);
+                // setPermissionsTeamId(auth()->user()->user_group_id);
                 return auth()->user()->hasRole($roles);
             }
         );
@@ -465,7 +465,7 @@ class General extends AbstractExtension
         return new TwigFunction(
             'can',
             static function (string $permissions): bool {
-                setPermissionsTeamId(auth()->user()->user_group_id);
+                // setPermissionsTeamId(auth()->user()->user_group_id);
                 return auth()->user()->can($permissions);
             }
         );
@@ -476,7 +476,7 @@ class General extends AbstractExtension
         return new TwigFunction(
             'canAny',
             static function (array $permissions): bool {
-                setPermissionsTeamId(auth()->user()->user_group_id);
+                // setPermissionsTeamId(auth()->user()->user_group_id);
                 return auth()->user()->canany($permissions);
             }
         );
@@ -491,7 +491,7 @@ class General extends AbstractExtension
 
                 dd($permissionsWithAction->toArray());
 
-                setPermissionsTeamId(auth()->user()->user_group_id);
+                // setPermissionsTeamId(auth()->user()->user_group_id);
                 return auth()->user()->canany($permissions);
             }
         );

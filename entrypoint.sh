@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+chown -R application:www-data /app/storage
+chown -R application:www-data /app/bootstrap/cache
+chmod -R 775 /app/storage
+chmod -R 775 /app/bootstrap/cache
+
 yarn install --frozen-lockfile
 
 if [ "$APP_ENV" = "production" ]; then \

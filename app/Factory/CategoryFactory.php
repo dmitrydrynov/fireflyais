@@ -56,7 +56,7 @@ class CategoryFactory
         // first by ID:
         if ($categoryId > 0) {
             /** @var Category $category */
-            $category = $this->user->categories()->find($categoryId);
+            $category = $this->user->userGroup->categories()->find($categoryId);
             if (null !== $category) {
                 return $category;
             }
@@ -91,7 +91,7 @@ class CategoryFactory
      */
     public function findByName(string $name): ?Category
     {
-        return $this->user->categories()->where('name', $name)->first();
+        return $this->user->userGroup->categories()->where('name', $name)->first();
     }
 
     /**

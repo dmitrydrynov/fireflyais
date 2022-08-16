@@ -47,7 +47,7 @@ class TagFactory
         Log::debug(sprintf('Now in TagFactory::findOrCreate("%s")', $tag));
 
         /** @var Tag $dbTag */
-        $dbTag = $this->user->tags()->where('tag', $tag)->first();
+        $dbTag = $this->user->userGroup->tags()->where('tag', $tag)->first();
         if (null !== $dbTag) {
             Log::debug(sprintf('Tag exists (#%d), return it.', $dbTag->id));
 

@@ -52,7 +52,7 @@ class RemoveTag implements ActionInterface
         // if tag does not exist, no need to continue:
         $name = $this->action->action_value;
         $user = User::find($journal['user_id']);
-        $tag  = $user->tags()->where('tag', $name)->first();
+        $tag  = $user->userGroup->tags()->where('tag', $name)->first();
 
         if (null !== $tag) {
             Log::debug(sprintf('RuleAction RemoveTag removed tag #%d ("%s") from journal #%d.', $tag->id, $tag->tag, $journal['transaction_journal_id']));

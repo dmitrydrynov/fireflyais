@@ -28,10 +28,12 @@
                 <tr class="bill-sortable" data-id="{{ entry.id }}" data-name="{{ entry.name }}"
                     data-order="{{ entry.order }}" data-position="{{ loop.index0 }}">
                     <td class="hidden-sm hidden-xs">
-                        <span class="fa fa-fw fa-bars bill-handle"></span>
+                        {% if activeUserGroup() is not same as('all') %}
+                            <span class="fa fa-fw fa-bars bill-handle"></span>
+                        {% endif %}
                     </td>
                     <td class="hidden-sm hidden-xs">
-                        {% if can('bills.update') %}
+                        {% if can('bills.update') and activeUserGroup() is not same as('all') %}
                             <div class="btn-group btn-group-xs edit_tr_buttons"><a href="{{ route('bills.edit',entry.id) }}"
                                                                                class="btn btn-default btn-xs"><span
                                         class="fa fa-fw fa-pencil"></span></a><a
@@ -59,7 +61,7 @@
                             <ul class="list-unstyled">
                                 {% for rule in entry.rules %}
                                     <li>
-                                        {% if can('rules.update') %}
+                                        {% if can('rules.update') and activeUserGroup() is not same as('all') %}
                                             <a href="{{ route('rules.edit', [rule.id]) }}">
                                                 {{ rule.title }}
                                             </a>

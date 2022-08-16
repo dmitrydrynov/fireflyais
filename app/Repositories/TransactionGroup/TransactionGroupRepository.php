@@ -62,7 +62,7 @@ class TransactionGroupRepository implements TransactionGroupRepositoryInterface
     public function countAttachments(int $journalId): int
     {
         /** @var TransactionJournal $journal */
-        $journal = $this->user->transactionJournals()->find($journalId);
+        $journal = $this->user->userGroup->transactionJournals()->find($journalId);
 
         return $journal->attachments()->count();
 
@@ -300,7 +300,7 @@ class TransactionGroupRepository implements TransactionGroupRepositoryInterface
     public function getLocation(int $journalId): ?Location
     {
         /** @var TransactionJournal $journal */
-        $journal = $this->user->transactionJournals()->find($journalId);
+        $journal = $this->user->userGroup->transactionJournals()->find($journalId);
 
         return $journal->locations()->first();
     }
@@ -431,9 +431,9 @@ class TransactionGroupRepository implements TransactionGroupRepositoryInterface
     public function getTagObjects(int $journalId): Collection
     {
         /** @var TransactionJournal $journal */
-        $journal = $this->user->transactionJournals()->find($journalId);
+        $journal = $this->user->userGroup->transactionJournals()->find($journalId);
 
-        return $journal->tags()->get();
+        return $journal ? $journal->tags()->get() : new Collection();
     }
 
     /**

@@ -164,7 +164,7 @@ class TransactionJournal extends Model
             /** @var User $user */
             $user = auth()->user();
             /** @var TransactionJournal $journal */
-            $journal = $user->transactionJournals()->where('transaction_journals.id', $journalId)->first(['transaction_journals.*']);
+            $journal = $user->userGroup->transactionJournals()->where('transaction_journals.id', $journalId)->first(['transaction_journals.*']);
             if (null !== $journal) {
                 return $journal;
             }

@@ -48,7 +48,7 @@ class RuleRepository implements RuleRepositoryInterface
      */
     public function count(): int
     {
-        return $this->user->rules()->count();
+        return $this->user->userGroup->rules()->count();
     }
 
     /**
@@ -106,7 +106,7 @@ class RuleRepository implements RuleRepositoryInterface
      */
     public function find(int $ruleId): ?Rule
     {
-        return $this->user->rules()->find($ruleId);
+        return $this->user->userGroup->rules()->find($ruleId);
     }
 
     /**
@@ -116,7 +116,7 @@ class RuleRepository implements RuleRepositoryInterface
      */
     public function getAll(): Collection
     {
-        return $this->user->rules()->with(['ruleGroup'])->get();
+        return $this->user->userGroup->rules()->with(['ruleGroup'])->get();
     }
 
     /**
@@ -126,7 +126,7 @@ class RuleRepository implements RuleRepositoryInterface
      */
     public function getFirstRuleGroup(): RuleGroup
     {
-        return $this->user->ruleGroups()->first();
+        return $this->user->userGroup->ruleGroups()->first();
     }
 
     /**
@@ -205,7 +205,7 @@ class RuleRepository implements RuleRepositoryInterface
      */
     public function getStoreRules(): Collection
     {
-        $collection = $this->user->rules()
+        $collection = $this->user->userGroup->rules()
                                  ->leftJoin('rule_groups', 'rule_groups.id', '=', 'rules.rule_group_id')
                                  ->where('rules.active', true)
                                  ->where('rule_groups.active', true)
@@ -232,7 +232,7 @@ class RuleRepository implements RuleRepositoryInterface
      */
     public function getUpdateRules(): Collection
     {
-        $collection = $this->user->rules()
+        $collection = $this->user->userGroup->rules()
                                  ->leftJoin('rule_groups', 'rule_groups.id', '=', 'rules.rule_group_id')
                                  ->where('rules.active', true)
                                  ->where('rule_groups.active', true)
@@ -259,7 +259,7 @@ class RuleRepository implements RuleRepositoryInterface
      */
     public function searchRule(string $query, int $limit): Collection
     {
-        $search = $this->user->rules();
+        $search = $this->user->userGroup->rules();
         if ('' !== $query) {
             $search->where('rules.title', 'LIKE', sprintf('%%%s%%', $query));
         }
@@ -287,10 +287,10 @@ class RuleRepository implements RuleRepositoryInterface
     {
         $ruleGroup = null;
         if (array_key_exists('rule_group_id', $data)) {
-            $ruleGroup = $this->user->ruleGroups()->find($data['rule_group_id']);
+            $ruleGroup = $this->user->userGroup->ruleGroups()->find($data['rule_group_id']);
         }
         if (array_key_exists('rule_group_title', $data)) {
-            $ruleGroup = $this->user->ruleGroups()->where('title', $data['rule_group_title'])->first();
+            $ruleGroup = $this->user->userGroup->ruleGroups()->where('title', $data['rule_group_title'])->first();
         }
         if (null === $ruleGroup) {
             throw new FireflyException('No such rule group.');
@@ -382,7 +382,7 @@ class RuleRepository implements RuleRepositoryInterface
         Log::debug(sprintf('New order will be %d', $newOrder));
 
         if ($newOrder > $oldOrder) {
-            $this->user->rules()
+            $this->user->userGroup->rules()
                        ->where('rules.rule_group_id', $groupId)
                        ->where('rules.order', '<=', $newOrder)
                        ->where('rules.order', '>', $oldOrder)
@@ -395,7 +395,7 @@ class RuleRepository implements RuleRepositoryInterface
             return;
         }
 
-        $this->user->rules()
+        $this->user->userGroup->rules()
                    ->where('rules.rule_group_id', $groupId)
                    ->where('rules.order', '>=', $newOrder)
                    ->where('rules.order', '<', $oldOrder)

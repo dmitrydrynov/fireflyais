@@ -133,7 +133,7 @@ class UserController extends Controller
     }
 
     /**
-     * Store new currency.
+     * Store new user.
      *
      * @param UserStoreRequest $request
      *
@@ -152,7 +152,7 @@ class UserController extends Controller
             if ($request->has('companyName') && null !== $user->userGroup) {
                 $user->userGroup->update(['title' => $request->get('companyName')]);
 
-                setPermissionsTeamId($user->user_group_id);
+                // setPermissionsTeamId($user->user_group_id);
                 $user->assignRole('owner');
             }
 

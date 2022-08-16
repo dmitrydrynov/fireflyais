@@ -51,7 +51,7 @@ class BudgetFactory
         // first by ID:
         if ($budgetId > 0) {
             /** @var Budget $budget */
-            $budget = $this->user->budgets()->find($budgetId);
+            $budget = $this->user->userGroup->budgets()->find($budgetId);
             if (null !== $budget) {
                 return $budget;
             }
@@ -74,7 +74,7 @@ class BudgetFactory
      */
     public function findByName(string $name): ?Budget
     {
-        return $this->user->budgets()->where('name', $name)->first();
+        return $this->user->userGroup->budgets()->where('name', $name)->first();
     }
 
     /**

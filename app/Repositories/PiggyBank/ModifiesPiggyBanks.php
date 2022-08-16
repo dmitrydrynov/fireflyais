@@ -315,7 +315,7 @@ trait ModifiesPiggyBanks
      */
     public function resetOrder(): void
     {
-        $set     = $this->user->piggyBanks()->orderBy('piggy_banks.order', 'ASC')->get(['piggy_banks.*']);
+        $set     = $this->user->userGroup->piggyBanks()->orderBy('piggy_banks.order', 'ASC')->get(['piggy_banks.*']);
         $current = 1;
         foreach ($set as $piggyBank) {
             if ((int) $piggyBank->order !== $current) {
@@ -335,7 +335,7 @@ trait ModifiesPiggyBanks
         $oldOrder = (int) $piggyBank->order;
         Log::debug(sprintf('Will move piggy bank #%d ("%s") from %d to %d', $piggyBank->id, $piggyBank->name, $oldOrder, $newOrder));
         if ($newOrder > $oldOrder) {
-            $this->user->piggyBanks()->where('piggy_banks.order', '<=', $newOrder)->where('piggy_banks.order', '>', $oldOrder)
+            $this->user->userGroup->piggyBanks()->where('piggy_banks.order', '<=', $newOrder)->where('piggy_banks.order', '>', $oldOrder)
                        ->where('piggy_banks.id', '!=', $piggyBank->id)
                        ->decrement('piggy_banks.order');
             $piggyBank->order = $newOrder;
@@ -345,7 +345,7 @@ trait ModifiesPiggyBanks
             return true;
         }
 
-        $this->user->piggyBanks()->where('piggy_banks.order', '>=', $newOrder)->where('piggy_banks.order', '<', $oldOrder)
+        $this->user->userGroup->piggyBanks()->where('piggy_banks.order', '>=', $newOrder)->where('piggy_banks.order', '<', $oldOrder)
                    ->where('piggy_banks.id', '!=', $piggyBank->id)
                    ->increment('piggy_banks.order');
         $piggyBank->order = $newOrder;

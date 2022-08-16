@@ -60,7 +60,7 @@ class BillRepository implements BillRepositoryInterface
      */
     public function billEndsWith(string $query, int $limit): Collection
     {
-        $search = $this->user->bills();
+        $search = $this->user->userGroup->bills();
         if ('' !== $query) {
             $search->where('name', 'LIKE', sprintf('%%%s', $query));
         }
@@ -75,7 +75,7 @@ class BillRepository implements BillRepositoryInterface
      */
     public function billStartsWith(string $query, int $limit): Collection
     {
-        $search = $this->user->bills();
+        $search = $this->user->userGroup->bills();
         if ('' !== $query) {
             $search->where('name', 'LIKE', sprintf('%s%%', $query));
         }
@@ -90,7 +90,7 @@ class BillRepository implements BillRepositoryInterface
      */
     public function correctOrder(): void
     {
-        $set     = $this->user->bills()->orderBy('order', 'ASC')->get();
+        $set     = $this->user->userGroup->bills()->orderBy('order', 'ASC')->get();
         $current = 1;
         foreach ($set as $bill) {
             if ((int) $bill->order !== $current) {
@@ -122,7 +122,7 @@ class BillRepository implements BillRepositoryInterface
      */
     public function destroyAll(): void
     {
-        $this->user->bills()->delete();
+        $this->user->userGroup->bills()->delete();
     }
 
     /**
@@ -165,7 +165,7 @@ class BillRepository implements BillRepositoryInterface
      */
     public function find(int $billId): ?Bill
     {
-        return $this->user->bills()->find($billId);
+        return $this->user->userGroup->bills()->find($billId);
     }
 
     /**
@@ -177,7 +177,7 @@ class BillRepository implements BillRepositoryInterface
      */
     public function findByName(string $name): ?Bill
     {
-        return $this->user->bills()->where('name', $name)->first(['bills.*']);
+        return $this->user->userGroup->bills()->where('name', $name)->first(['bills.*']);
     }
 
     /**
@@ -210,7 +210,7 @@ class BillRepository implements BillRepositoryInterface
      */
     public function getBills(): Collection
     {
-        return $this->user->bills()
+        return $this->user->userGroup->bills()
                           ->orderBy('order', 'ASC')
                           ->orderBy('active', 'DESC')
                           ->orderBy('name', 'ASC')->get();
@@ -227,7 +227,7 @@ class BillRepository implements BillRepositoryInterface
                    'bills.amount_max', 'bills.date', 'bills.transaction_currency_id', 'bills.repeat_freq', 'bills.skip', 'bills.automatch', 'bills.active',];
         $ids    = $accounts->pluck('id')->toArray();
 
-        return $this->user->bills()
+        return $this->user->userGroup->bills()
                           ->leftJoin(
                               'transaction_journals',
                               static function (JoinClause $join) {
@@ -282,7 +282,7 @@ class BillRepository implements BillRepositoryInterface
      */
     public function getActiveBills(): Collection
     {
-        return $this->user->bills()
+        return $this->user->userGroup->bills()
                           ->where('active', true)
                           ->orderBy('bills.name', 'ASC')
                           ->get(['bills.*', DB::raw('((bills.amount_min + bills.amount_max) / 2) AS expectedAmount'),]);
@@ -458,7 +458,7 @@ class BillRepository implements BillRepositoryInterface
      */
     public function getByIds(array $billIds): Collection
     {
-        return $this->user->bills()->whereIn('id', $billIds)->get();
+        return $this->user->userGroup->bills()->whereIn('id', $billIds)->get();
     }
 
     /**
@@ -532,7 +532,7 @@ class BillRepository implements BillRepositoryInterface
      */
     public function getPaginator(int $size): LengthAwarePaginator
     {
-        return $this->user->bills()
+        return $this->user->userGroup->bills()
                           ->orderBy('active', 'DESC')
                           ->orderBy('name', 'ASC')->paginate($size);
     }
@@ -568,7 +568,7 @@ class BillRepository implements BillRepositoryInterface
      */
     public function getRulesForBill(Bill $bill): Collection
     {
-        return $this->user->rules()
+        return $this->user->userGroup->rules()
                           ->leftJoin('rule_actions', 'rule_actions.rule_id', '=', 'rules.id')
                           ->where('rule_actions.action_type', 'link_to_bill')
                           ->where('rule_actions.action_value', $bill->name)
@@ -587,7 +587,7 @@ class BillRepository implements BillRepositoryInterface
      */
     public function getRulesForBills(Collection $collection): array
     {
-        $rules = $this->user->rules()
+        $rules = $this->user->userGroup->rules()
                             ->leftJoin('rule_actions', 'rule_actions.rule_id', '=', 'rules.id')
                             ->where('rule_actions.action_type', 'link_to_bill')
                             ->get(['rules.id', 'rules.title', 'rule_actions.action_value', 'rules.active']);
@@ -669,7 +669,7 @@ class BillRepository implements BillRepositoryInterface
     {
         /** @var Transaction $transaction */
         foreach ($transactions as $transaction) {
-            $journal          = $bill->user->transactionJournals()->find((int) $transaction['transaction_journal_id']);
+            $journal          = $bill->user->userGroup->transactionJournals()->find((int) $transaction['transaction_journal_id']);
             $journal->bill_id = $bill->id;
             $journal->save();
             Log::debug(sprintf('Linked journal #%d to bill #%d', $journal->id, $bill->id));
@@ -743,7 +743,7 @@ class BillRepository implements BillRepositoryInterface
     {
         $query = sprintf('%%%s%%', $query);
 
-        return $this->user->bills()->where('name', 'LIKE', $query)->take($limit)->get();
+        return $this->user->userGroup->bills()->where('name', 'LIKE', $query)->take($limit)->get();
     }
 
     /**
@@ -796,7 +796,7 @@ class BillRepository implements BillRepositoryInterface
      */
     public function unlinkAll(Bill $bill): void
     {
-        $this->user->transactionJournals()->where('bill_id', $bill->id)->update(['bill_id' => null]);
+        $this->user->userGroup->transactionJournals()->where('bill_id', $bill->id)->update(['bill_id' => null]);
     }
 
     /**

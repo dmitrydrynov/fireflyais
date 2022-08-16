@@ -108,7 +108,7 @@ class Category extends Model
             /** @var User $user */
             $user = auth()->user();
             /** @var Category $category */
-            $category = $user->categories()->find($categoryId);
+            $category = $user->userGroup->categories()->find($categoryId);
             if (null !== $category) {
                 return $category;
             }
