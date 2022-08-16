@@ -16,7 +16,7 @@
     <tr>
       {% if showPiggyBank %}
         <td>
-          {% if can('piggy-banks.update') %}
+          {% if can('piggy-banks.update') and activeUserGroup() is not same as('all') %}
             <a href="{{ route('piggy-banks.show', event.piggyBank.id) }}">
               {{ event.piggyBank.name }}
             </a>

@@ -15,7 +15,7 @@
                         </h3>
                     </div>
                     <div class="box-body no-padding">
-                        {% if can('piggy-banks.create') %}
+                        {% if can('piggy-banks.create') and activeUserGroup() is not same as('all') %}
                             <div style="padding:8px;">
                                 <a class="btn btn-success" href="{{ route('piggy-banks.create') }}">
                                     <span class="fa fa-plus fa-fw"></span>
@@ -26,7 +26,7 @@
                         {% include 'list/piggy-banks' %}
                     </div>
                     <div class="box-footer">
-                        {% if can('piggy-banks.create') %}
+                        {% if can('piggy-banks.create') and activeUserGroup() is not same as('all') %}
                             <a class="btn btn-success" href="{{ route('piggy-banks.create') }}">
                                 <span class="fa fa-plus fa-fw"></span>
                                 {{ 'create_new_piggy_bank'|_ }}

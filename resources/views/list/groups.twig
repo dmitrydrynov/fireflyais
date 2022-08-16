@@ -8,25 +8,27 @@
         {% endif %}
         <td colspan="1" class="hidden-xs">
             <!-- Single button -->
-            {% if can('transactions.update') or can('transactions.delete') %}
-                <div class="btn-group btn-group-xs action-menu pull-right" style="display: none;">
-                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                        {{ 'actions'|_ }} <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-right">
-                        {% if can('transactions.update') %}
-                            <li><a href="#" class="mass-edit"><span class="fa fa-fw fa-pencil"></span>
-                                <span>{{ 'mass_edit'|_ }}</span></a></li>
-                            <li><a href="#" class="bulk-edit"><span class="fa fa-fw fa-pencil-square-o"></span>
-                                <span>{{ 'bulk_edit'|_ }}</span></a></li>
-                        {% endif %}
-                        {% if can('transactions.delete') %}
-                            <li><a href="#" class="mass-delete"><span class="fa fa-fw fa-trash"></span>
-                                <span>{{ 'mass_delete'|_ }}</span></a></li>
-                        {% endif %}
-                    </ul>
-                </div>
+            {% if activeUserGroup() is not same as('all') %}
+                {% if can('transactions.update') or can('transactions.delete') %}
+                    <div class="btn-group btn-group-xs action-menu pull-right" style="display: none;">
+                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            {{ 'actions'|_ }} <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            {% if can('transactions.update') %}
+                                <li><a href="#" class="mass-edit"><span class="fa fa-fw fa-pencil"></span>
+                                    <span>{{ 'mass_edit'|_ }}</span></a></li>
+                                <li><a href="#" class="bulk-edit"><span class="fa fa-fw fa-pencil-square-o"></span>
+                                    <span>{{ 'bulk_edit'|_ }}</span></a></li>
+                            {% endif %}
+                            {% if can('transactions.delete') %}
+                                <li><a href="#" class="mass-delete"><span class="fa fa-fw fa-trash"></span>
+                                    <span>{{ 'mass_delete'|_ }}</span></a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
             {% endif %}
         </td>
         {% if can('transactions.update') and activeUserGroup() is not same as('all') %}
@@ -84,26 +86,28 @@
                     <td style="border-top:1px #aaa solid;" colspan="2">&nbsp;</td>
                 {% endif %}
                 <td style="border-top:1px #aaa solid;" class="hidden-xs">
-                    {% if can('transactions.update') or can('transactions.delete') or can('transactions.create') %}
-                        <div class="btn-group btn-group-xs pull-right">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
-                                {{ 'actions'|_ }} <span class="caret"></span></button>
-                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                {% if can('transactions.update') %}
-                                    <li><a href="{{ route('transactions.edit', [group.id]) }}"><span
-                                                class="fa fa-fw fa-pencil"></span> {{ 'edit'|_ }}</a></li>
-                                {% endif %}
-                                {% if can('transactions.delete') %}
-                                    <li><a href="{{ route('transactions.delete', [group.id]) }}"><span
-                                                class="fa fa-fw fa-trash"></span> {{ 'delete'|_ }}</a></li>
-                                {% endif %}
-                                {% if can('transactions.update') and can('transactions.create') %}
-                                    <li><a href="#" data-id="{{ group.id }}" class="clone-transaction"><span
-                                                class="fa fa-copy fa-fw"></span> {{ 'clone'|_ }}</a></li>
-                                {% endif %}
-                            </ul>
-                        </div>
+                    {% if activeUserGroup() is not same as('all') %}
+                        {% if can('transactions.update') or can('transactions.delete') or can('transactions.create') %}
+                            <div class="btn-group btn-group-xs pull-right">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">
+                                    {{ 'actions'|_ }} <span class="caret"></span></button>
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                    {% if can('transactions.update') %}
+                                        <li><a href="{{ route('transactions.edit', [group.id]) }}"><span
+                                                    class="fa fa-fw fa-pencil"></span> {{ 'edit'|_ }}</a></li>
+                                    {% endif %}
+                                    {% if can('transactions.delete') %}
+                                        <li><a href="{{ route('transactions.delete', [group.id]) }}"><span
+                                                    class="fa fa-fw fa-trash"></span> {{ 'delete'|_ }}</a></li>
+                                    {% endif %}
+                                    {% if can('transactions.update') and can('transactions.create') %}
+                                        <li><a href="#" data-id="{{ group.id }}" class="clone-transaction"><span
+                                                    class="fa fa-copy fa-fw"></span> {{ 'clone'|_ }}</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        {% endif %}
                     {% endif %}
                 </td>
                 <td style="border-top:1px #aaa solid;" class="hidden-xs">&nbsp;</td>
