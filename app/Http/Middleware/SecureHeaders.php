@@ -56,7 +56,7 @@ class SecureHeaders
             sprintf("script-src 'unsafe-eval' 'strict-dynamic' 'self' 'unsafe-inline' 'nonce-%1s' %2s", $nonce, $trackingScriptSrc),
             "style-src 'unsafe-inline' 'self'",
             "base-uri 'self'",
-            "font-src 'self' data:",
+            "font-src 'self' data: fonts.gstatic.com",
             sprintf("connect-src 'self' %s", $trackingScriptSrc),
             sprintf("img-src data: 'strict-dynamic' 'self' *.tile.openstreetmap.org %s", $trackingScriptSrc),
             "manifest-src 'self'",
