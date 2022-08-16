@@ -16,6 +16,7 @@ composer install
 php artisan migrate --seed
 php artisan firefly-iii:upgrade-database
 php artisan passport:install --force
+php artisan optimize
 
 if [ "$APP_ENV" = "local" ]; then \
     php artisan ide-helper:generate \
